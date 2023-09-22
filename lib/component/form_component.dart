@@ -19,7 +19,13 @@ Padding inputForm(Function(String?) validasi,
               hintText: hintTxt,
               border: const OutlineInputBorder(),
               helperText: helperTxt,
-              prefixIcon: Icon(iconData)),
+              prefixIcon: Icon(iconData),
+              suffix: GestureDetector(
+                onTap: () => print("toggle hidden"),
+                child: (password)
+                    ? const Icon(Icons.visibility)
+                    : const Icon(Icons.visibility_off),
+              )),
         )),
   );
 }
