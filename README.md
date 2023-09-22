@@ -1,6 +1,7 @@
 # Tugas Besar PBP
 
-Tema : Hospital
+- Tema : Hospital
+- Kelompok : 2
 
 # Anggota Kelompok
 - Nico Herlim - 210711227
