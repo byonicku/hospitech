@@ -1,0 +1,171 @@
+import 'package:flutter/material.dart';
+//* Sesuai dengan nama project Anda ,  awalnya akan error pada home,register,form component karena belum dibuat
+
+class LoginView extends StatefulWidget {
+  //* Variable map data dibuat bersifat nullable, karena ketika aplikasi dijalankan(dipanggil dari main, tidak ada data yang dibawa)
+  //* data memiliki nilai ketika registrasi berhasil dilakukan
+  final Map? data;
+  //* Agar Map data bisa bersifat nullable, pada constructor dibungkus dengan kurung { } agar bersifat opsional
+  const LoginView({super.key, this.data});
+
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  final _formKey = GlobalKey<FormState>();
+
+  bool _isObscured = true;
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    //* TextEditingController
+    //* widget mengacu pada instance / objek LoginView
+    Map? dataForm = widget.data;
+    return Scaffold(
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Login",
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              //username
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                child: TextField(
+                  controller: usernameController,
+                  decoration: const InputDecoration(
+                    hintText: "Username",
+                    border: OutlineInputBorder(),
+                    icon: Icon(Icons.person),
+                  ),
+                ),
+              ),
+              //* Password
+              const SizedBox(
+                height: 8,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                child: TextField(
+                  controller: passwordController,
+                  obscureText: _isObscured,
+                  onChanged: (s) {
+                    setState(() {
+                      passwordController.text = s;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      hintText: "Password",
+                      border: const OutlineInputBorder(),
+                      icon: const Icon(Icons.password),
+                      suffix: GestureDetector(
+                        onTap: () => setState(() {
+                          _isObscured = !_isObscured;
+                        }),
+                        child: (_isObscured)
+                            ? const Icon(Icons.visibility)
+                            : const Icon(Icons.visibility_off),
+                      )),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 24),
+                  child: TextButton(
+                      onPressed: () {
+                        Map<String, dynamic> formData = {};
+                        formData['username'] = usernameController.text;
+                        formData['password'] = passwordController.text;
+                        // pushRegister(context);
+                      },
+                      child: const Text('Belum punya akun ?')),
+                ),
+              ),
+              //* Baris yang berisi tombol login dan tombol mengarah ke halaman register
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  //* tombol login
+                  ElevatedButton(
+                      //* Fungsi yang dijalankan saat tombol ditekan.
+                      onPressed: () {
+                        //* Cek statenya sudah valid atau belum valid
+                        if (_formKey.currentState!.validate()) {
+                          //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
+                          //* dari halaman register atau belum
+                          if (dataForm!['username'] ==
+                                  usernameController.text &&
+                              dataForm['password'] == passwordController.text) {
+                            //* Jika sesuai navigasi ke halaman Home
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: () {});
+                            // => const HomeView()));
+                          } else {
+                            //* Jika belum tampilkan Alert dialog
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text('Password Salah'),
+                                //* isi Alert Dialog
+                                content: TextButton(
+                                    //* pushRegister(context) fungsi pada baris 118-124 untuk meminimalkan nested code
+                                    onPressed: () {},
+                                    // => pushRegister(context),
+                                    child: const Text('Daftar Disini !!')),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'Cancel'),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'OK'),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 15.0, vertical: 10.0),
+                        child: Text(
+                          'Login',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      )),
+                  //* tombol ke halaman register
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // void pushRegister(BuildContext context) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (_) => const RegisterView(),
+  //     ),
+  //   );
+  // }
+}
