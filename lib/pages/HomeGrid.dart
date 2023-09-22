@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/component/GridComponent.dart';
+import 'package:tugas_besar_hospital_pbp/component/GridComponentExpanded.dart';
 
 var itemCount = getListOfGridContent().length;
 const topLeftIconRadius = 20.0;
@@ -31,7 +32,7 @@ class _HomeGridState extends State<HomeGrid> {
         margin: const EdgeInsets.all(5.0),
         width: !isExpanded ? width * 0.45 : width * 0.92,
         height: !isExpanded ? width * 0.45 : width * 0.92,
-        child: !isExpanded ? getListOfGridContent()[index] : Container(),
+        child: !isExpanded ? getListOfGridContent()[index] : getListOfExpandedGrid()[index],
       ),
     );
   }
