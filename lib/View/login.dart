@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/main.dart';
 //* Sesuai dengan nama project Anda ,  awalnya akan error pada home,register,form component karena belum dibuat
 
 class LoginView extends StatefulWidget {
@@ -6,7 +7,7 @@ class LoginView extends StatefulWidget {
   //* data memiliki nilai ketika registrasi berhasil dilakukan
   final Map? data;
   //* Agar Map data bisa bersifat nullable, pada constructor dibungkus dengan kurung { } agar bersifat opsional
-  const LoginView({super.key, this.data});
+  LoginView({super.key, this.data});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -20,7 +21,16 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    darkNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool isDark = darkNotifier.value;
     //* TextEditingController
     //* widget mengacu pada instance / objek LoginView
     Map? dataForm = widget.data;
@@ -156,6 +166,14 @@ class _LoginViewState extends State<LoginView> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          isDark = !isDark;
+          darkNotifier.value = !isDark;
+        },
+        tooltip: "Ganti Tema",
+        child: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
       ),
     );
   }
