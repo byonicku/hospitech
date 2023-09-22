@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 //* Sesuai dengan nama project Anda ,  awalnya akan error pada home,register,form component karena belum dibuat
 
@@ -49,24 +50,24 @@ class _LoginViewState extends State<LoginView> {
                 height: 32,
               ),
               //username
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                child: TextField(
+              inputLogin((username) {
+                if (username!.isEmpty) {
+                  return "Tolong isikan username Anda";
+                }
+                return null;
+              },
                   controller: usernameController,
-                  decoration: const InputDecoration(
-                    hintText: "Username",
-                    border: OutlineInputBorder(),
-                    icon: Icon(Icons.person),
-                  ),
-                ),
-              ),
+                  hintTxt: "Username",
+                  iconData: Icons.person),
               //* Password
               const SizedBox(
                 height: 8,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                child: TextField(
+                child: TextFormField(
+                  validator: (value) =>
+                      value!.isEmpty ? "Tolong isikan password Anda" : null,
                   controller: passwordController,
                   obscureText: _isObscured,
                   onChanged: (s) {
@@ -78,14 +79,15 @@ class _LoginViewState extends State<LoginView> {
                       hintText: "Password",
                       border: const OutlineInputBorder(),
                       icon: const Icon(Icons.password),
-                      suffix: GestureDetector(
-                        onTap: () => setState(() {
-                          _isObscured = !_isObscured;
-                        }),
-                        child: (_isObscured)
-                            ? const Icon(Icons.visibility)
-                            : const Icon(Icons.visibility_off),
-                      )),
+                      suffixIcon: GestureDetector(
+                          onTap: () => setState(() {
+                                _isObscured = !_isObscured;
+                              }),
+                          child: Icon(
+                            _isObscured
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ))),
                 ),
               ),
               Align(
@@ -107,59 +109,62 @@ class _LoginViewState extends State<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   //* tombol login
-                  ElevatedButton(
-                      //* Fungsi yang dijalankan saat tombol ditekan.
-                      onPressed: () {
-                        //* Cek statenya sudah valid atau belum valid
-                        if (_formKey.currentState!.validate()) {
-                          //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
-                          //* dari halaman register atau belum
-                          if (dataForm!['username'] ==
-                                  usernameController.text &&
-                              dataForm['password'] == passwordController.text) {
-                            //* Jika sesuai navigasi ke halaman Home
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: () {});
-                            // => const HomeView()));
-                          } else {
-                            //* Jika belum tampilkan Alert dialog
-                            showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                title: const Text('Password Salah'),
-                                //* isi Alert Dialog
-                                content: TextButton(
-                                    //* pushRegister(context) fungsi pada baris 118-124 untuk meminimalkan nested code
-                                    onPressed: () {},
-                                    // => pushRegister(context),
-                                    child: const Text('Daftar Disini !!')),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'Cancel'),
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'OK'),
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
+                  MaterialButton(
+                    //* Fungsi yang dijalankan saat tombol ditekan.
+                    onPressed: () {
+                      //* Cek statenya sudah valid atau belum valid
+                      if (_formKey.currentState!.validate()) {
+                        //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
+                        //* dari halaman register atau belum
+                        if (dataForm!['username'] == usernameController.text &&
+                            dataForm['password'] == passwordController.text) {
+                          //* Jika sesuai navigasi ke halaman Home
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: () {});
+                          // => const HomeView()));
+                        } else {
+                          //* Jika belum tampilkan Alert dialog
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text('Password Salah'),
+                              //* isi Alert Dialog
+                              content: TextButton(
+                                  //* pushRegister(context) fungsi pada baris 118-124 untuk meminimalkan nested code
+                                  onPressed: () {},
+                                  // => pushRegister(context),
+                                  child: const Text('Daftar Disini !!')),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
                         }
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 10.0),
-                        child: Text(
-                          'Login',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      )),
+                      }
+                    },
+                    color: isDark
+                        ? ThemeData().primaryColorDark
+                        : ThemeData().primaryColor,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 15.0, vertical: 10.0),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                  ),
+
                   //* tombol ke halaman register
                 ],
               ),
@@ -170,7 +175,7 @@ class _LoginViewState extends State<LoginView> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           isDark = !isDark;
-          darkNotifier.value = !isDark;
+          darkNotifier.value = isDark;
         },
         tooltip: "Ganti Tema",
         child: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
