@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/component/builder/TopLeftIcon.dart';
+import 'package:tugas_besar_hospital_pbp/component/builder/top_left_icon.dart';
 
 const topLeftIconRadius = 20.0;
 const fontSizeConstant = 22.0;

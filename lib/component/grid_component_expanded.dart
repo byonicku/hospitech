@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/component/builder/GridExpandedBuilder.dart';
+import 'package:tugas_besar_hospital_pbp/component/builder/grid_expanded_builder.dart';
 
 List<Widget> getListOfExpandedGrid() {
   List<Widget> listOfExpandedGrid = [];

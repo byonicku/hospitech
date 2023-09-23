@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/component/GridComponent.dart';
-import 'package:tugas_besar_hospital_pbp/component/GridComponentExpanded.dart';
+import 'package:tugas_besar_hospital_pbp/component/grid_component.dart';
+import 'package:tugas_besar_hospital_pbp/component/grid_component_expanded.dart';
 
 var itemCount = getListOfGridContent().length;
 const topLeftIconRadius = 20.0;

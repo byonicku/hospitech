@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/component/builder/GridContentBuilder.dart';
+import 'package:tugas_besar_hospital_pbp/component/builder/grid_content_builder.dart';
 
 List<Widget> getListOfGridContent() {
   List<Widget> listOfGridContent = [];
