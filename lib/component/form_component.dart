@@ -12,7 +12,7 @@ Padding inputForm(Function(String?) validasi,
         width: 360,
         child: TextFormField(
           validator: (value) => validasi(value),
-          autofocus: true,
+          autofocus: false,
           controller: controller,
           obscureText: password,
           decoration: InputDecoration(
@@ -21,6 +21,8 @@ Padding inputForm(Function(String?) validasi,
               border: const OutlineInputBorder(),
               icon: Icon(iconData)),
         )),
+  );
+}
 
 Padding inputLogin(Function(String?) validasi,
     {required TextEditingController controller,
@@ -31,6 +33,7 @@ Padding inputLogin(Function(String?) validasi,
     padding: const EdgeInsets.symmetric(horizontal: 32.0),
     child: TextFormField(
       validator: (value) => validasi(value),
+      autofocus: false,
       controller: controller,
       decoration: InputDecoration(
         hintText: hintTxt,

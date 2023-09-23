@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
-//* Sesuai dengan nama project Anda ,  awalnya akan error pada home,register,form component karena belum dibuat
+import 'package:tugas_besar_hospital_pbp/View/register.dart';
 
 class LoginView extends StatefulWidget {
-  //* Variable map data dibuat bersifat nullable, karena ketika aplikasi dijalankan(dipanggil dari main, tidak ada data yang dibawa)
-  //* data memiliki nilai ketika registrasi berhasil dilakukan
   final Map? data;
-  //* Agar Map data bisa bersifat nullable, pada constructor dibungkus dengan kurung { } agar bersifat opsional
   LoginView({super.key, this.data});
 
   @override
@@ -16,7 +13,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
-
+  bool isDark = darkNotifier.value;
   bool _isObscured = true;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -31,9 +28,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDark = darkNotifier.value;
-    //* TextEditingController
-    //* widget mengacu pada instance / objek LoginView
     Map? dataForm = widget.data;
     return Scaffold(
       body: SafeArea(
@@ -70,6 +64,7 @@ class _LoginViewState extends State<LoginView> {
                       value!.isEmpty ? "Tolong isikan password Anda" : null,
                   controller: passwordController,
                   obscureText: _isObscured,
+                  autofocus: false,
                   onChanged: (s) {
                     setState(() {
                       passwordController.text = s;
@@ -99,7 +94,7 @@ class _LoginViewState extends State<LoginView> {
                         Map<String, dynamic> formData = {};
                         formData['username'] = usernameController.text;
                         formData['password'] = passwordController.text;
-                        // pushRegister(context);
+                        pushRegister(context);
                       },
                       child: const Text('Belum punya akun ?')),
                 ),
@@ -133,8 +128,7 @@ class _LoginViewState extends State<LoginView> {
                               //* isi Alert Dialog
                               content: TextButton(
                                   //* pushRegister(context) fungsi pada baris 118-124 untuk meminimalkan nested code
-                                  onPressed: () {},
-                                  // => pushRegister(context),
+                                  onPressed: () => pushRegister(context),
                                   child: const Text('Daftar Disini !!')),
                               actions: <Widget>[
                                 TextButton(
@@ -164,8 +158,6 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                   ),
-
-                  //* tombol ke halaman register
                 ],
               ),
             ],
@@ -183,12 +175,12 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  // void pushRegister(BuildContext context) {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (_) => const RegisterView(),
-  //     ),
-  //   );
-  // }
+  void pushRegister(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const RegisterView(),
+      ),
+    );
+  }
 }

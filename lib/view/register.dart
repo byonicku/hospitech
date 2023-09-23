@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:tugas_besar_hospital_pbp/main.dart';
+import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:intl/intl.dart';
 
 class RegisterView extends StatefulWidget {
@@ -19,6 +23,8 @@ class _RegisterViewState extends State<RegisterView> {
   TextEditingController dateController = TextEditingController();
   String? gender;
   bool? isChecked = false;
+  bool _isObscured = true;
+  bool isDark = darkNotifier.value;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +38,9 @@ class _RegisterViewState extends State<RegisterView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(
+                    height: 32,
+                  ),
                   const Text(
                     "Register",
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -63,17 +72,36 @@ class _RegisterViewState extends State<RegisterView> {
                   const SizedBox(
                     height: 12,
                   ),
-                  inputForm(
-                      (p0) => p0 == null || p0.isEmpty
-                          ? 'Password tidak boleh kosong'
-                          : p0.length < 5
-                              ? 'Password minimal 5 karakter'
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: TextFormField(
+                      validator: (value) => value!.isEmpty
+                          ? "Tolong isikan password Anda"
+                          : value.length < 5
+                              ? "Password minimal 5 karakter"
                               : null,
                       controller: passwordController,
-                      hintTxt: "Password",
-                      labelTxt: "Password",
-                      iconData: Icons.password,
-                      password: true),
+                      obscureText: _isObscured,
+                      onChanged: (s) {
+                        setState(() {
+                          passwordController.text = s;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          hintText: "Password",
+                          border: const OutlineInputBorder(),
+                          icon: const Icon(Icons.password),
+                          suffixIcon: GestureDetector(
+                              onTap: () => setState(() {
+                                    _isObscured = !_isObscured;
+                                  }),
+                              child: Icon(
+                                _isObscured
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ))),
+                    ),
+                  ),
                   const SizedBox(
                     height: 12,
                   ),
@@ -94,7 +122,7 @@ class _RegisterViewState extends State<RegisterView> {
                     child: SizedBox(
                       width: 360,
                       child: TextFormField(
-                        autofocus: true,
+                        autofocus: false,
                         controller: dateController,
                         validator: (value) => value!.isEmpty
                             ? 'Tanggal lahir tidak boleh kosong'
@@ -128,55 +156,58 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   //radio button
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: SizedBox(
-                      width: 360,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Text('Gender'),
-                          Radio(
-                            value: 'pria',
-                            groupValue: gender,
-                            onChanged: (value) {
-                              setState(() {
-                                gender = value;
-                              });
-                            },
-                          ),
-                          const Text('Pria'),
-                          Radio(
-                            value: 'wanita',
-                            groupValue: gender,
-                            onChanged: (value) {
-                              setState(() {
-                                gender = value;
-                              });
-                            },
-                          ),
-                          const Text('Wanita'),
-                        ],
-                      ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32.0,
+                    ),
+                    child: FormBuilderRadioGroup(
+                      decoration: const InputDecoration(labelText: 'Gender'),
+                      name: "gender",
+                      validator: FormBuilderValidators.required(
+                          errorText: "Jenis kelamin tidak boleh kosong"),
+                      options: [
+                        "Laki-Laki",
+                        "Perempuan",
+                      ]
+                          .map((e) => FormBuilderFieldOption(value: e))
+                          .toList(growable: false),
                     ),
                   ),
-
                   //check box
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: CheckboxListTile(
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: Text("I agree to the terms and conditions"),
-                      value: isChecked,
-                      onChanged: (newBool) {
-                        setState(() {
-                          isChecked = newBool;
-                        });
-                      },
-                    ),
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: FormBuilderCheckbox(
+                        name: 'accept_terms',
+                        onChanged: (value) {
+                          setState(() {
+                            isChecked = value;
+                          });
+                        },
+                        validator: FormBuilderValidators.equal(
+                          true,
+                          errorText:
+                              'You must accept terms and conditions to continue',
+                        ),
+                        title: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'I have read and agree to the ',
+                                style: TextStyle(
+                                    color:
+                                        isDark ? Colors.white : Colors.black),
+                              ),
+                              const TextSpan(
+                                text: 'Terms and Conditions',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
+                  const SizedBox(
+                    height: 12,
                   ),
-
                   MaterialButton(
-                      color: ThemeData().primaryColor,
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // ScaffoldMessenger.of(context).showSnackBar{
@@ -184,15 +215,35 @@ class _RegisterViewState extends State<RegisterView> {
                           Map<String, dynamic> formData = {};
                           formData['username'] = usernameController.text;
                           formData['password'] = passwordController.text;
-                          //* Navigator.push(context, MaterialPageRoute(builder: (BuildContext buildContext) => LoginView(data: formData ,)) );
-                          //  Navigator.push(context, MaterialPageRoute(builder: (_) => LoginView(data: formData ,)) );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext buildContext) =>
+                                      LoginView(
+                                        data: formData,
+                                      )));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => LoginView(
+                                        data: formData,
+                                      )));
                         }
                       },
+                      color: isDark
+                          ? ThemeData().primaryColorDark
+                          : ThemeData().primaryColor,
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 15.0, vertical: 10.0),
-                        child: Text('Register'),
-                      ))
+                        child: Text(
+                          'Register',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                      )),
+                  const SizedBox(
+                    height: 12,
+                  ),
                 ],
               ),
             ),
