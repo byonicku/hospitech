@@ -18,6 +18,7 @@ var buildExpandedGrid = (title, descriptionText) {
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: fontSizeConstantBig,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -33,6 +34,7 @@ var buildExpandedGrid = (title, descriptionText) {
               descriptionText,
               style: const TextStyle(
                 fontSize: fontSizeOrdinary,
+                color: Colors.white,
               ),
             ),
           ),

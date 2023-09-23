@@ -13,6 +13,8 @@ List<Widget> getListOfGridContent() {
     buildGridContent("assets/images/topLeftIcon6.png", "Neurologi"),
     buildGridContent("assets/images/topLeftIcon7.png", "Ortopedi"),
     buildGridContent("assets/images/topLeftIcon8.png", "Urologi"),
+    buildGridContent("assets/images/topLeftIcon9.png", "Hepatologi"),
+    buildGridContent("assets/images/topLeftIcon10.png", "Pendengaran"),
   ]);
 
   return listOfGridContent;

@@ -23,6 +23,7 @@ var buildGridContent = (imageAssetPath, title) {
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: fontSizeConstant,
+                color: Colors.white,
               ),
             ),
           ),

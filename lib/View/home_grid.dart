@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/component/grid_component.dart';
 import 'package:tugas_besar_hospital_pbp/component/grid_component_expanded.dart';
 
@@ -12,6 +13,7 @@ class HomeGrid extends StatefulWidget {
 
 class _HomeGridState extends State<HomeGrid> {
   List<bool> expandableState = List.generate(itemCount, (index) => false);
+  bool isDark = darkNotifier.value;
 
   Widget bloc(double width, int index) {
     bool isExpanded = expandableState[index];
@@ -25,14 +27,16 @@ class _HomeGridState extends State<HomeGrid> {
       child: AnimatedContainer(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          color: Colors.blue,
+          color: isDark ? Colors.indigo[500] : Colors.blue,
         ),
         curve: Curves.easeInOut,
         duration: const Duration(milliseconds: 300),
         margin: const EdgeInsets.all(5.0),
         width: !isExpanded ? width * 0.45 : width * 0.92,
         height: !isExpanded ? width * 0.45 : width * 0.92,
-        child: !isExpanded ? getListOfGridContent()[index] : getListOfExpandedGrid()[index],
+        child: !isExpanded
+            ? getListOfGridContent()[index]
+            : getListOfExpandedGrid()[index],
       ),
     );
   }
@@ -42,12 +46,14 @@ class _HomeGridState extends State<HomeGrid> {
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Align(
-        child: SingleChildScrollView(
-          child: Wrap(
-            children: List.generate(itemCount, (index) {
-              return bloc(width, index);
-            }),
+      body: SafeArea(
+        child: Align(
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: List.generate(itemCount, (index) {
+                return bloc(width, index);
+              }),
+            ),
           ),
         ),
       ),
