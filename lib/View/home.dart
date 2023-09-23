@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/View/home_grid.dart';
 import 'package:tugas_besar_hospital_pbp/View/profile_group.dart';
 
 class HomeView extends StatefulWidget {
@@ -17,11 +18,21 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
     Center(
-      child: Text("Grid"),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            "Kategori Dokter Spesialis",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        body: HomeGrid(),
+      ),
     ),
-    ProfileView(),
+    const ProfileView(),
   ];
 
   @override

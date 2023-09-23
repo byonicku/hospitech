@@ -74,32 +74,36 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: TextFormField(
-                      validator: (value) => value!.isEmpty
-                          ? "Tolong isikan password Anda"
-                          : value.length < 5
-                              ? "Password minimal 5 karakter"
-                              : null,
-                      controller: passwordController,
-                      obscureText: _isObscured,
-                      onChanged: (s) {
-                        setState(() {
-                          passwordController.text = s;
-                        });
-                      },
-                      decoration: InputDecoration(
-                          hintText: "Password",
-                          border: const OutlineInputBorder(),
-                          icon: const Icon(Icons.password),
-                          suffixIcon: GestureDetector(
-                              onTap: () => setState(() {
-                                    _isObscured = !_isObscured;
-                                  }),
-                              child: Icon(
-                                _isObscured
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ))),
+                    child: SizedBox(
+                      width: 360,
+                      child: TextFormField(
+                        validator: (value) => value!.isEmpty
+                            ? "Tolong isikan password Anda"
+                            : value.length < 5
+                                ? "Password minimal 5 karakter"
+                                : null,
+                        controller: passwordController,
+                        obscureText: _isObscured,
+                        onChanged: (s) {
+                          setState(() {
+                            passwordController.text = s;
+                          });
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Password",
+                            labelText: "Password",
+                            border: const OutlineInputBorder(),
+                            icon: const Icon(Icons.password),
+                            suffixIcon: GestureDetector(
+                                onTap: () => setState(() {
+                                      _isObscured = !_isObscured;
+                                    }),
+                                child: Icon(
+                                  _isObscured
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ))),
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -139,8 +143,8 @@ class _RegisterViewState extends State<RegisterView> {
                           DateTime? pickedDate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2101));
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime.now());
                           if (pickedDate != null) {
                             String formattedDate =
                                 DateFormat('yMd').format(pickedDate);
@@ -160,55 +164,64 @@ class _RegisterViewState extends State<RegisterView> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32.0,
                     ),
-                    child: FormBuilderRadioGroup(
-                      decoration: const InputDecoration(labelText: 'Gender'),
-                      name: "gender",
-                      validator: FormBuilderValidators.required(
-                          errorText: "Jenis kelamin tidak boleh kosong"),
-                      options: [
-                        "Laki-Laki",
-                        "Perempuan",
-                      ]
-                          .map((e) => FormBuilderFieldOption(value: e))
-                          .toList(growable: false),
+                    child: SizedBox(
+                      width: 360,
+                      child: FormBuilderRadioGroup(
+                        decoration: const InputDecoration(labelText: 'Gender'),
+                        name: "gender",
+                        validator: FormBuilderValidators.required(
+                            errorText: "Jenis kelamin tidak boleh kosong"),
+                        options: [
+                          "Laki-Laki",
+                          "Perempuan",
+                        ]
+                            .map((e) => FormBuilderFieldOption(value: e))
+                            .toList(growable: false),
+                      ),
                     ),
                   ),
                   //check box
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: FormBuilderCheckbox(
-                        name: 'accept_terms',
-                        onChanged: (value) {
-                          setState(() {
-                            isChecked = value;
-                          });
-                        },
-                        validator: FormBuilderValidators.equal(
-                          true,
-                          errorText:
-                              'You must accept terms and conditions to continue',
-                        ),
-                        title: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'I have read and agree to the ',
-                                style: TextStyle(
-                                    color:
-                                        isDark ? Colors.white : Colors.black),
-                              ),
-                              const TextSpan(
-                                text: 'Terms and Conditions',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            ],
+                      child: SizedBox(
+                        width: 360,
+                        child: FormBuilderCheckbox(
+                          name: 'accept_terms',
+                          onChanged: (value) {
+                            setState(() {
+                              isChecked = value;
+                            });
+                          },
+                          validator: FormBuilderValidators.equal(
+                            true,
+                            errorText:
+                                'You must accept terms and conditions to continue',
+                          ),
+                          title: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'I have read and agree to the ',
+                                  style: TextStyle(
+                                      color:
+                                          isDark ? Colors.white : Colors.black),
+                                ),
+                                TextSpan(
+                                  text: 'Terms and Conditions',
+                                  style: TextStyle(
+                                      color: isDark
+                                          ? Colors.indigo[300]
+                                          : Colors.blue),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       )),
                   const SizedBox(
                     height: 12,
                   ),
-                  MaterialButton(
+                  ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // ScaffoldMessenger.of(context).showSnackBar{
@@ -221,9 +234,6 @@ class _RegisterViewState extends State<RegisterView> {
                               builder: (_) => alert(context, formData));
                         }
                       },
-                      color: isDark
-                          ? ThemeData().primaryColorDark
-                          : ThemeData().primaryColor,
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 15.0, vertical: 10.0),
