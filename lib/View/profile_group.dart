@@ -60,7 +60,12 @@ class ProfileView extends StatelessWidget {
       length: 5,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Profile Group"),
+          title: const Text(
+            "Profile Group",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           notificationPredicate: (ScrollNotification notification) {
             return notification.depth == 1;
           },
