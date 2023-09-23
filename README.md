@@ -15,10 +15,10 @@ Aplikasi Android menggunakan framework flutter, berfokus untuk membuat aplikasi 
 
 # Progress
 > ## UGD 1 & 2
-> Eye Toggle Show / Hide Password di Halaman Login
-> Pop Up Date Picker di Halaman Register
-> Grid di halaman Hsome
-> Alert Dialog di Halaman Register
-> Check Box & Radio Button di Halaman Register
-> Floating Action Button Switch Dark / Light Mode di Halaman Login
-> (BONUS) Profile masing - masing anggota kelompok
+> - Eye Toggle Show / Hide Password di Halaman Login
+> - Pop Up Date Picker di Halaman Register
+> - Grid di halaman Hsome
+> - Alert Dialog di Halaman Register
+> - Check Box & Radio Button di Halaman Register
+> - Floating Action Button Switch Dark / Light Mode di Halaman Login
+> - (BONUS) Profile masing - masing anggota kelompok
