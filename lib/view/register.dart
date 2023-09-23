@@ -26,138 +26,143 @@ class _RegisterViewState extends State<RegisterView> {
       body: SafeArea(
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              inputForm((p0) {
-                if (p0 == null || p0.isEmpty) {
-                  return 'Usernme Tidak Boleh Kosong';
-                }
-                if (p0.toLowerCase() == 'anjing') {
-                  return 'Tidak boleh menggunakan kata kasar';
-                }
-                return null;
-              },
-                  controller: usernameController,
-                  hintTxt: "Username",
-                  helperTxt: "Ucup Surucup",
-                  iconData: Icons.person),
-
-              inputForm(((p0) {
-                if (p0 == null || p0.isEmpty) {
-                  return 'Email tidak boleh kosong';
-                }
-                if (!p0.contains('@')) {
-                  return 'Email harus menggunakan @';
-                }
-                return null;
-              }),
-                  controller: emailController,
-                  hintTxt: "Email",
-                  helperTxt: "ucup@gmail.com",
-                  iconData: Icons.email),
-
-              inputForm(
-                  //* Pola validasi lebih detail bisa menggunakan regex
-                  ((p0) {
-                if (p0 == null || p0.isEmpty) {
-                  return 'Password tidak boleh kosong';
-                }
-                if (p0.length < 5) {
-                  return 'Password minimal 5 digit';
-                }
-                return null;
-              }),
-                  controller: passwordController,
-                  hintTxt: "Password",
-                  helperTxt: "xxxxxxx",
-                  iconData: Icons.password,
-                  password: true),
-
-              inputForm(((p0) {
-                //* untuk menglihat contoh penggunaan regex,uncomment baris dibawah yang dicomment
-                //* final RegExp regex = RegExp(r'^\0?[1-9]\d{1,14}$');
-                if (p0 == null || p0.isEmpty) {
-                  return 'Nomor Telepon tidak boleh kosong';
-                }
-                // if(!regex.hasMatch(p0))
-                // {
-                // return 'Nomor Telepon tidak valid';
-                // }
-                return null;
-              }),
-                  controller: notelpController,
-                  hintTxt: "No Telp",
-                  helperTxt: "082123456789",
-                  iconData: Icons.phone_android),
-
-              //Date Picker
-              Padding(
-                padding: const EdgeInsets.only(left: 20, top: 10, bottom: 20),
-                child: SizedBox(
-                  width: 350,
-                  child: TextFormField(
-                    autofocus: true,
-                    controller: dateController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.calendar_today),
-                        labelText: "Tanggal Lahir"),
-                    readOnly: true, //ketika true maka user gabisa edit
-                    onTap: () async {
-                      //ketika di tekan maka akan muncul date picker
-                      DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2101));
-                      if (pickedDate != null) {
-                        String formattedDate =
-                            DateFormat('yMd').format(pickedDate);
-                        setState(() {
-                          dateController.text = formattedDate.toString();
-                        });
-                      } else {
-                        print("Tanggal lahir tidak boleh kosong");
-                      }
-                    },
-                  ),
-                ),
-              ),
-
-              //radio button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,  // kalo start dia mentok kiri :v 
+          child: Container(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Gender'),
-                  Radio(
-                    value: 'pria',
-                    groupValue: AutofillHints.gender,
-                    onChanged: (value) {
-                      setState(() {
-                        gender = value;
-                      });
-                    },
+                  const Text(
+                    "Register",
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
-                  Text('Pria'),
-                  Radio(
-                    value: 'wanita',
-                    groupValue: gender,
-                    onChanged: (value) {
-                      setState(() {
-                        gender = value;
-                      });
-                    },
+                  const SizedBox(
+                    height: 32,
                   ),
-                  Text('Wanita'),
-                ],
-              ),
+                  inputForm(
+                      (p0) => p0 == null || p0.isEmpty
+                          ? 'Username tidak boleh kosong'
+                          : null,
+                      controller: usernameController,
+                      hintTxt: "Username",
+                      labelTxt: "Username",
+                      iconData: Icons.person),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  inputForm(
+                      (p0) => p0 == null || p0.isEmpty
+                          ? 'Email tidak boleh kosong'
+                          : !p0.contains('@')
+                              ? 'Email tidak valid'
+                              : null,
+                      controller: emailController,
+                      hintTxt: "Email",
+                      labelTxt: "Email",
+                      iconData: Icons.email),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  inputForm(
+                      (p0) => p0 == null || p0.isEmpty
+                          ? 'Password tidak boleh kosong'
+                          : p0.length < 5
+                              ? 'Password minimal 5 karakter'
+                              : null,
+                      controller: passwordController,
+                      hintTxt: "Password",
+                      labelTxt: "Password",
+                      iconData: Icons.password,
+                      password: true),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  inputForm(
+                      (p0) => p0 == null || p0.isEmpty
+                          ? 'No Telp tidak boleh kosong'
+                          : null,
+                      controller: notelpController,
+                      hintTxt: "No Telepon",
+                      labelTxt: "No Telepon",
+                      iconData: Icons.phone_android),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  //Date Picker
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: SizedBox(
+                      width: 360,
+                      child: TextFormField(
+                        autofocus: true,
+                        controller: dateController,
+                        validator: (value) => value!.isEmpty
+                            ? 'Tanggal lahir tidak boleh kosong'
+                            : null,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            icon: Icon(Icons.calendar_today),
+                            hintText: "Tanggal Lahir",
+                            labelText: "Tanggal Lahir"),
+                        readOnly: true, //ketika true maka user gabisa edit
+                        onTap: () async {
+                          //ketika di tekan maka akan muncul date picker
+                          DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101));
+                          if (pickedDate != null) {
+                            String formattedDate =
+                                DateFormat('yMd').format(pickedDate);
+                            setState(() {
+                              dateController.text = formattedDate.toString();
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  //radio button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: SizedBox(
+                      width: 360,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text('Gender'),
+                          Radio(
+                            value: 'pria',
+                            groupValue: gender,
+                            onChanged: (value) {
+                              setState(() {
+                                gender = value;
+                              });
+                            },
+                          ),
+                          const Text('Pria'),
+                          Radio(
+                            value: 'wanita',
+                            groupValue: gender,
+                            onChanged: (value) {
+                              setState(() {
+                                gender = value;
+                              });
+                            },
+                          ),
+                          const Text('Wanita'),
+                        ],
+                      ),
+                    ),
+                  ),
 
-              //check box
-              Padding(
-                padding: const EdgeInsets.only(left: 20, bottom: 20),
-                child: SizedBox(
-                    width: 350,
+                  //check box
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: CheckboxListTile(
                       controlAffinity: ListTileControlAffinity.leading,
                       title: Text("I agree to the terms and conditions"),
@@ -167,23 +172,30 @@ class _RegisterViewState extends State<RegisterView> {
                           isChecked = newBool;
                         });
                       },
-                    )),
-              ),
+                    ),
+                  ),
 
-              ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // ScaffoldMessenger.of(context).showSnackBar{
-                      // const SnackBar(content: Text('Processing Data))};
-                      Map<String, dynamic> formData = {};
-                      formData['username'] = usernameController.text;
-                      formData['password'] = passwordController.text;
-                      //* Navigator.push(context, MaterialPageRoute(builder: (BuildContext buildContext) => LoginView(data: formData ,)) );
-                      //  Navigator.push(context, MaterialPageRoute(builder: (_) => LoginView(data: formData ,)) );
-                    }
-                  },
-                  child: const Text('Register'))
-            ],
+                  MaterialButton(
+                      color: ThemeData().primaryColor,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          // ScaffoldMessenger.of(context).showSnackBar{
+                          // const SnackBar(content: Text('Processing Data))};
+                          Map<String, dynamic> formData = {};
+                          formData['username'] = usernameController.text;
+                          formData['password'] = passwordController.text;
+                          //* Navigator.push(context, MaterialPageRoute(builder: (BuildContext buildContext) => LoginView(data: formData ,)) );
+                          //  Navigator.push(context, MaterialPageRoute(builder: (_) => LoginView(data: formData ,)) );
+                        }
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 15.0, vertical: 10.0),
+                        child: Text('Register'),
+                      ))
+                ],
+              ),
+            ),
           ),
         ),
       ),
