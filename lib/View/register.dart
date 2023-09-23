@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:tugas_besar_hospital_pbp/component/alert.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
-import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:intl/intl.dart';
 
 class RegisterView extends StatefulWidget {
@@ -216,19 +216,9 @@ class _RegisterViewState extends State<RegisterView> {
                           Map<String, dynamic> formData = {};
                           formData['username'] = usernameController.text;
                           formData['password'] = passwordController.text;
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext buildContext) =>
-                                      LoginView(
-                                        data: formData,
-                                      )));
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => LoginView(
-                                        data: formData,
-                                      )));
+                          showDialog(
+                              context: context,
+                              builder: (_) => alert(context, formData));
                         }
                       },
                       color: isDark
