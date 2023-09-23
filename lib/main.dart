@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/pages/home_grid.dart';
+import 'package:tugas_besar_hospital_pbp/View/home_grid.dart';
 
 void main() {
   runApp(const MainApp());
