@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Padding namePage(
+SingleChildScrollView namePage(
   String url,
   String name,
   String tagline,
@@ -8,43 +8,46 @@ Padding namePage(
   String aboutMe,
   String contact,
 ) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: SizedBox(
-      child: Column(
-        children: [
-          Image(
-            image: NetworkImage(url),
-            width: 200,
-            height: 200,
-          ),
-          Text(name,
-              textAlign: TextAlign.center,
-              style:
-                  const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-          Text(tagline),
-          Text(npm),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("About Me:",
-                textAlign: TextAlign.justify,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          ),
-          Text(aboutMe),
-          const Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: Align(
+  return SingleChildScrollView(
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        child: Column(
+          children: [
+            Image(
+              image: NetworkImage(url),
+              width: 200,
+              height: 200,
+            ),
+            Text(name,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+            Text(tagline),
+            Text(npm),
+            const Align(
               alignment: Alignment.centerLeft,
-              child: Text("Contact:",
+              child: Text("About Me:",
+                  textAlign: TextAlign.justify,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
-          ),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                contact,
-              )),
-        ],
+            Text(aboutMe),
+            const Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Contact:",
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ),
+            ),
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  contact,
+                )),
+          ],
+        ),
       ),
     ),
   );
