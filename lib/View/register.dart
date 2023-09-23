@@ -89,6 +89,7 @@ class _RegisterViewState extends State<RegisterView> {
                       },
                       decoration: InputDecoration(
                           hintText: "Password",
+                          labelText: "Password",
                           border: const OutlineInputBorder(),
                           icon: const Icon(Icons.password),
                           suffixIcon: GestureDetector(
@@ -197,9 +198,12 @@ class _RegisterViewState extends State<RegisterView> {
                                     color:
                                         isDark ? Colors.white : Colors.black),
                               ),
-                              const TextSpan(
+                              TextSpan(
                                 text: 'Terms and Conditions',
-                                style: TextStyle(color: Colors.blue),
+                                style: TextStyle(
+                                    color: isDark
+                                        ? Colors.indigo[300]
+                                        : Colors.blue),
                               ),
                             ],
                           ),
@@ -208,7 +212,7 @@ class _RegisterViewState extends State<RegisterView> {
                   const SizedBox(
                     height: 12,
                   ),
-                  MaterialButton(
+                  ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // ScaffoldMessenger.of(context).showSnackBar{
@@ -221,9 +225,6 @@ class _RegisterViewState extends State<RegisterView> {
                               builder: (_) => alert(context, formData));
                         }
                       },
-                      color: isDark
-                          ? ThemeData().primaryColorDark
-                          : ThemeData().primaryColor,
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 15.0, vertical: 10.0),

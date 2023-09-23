@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/component/grid_component.dart';
 import 'package:tugas_besar_hospital_pbp/component/grid_component_expanded.dart';
 
@@ -12,6 +13,7 @@ class HomeGrid extends StatefulWidget {
 
 class _HomeGridState extends State<HomeGrid> {
   List<bool> expandableState = List.generate(itemCount, (index) => false);
+  bool isDark = darkNotifier.value;
 
   Widget bloc(double width, int index) {
     bool isExpanded = expandableState[index];
@@ -25,7 +27,7 @@ class _HomeGridState extends State<HomeGrid> {
       child: AnimatedContainer(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          color: Colors.blue,
+          color: isDark ? Colors.indigo[500] : Colors.blue,
         ),
         curve: Curves.easeInOut,
         duration: const Duration(milliseconds: 300),

@@ -105,7 +105,7 @@ class _LoginViewState extends State<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   //* tombol login
-                  MaterialButton(
+                  ElevatedButton(
                     //* Fungsi yang dijalankan saat tombol ditekan.
                     onPressed: () {
                       //* Cek statenya sudah valid atau belum valid
@@ -145,9 +145,6 @@ class _LoginViewState extends State<LoginView> {
                         }
                       }
                     },
-                    color: isDark
-                        ? ThemeData().primaryColorDark
-                        : ThemeData().primaryColor,
                     child: const Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: 15.0, vertical: 10.0),
