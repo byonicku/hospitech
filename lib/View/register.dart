@@ -133,6 +133,7 @@ class _RegisterViewState extends State<RegisterView> {
                             hintText: "Tanggal Lahir",
                             labelText: "Tanggal Lahir"),
                         readOnly: true, //ketika true maka user gabisa edit
+                        showCursor: false,
                         onTap: () async {
                           //ketika di tekan maka akan muncul date picker
                           DateTime? pickedDate = await showDatePicker(

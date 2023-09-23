@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
+import 'package:tugas_besar_hospital_pbp/View/home.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -113,12 +114,10 @@ class _LoginViewState extends State<LoginView> {
                         //* dari halaman register atau belum
                         if (dataForm!['username'] == usernameController.text &&
                             dataForm['password'] == passwordController.text) {
-                          //* Jika sesuai navigasi ke halaman Home
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: () {});
-                          // => const HomeView()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const HomeView()));
                         } else {
                           //* Jika belum tampilkan Alert dialog
                           showDialog(

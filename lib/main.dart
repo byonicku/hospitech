@@ -5,6 +5,8 @@ void main() {
   runApp(const MainApp());
 }
 
+// Event handling untuk dark mode, kalo butuh check sekarang dark mode atau engga
+// bisa pake darkNotifier.value dan include main.dart
 final darkNotifier = ValueNotifier<bool>(false);
 
 class MainApp extends StatelessWidget {
