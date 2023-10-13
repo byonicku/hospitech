@@ -11,7 +11,7 @@ class SQLHelper {
         no_telp TEXT,
         tanggal_lahir TEXT,
         jenis_kelamin TEXT
-      ),
+      )
     """);
   }
 
