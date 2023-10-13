@@ -77,7 +77,7 @@ class MainApp extends StatelessWidget {
               ),
               useMaterial3: true,
             ),
-            home: LoginView(),
+            home: const LoginView(),
           );
         });
   }
