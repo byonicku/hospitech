@@ -11,7 +11,7 @@ class SQLHelper {
         no_telp TEXT,
         tanggal_lahir TEXT,
         jenis_kelamin TEXT
-      ),
+      )
     """);
   }
 
@@ -78,6 +78,13 @@ class SQLHelper {
   static Future<bool> checkEmail(String? email) async {
     final db = await SQLHelper.db();
     final data = await db.query('user', where: 'email = ?', whereArgs: [email]);
+    return data.isNotEmpty;
+  }
+
+  static Future<bool> checkUsername(String? username) async {
+    final db = await SQLHelper.db();
+    final data =
+        await db.query('user', where: 'username = ?', whereArgs: [username]);
     return data.isNotEmpty;
   }
 

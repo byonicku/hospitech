@@ -101,9 +101,6 @@ class _LoginViewState extends State<LoginView> {
                     padding: const EdgeInsets.only(right: 24),
                     child: TextButton(
                         onPressed: () {
-                          Map<String, dynamic> formData = {};
-                          formData['username'] = usernameController.text;
-                          formData['password'] = passwordController.text;
                           pushRegister(context);
                         },
                         child: const Text('Belum punya akun ?')),
@@ -117,14 +114,22 @@ class _LoginViewState extends State<LoginView> {
                     ElevatedButton(
                       //* Fungsi yang dijalankan saat tombol ditekan.
                       onPressed: () async {
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+                        void navPush(MaterialPageRoute route) {
+                          Navigator.push(context, route);
+                        }
+
                         //* Cek statenya sudah valid atau belum valid
                         if (_formKey.currentState!.validate()) {
                           //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
                           //* dari halaman register atau belum
+
+                          bool isUsernameRegistered =
+                              await checkUsername(usernameController.text);
                           bool isRegistered = await checkLogin(
                               usernameController.text, passwordController.text);
-                          if (!isRegistered) {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                          if (!isUsernameRegistered) {
+                            scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 duration: Duration(seconds: 2),
                                 content:
@@ -132,12 +137,10 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             );
                           } else if (isRegistered) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const HomeView()));
+                            navPush(MaterialPageRoute(
+                                builder: (_) => const HomeView()));
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 content: Text(
                                     'Username atau password yang Anda masukkan salah'),
