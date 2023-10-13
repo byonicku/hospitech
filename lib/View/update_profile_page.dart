@@ -78,7 +78,7 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                           },
                           controller: emailController,
                           decoration: const InputDecoration(
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(),
                             hintText: "Email",
                             labelText: "Email",
                             icon: Icon(Icons.email),

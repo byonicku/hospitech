@@ -1,11 +1,11 @@
 import 'dart:math';
+import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
-import 'package:tugas_besar_hospital_pbp/main.dart';
 
 List<String> listGambarProfilDokter = [
   'assets/images/doctorProfilePictures/profileDoctor1.jpg',
@@ -362,7 +362,6 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                                 builder: (_) => const HomeView(
                                                     selectedIndex: 2)),
                                           );
-                                          getDaftarPeriksa();
 
                                           scaffoldMessenger.showSnackBar(
                                             const SnackBar(

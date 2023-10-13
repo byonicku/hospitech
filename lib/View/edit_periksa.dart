@@ -55,10 +55,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
   bool changeJenisPerawatan = false;
   bool changeNamaPasien = false;
   String? dokterSpesialisSelected, jenisPerawatanSelected, namaPasienSebelumnya;
-  // NOTES
-  // Disini masih belum sempurna sih, dia waktu edit tu biar data sebelumnya tu kebawa ke controller sini tapi
-  // pas di edit tu dia ngga ke reset klo pindah Text field nya gtu itu blm ketemu aku alurnya biar ga ilang editannya
-  // klo ini udh berhasil udh selesai sih bagian CRUD ini 👍
+
   @override
   Widget build(BuildContext context) {
     if (widget.id != null && isEditing == false) {
@@ -387,7 +384,6 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                                 builder: (_) => const HomeView(
                                                     selectedIndex: 2)),
                                           );
-                                          getDaftarPeriksa();
 
                                           scaffoldMessenger.showSnackBar(
                                             const SnackBar(

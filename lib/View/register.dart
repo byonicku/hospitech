@@ -321,7 +321,6 @@ class _RegisterViewState extends State<RegisterView> {
                                                 builder: (_) =>
                                                     const LoginView()),
                                           );
-                                          getUser();
 
                                           scaffoldMessenger.showSnackBar(
                                             const SnackBar(

@@ -142,7 +142,7 @@ class ProfileInfo extends StatelessWidget {
   final String label;
   final String? value;
 
-  const ProfileInfo({required this.label, this.value});
+  const ProfileInfo({super.key, required this.label, this.value});
 
   @override
   Widget build(BuildContext context) {
