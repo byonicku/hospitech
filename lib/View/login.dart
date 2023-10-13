@@ -3,6 +3,7 @@ import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 
 class LoginView extends StatefulWidget {
@@ -19,13 +20,7 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    darkNotifier.dispose();
-    super.dispose();
-  }
+  DateTime backButtonPressTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +111,7 @@ class _LoginViewState extends State<LoginView> {
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
                         void navPush(MaterialPageRoute route) {
-                          Navigator.push(context, route);
+                          Navigator.pushReplacement(context, route);
                         }
 
                         //* Cek statenya sudah valid atau belum valid
@@ -137,6 +132,13 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             );
                           } else if (isRegistered) {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+
+                            final data = await getID(usernameController.text,
+                                passwordController.text);
+                            prefs.setInt('id', data.first['id']);
+
                             navPush(MaterialPageRoute(
                                 builder: (_) => const HomeView(
                                       selectedIndex: 0,
@@ -186,17 +188,12 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void pushRegister(BuildContext context) {
+    FocusManager.instance.primaryFocus!.unfocus();
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const RegisterView(
-            id: null,
-            email: null,
-            jenisKelamin: null,
-            noTelp: null,
-            password: null,
-            tglLahir: null,
-            username: null),
+        builder: (_) => const RegisterView(),
       ),
     );
   }
