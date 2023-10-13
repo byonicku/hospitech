@@ -3,10 +3,10 @@ import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
+import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 
 class LoginView extends StatefulWidget {
-  final Map? data;
-  const LoginView({super.key, this.data});
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -29,7 +29,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    Map? dataForm = widget.data;
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -102,9 +101,6 @@ class _LoginViewState extends State<LoginView> {
                     padding: const EdgeInsets.only(right: 24),
                     child: TextButton(
                         onPressed: () {
-                          Map<String, dynamic> formData = {};
-                          formData['username'] = usernameController.text;
-                          formData['password'] = passwordController.text;
                           pushRegister(context);
                         },
                         child: const Text('Belum punya akun ?')),
@@ -117,28 +113,40 @@ class _LoginViewState extends State<LoginView> {
                     //* tombol login
                     ElevatedButton(
                       //* Fungsi yang dijalankan saat tombol ditekan.
-                      onPressed: () {
+                      onPressed: () async {
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+                        void navPush(MaterialPageRoute route) {
+                          Navigator.push(context, route);
+                        }
+
                         //* Cek statenya sudah valid atau belum valid
                         if (_formKey.currentState!.validate()) {
                           //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
                           //* dari halaman register atau belum
-                          if (dataForm == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
+
+                          bool isUsernameRegistered =
+                              await checkUsername(usernameController.text);
+                          bool isRegistered = await checkLogin(
+                              usernameController.text, passwordController.text);
+                          if (!isUsernameRegistered) {
+                            scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 duration: Duration(seconds: 2),
                                 content:
                                     Text('Anda belum terdaftar sebagai user!'),
                               ),
                             );
-                          } else if (dataForm['username'] ==
-                                  usernameController.text &&
-                              dataForm['password'] == passwordController.text) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const HomeView()));
+                          } else if (isRegistered) {
+                            navPush(MaterialPageRoute(
+                                builder: (_) => const HomeView()));
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text('Berhasil Melakukan Login'),
+                              ),
+                            );
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 content: Text(
                                     'Username atau password yang Anda masukkan salah'),
@@ -178,7 +186,14 @@ class _LoginViewState extends State<LoginView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const RegisterView(),
+        builder: (_) => const RegisterView(
+            id: null,
+            email: null,
+            jenisKelamin: null,
+            noTelp: null,
+            password: null,
+            tglLahir: null,
+            username: null),
       ),
     );
   }
