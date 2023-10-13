@@ -260,10 +260,10 @@ class _RegisterViewState extends State<RegisterView> {
                     height: 12,
                   ),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+
                         if (_formKey.currentState!.validate()) {
-                          // ScaffoldMessenger.of(context).showSnackBar{
-                          // const SnackBar(content: Text('Processing Data))};
                           Map<String, dynamic> formData = {};
                           formData['username'] = usernameController.text;
                           formData['password'] = passwordController.text;
@@ -272,6 +272,21 @@ class _RegisterViewState extends State<RegisterView> {
                           formData['tglLahir'] = dateController.text;
                           formData['gender'] = gender;
 
+                          bool isEmailRegistered =
+                              await checkEmail(emailController.text);
+
+                          if (isEmailRegistered) {
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text('Email sudah terdaftar!'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // kalo register masalah kemungkinan ini
+                          // ignore: use_build_context_synchronously
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
@@ -295,7 +310,8 @@ class _RegisterViewState extends State<RegisterView> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (_) => LoginView()),
+                                                builder: (_) =>
+                                                    const LoginView()),
                                           );
                                           getUser();
                                         },
