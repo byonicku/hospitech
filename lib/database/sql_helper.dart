@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart' as sql;
+import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 
 class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
@@ -94,5 +95,26 @@ class SQLHelper {
         where: 'username = ? AND password = ?',
         whereArgs: [username, password]);
     return data.isNotEmpty;
+  }
+
+  static Future<List<Map<String, dynamic>>> getID(
+      String? username, String? password) async {
+    final db = await SQLHelper.db();
+    final data = await db.query('user',
+        where: 'username = ? AND password = ?',
+        whereArgs: [username, password]);
+    return data;
+  }
+
+  static Future<List<Map<String, dynamic>>> getUserByID(int? id) async {
+    final db = await SQLHelper.db();
+    final data =
+        await db.query('user', where: 'id = ?', whereArgs: [id.toString()]);
+    return data;
+  }
+
+  static Future<void> updateUserByID(int? id, Map<String, dynamic> user) async {
+    final db = await SQLHelper.db();
+    await db.update('user', user, where: 'id = ?', whereArgs: [id.toString()]);
   }
 }

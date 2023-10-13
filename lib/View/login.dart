@@ -4,6 +4,7 @@ import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 
 class LoginView extends StatefulWidget {
@@ -138,6 +139,13 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             );
                           } else if (isRegistered) {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+
+                            final data = await getID(usernameController.text,
+                                passwordController.text);
+                            prefs.setInt('id', data.first['id']);
+
                             navPush(MaterialPageRoute(
                                 builder: (_) => const ProfilePage()));
                             scaffoldMessenger.showSnackBar(

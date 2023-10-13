@@ -1,117 +1,113 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tugas_besar_hospital_pbp/View/update_profile_page.dart';
+import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({
-    super.key,
-  });
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String name = 'Hendry';
-  String email = 'Hendry@gmail.com';
-  String password = 'Hendry123';
-  String noTelp = '08123456789';
-  String tglLahir = '07/01/2007';
-  String jenisKelamin = 'Laki-Laki';
+  List<Map<String, dynamic>> currentUser = [];
+  String? name, email, password, noTelp, tglLahir, jenisKelamin;
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController noTelpController = TextEditingController();
-  TextEditingController tglLahirController = TextEditingController();
-  TextEditingController jenisKelaminController = TextEditingController();
+  void getUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final data = await getUserByID(prefs.getInt('id'));
+    setState(() {
+      currentUser = data;
+      name = currentUser.first['username'];
+      email = currentUser.first['email'];
+      password = currentUser.first['password'];
+      noTelp = currentUser.first['no_telp'];
+      tglLahir = currentUser.first['tanggal_lahir'];
+      jenisKelamin = currentUser.first['jenis_kelamin'];
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    nameController.text = name;
-    emailController.text = email;
-    passwordController.text = password;
-    noTelpController.text = noTelp;
-    tglLahirController.text = tglLahir;
-    jenisKelaminController.text = jenisKelamin;
-  }
-
-  Future<void> _updateProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('name', nameController.text);
-    prefs.setString('email', emailController.text);
-    prefs.setString('password', passwordController.text);
-    prefs.setString('noTelp', noTelpController.text);
-    prefs.setString('tglLahir', tglLahirController.text);
-    prefs.setString('jenisKelamin', jenisKelaminController.text);
-    setState(() {
-      name = nameController.text;
-      email = emailController.text;
-      password = passwordController.text;
-      noTelp = noTelpController.text;
-      tglLahir = tglLahirController.text;
-      jenisKelamin = jenisKelaminController.text;
-    });
+    getUserData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Profil'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nama',
+        padding: const EdgeInsets.all(20),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircleAvatar(
+                radius: 80,
+                backgroundImage: AssetImage('assets/images/profil.png'),
               ),
-            ),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
+              const SizedBox(height: 20),
+              ProfileInfo(label: 'Nama', value: name),
+              ProfileInfo(label: 'Email', value: email),
+              ProfileInfo(label: 'No. Telepon', value: noTelp),
+              ProfileInfo(label: 'Tanggal Lahir', value: tglLahir),
+              ProfileInfo(label: 'Jenis Kelamin', value: jenisKelamin),
+              const Divider(
+                height: 20,
+                color: Colors.grey,
               ),
-            ),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
+              ElevatedButton(
+                child: const Text('Edit Profil'),
+                onPressed: () async {
+                  pushUpdate(context);
+                },
               ),
-            ),
-            TextField(
-              controller: noTelpController,
-              decoration: const InputDecoration(
-                labelText: 'noTelp',
-              ),
-            ),
-            TextField(
-              controller: tglLahirController,
-              decoration: const InputDecoration(
-                labelText: 'Tanggal Lahir',
-              ),
-            ),
-            TextField(
-              controller: jenisKelaminController,
-              decoration: const InputDecoration(labelText: 'Jenis Kelamin'),
-            ),
-            ElevatedButton(
-              onPressed: _updateProfile,
-              child: const Text('Update'),
-            ),
-            const SizedBox(height: 16.0),
-            Text('Nama : $name'),
-            Text('Email : $email'),
-            Text('Password: $password'),
-            Text('noTelp : $noTelp'),
-            Text('tglLahir : $tglLahir'),
-            Text('Jenis Kelamin : $jenisKelamin'),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  void pushUpdate(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const UpdateProfilePage(),
+      ),
+    );
+  }
+}
+
+class ProfileInfo extends StatelessWidget {
+  final String label;
+  final String? value;
+
+  const ProfileInfo({required this.label, this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          value ?? 'Tidak Tersedia',
+          style: TextStyle(
+            fontSize: 18,
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
     );
   }
 }
