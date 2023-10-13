@@ -55,7 +55,5 @@ Future<void> updateUserByID(int? id, User? user) async {
     'jenis_kelamin': user.jenisKelamin
   };
 
-  print(data);
-
   await SQLHelper.updateUserByID(id, data);
 }

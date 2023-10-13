@@ -11,17 +11,7 @@ import 'package:tugas_besar_hospital_pbp/View/login.dart';
 class RegisterView extends StatefulWidget {
   const RegisterView({
     super.key,
-    required this.id,
-    required this.username,
-    required this.email,
-    required this.password,
-    required this.noTelp,
-    required this.tglLahir,
-    required this.jenisKelamin,
   });
-
-  final String? username, email, password, noTelp, tglLahir, jenisKelamin;
-  final int? id;
 
   @override
   State<RegisterView> createState() => _RegisterViewState();
@@ -43,6 +33,14 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Register',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -52,16 +50,6 @@ class _RegisterViewState extends State<RegisterView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  const Text(
-                    "Register",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
                   inputForm((username) {
                     if (username == null || username.isEmpty) {
                       return 'Username tidak boleh kosong';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/View/profile_page.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
@@ -21,13 +20,7 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    darkNotifier.dispose();
-    super.dispose();
-  }
+  DateTime backButtonPressTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +111,7 @@ class _LoginViewState extends State<LoginView> {
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
                         void navPush(MaterialPageRoute route) {
-                          Navigator.push(context, route);
+                          Navigator.pushReplacement(context, route);
                         }
 
                         //* Cek statenya sudah valid atau belum valid
@@ -147,7 +140,7 @@ class _LoginViewState extends State<LoginView> {
                             prefs.setInt('id', data.first['id']);
 
                             navPush(MaterialPageRoute(
-                                builder: (_) => const ProfilePage()));
+                                builder: (_) => const HomeView()));
                             scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 duration: Duration(seconds: 2),
@@ -192,17 +185,12 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void pushRegister(BuildContext context) {
+    FocusManager.instance.primaryFocus!.unfocus();
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const RegisterView(
-            id: null,
-            email: null,
-            jenisKelamin: null,
-            noTelp: null,
-            password: null,
-            tglLahir: null,
-            username: null),
+        builder: (_) => const RegisterView(),
       ),
     );
   }
