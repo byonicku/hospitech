@@ -90,6 +90,7 @@ class _RegisterViewState extends State<RegisterView> {
                           },
                           controller: emailController,
                           decoration: const InputDecoration(
+                            border: const OutlineInputBorder(),
                             hintText: "Email",
                             labelText: "Email",
                             icon: Icon(Icons.email),

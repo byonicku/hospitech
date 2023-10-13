@@ -3,6 +3,7 @@ import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
+import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -115,34 +116,34 @@ class _LoginViewState extends State<LoginView> {
                     //* tombol login
                     ElevatedButton(
                       //* Fungsi yang dijalankan saat tombol ditekan.
-                      onPressed: () {
+                      onPressed: () async {
                         //* Cek statenya sudah valid atau belum valid
                         if (_formKey.currentState!.validate()) {
                           //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
                           //* dari halaman register atau belum
-                          // if (dataForm == null) {
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //     const SnackBar(
-                          //       duration: Duration(seconds: 2),
-                          //       content:
-                          //           Text('Anda belum terdaftar sebagai user!'),
-                          //     ),
-                          //   );
-                          // } else if (dataForm['username'] ==
-                          //         usernameController.text &&
-                          //     dataForm['password'] == passwordController.text) {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (_) => const HomeView()));
-                          // } else {
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //     const SnackBar(
-                          //       content: Text(
-                          //           'Username atau password yang Anda masukkan salah'),
-                          //     ),
-                          //   );
-                          // }
+                          bool isRegistered = await checkLogin(
+                              usernameController.text, passwordController.text);
+                          if (!isRegistered) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 2),
+                                content:
+                                    Text('Anda belum terdaftar sebagai user!'),
+                              ),
+                            );
+                          } else if (isRegistered) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const HomeView()));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Username atau password yang Anda masukkan salah'),
+                              ),
+                            );
+                          }
                         }
                       },
                       child: const Padding(
