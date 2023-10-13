@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/View/login.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MainApp());
 }
 
@@ -75,7 +77,8 @@ class MainApp extends StatelessWidget {
               ),
               useMaterial3: true,
             ),
-            home: LoginView(),
+            // ignore: prefer_const_constructors
+            home: LoginView(), // jangan di const ntah kenapa bikin error :v
           );
         });
   }

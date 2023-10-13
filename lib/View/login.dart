@@ -3,10 +3,11 @@ import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 
 class LoginView extends StatefulWidget {
-  final Map? data;
-  const LoginView({super.key, this.data});
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -19,17 +20,10 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    darkNotifier.dispose();
-    super.dispose();
-  }
+  DateTime backButtonPressTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    Map? dataForm = widget.data;
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -102,9 +96,6 @@ class _LoginViewState extends State<LoginView> {
                     padding: const EdgeInsets.only(right: 24),
                     child: TextButton(
                         onPressed: () {
-                          Map<String, dynamic> formData = {};
-                          formData['username'] = usernameController.text;
-                          formData['password'] = passwordController.text;
                           pushRegister(context);
                         },
                         child: const Text('Belum punya akun ?')),
@@ -117,28 +108,49 @@ class _LoginViewState extends State<LoginView> {
                     //* tombol login
                     ElevatedButton(
                       //* Fungsi yang dijalankan saat tombol ditekan.
-                      onPressed: () {
+                      onPressed: () async {
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+                        void navPush(MaterialPageRoute route) {
+                          Navigator.pushReplacement(context, route);
+                        }
+
                         //* Cek statenya sudah valid atau belum valid
                         if (_formKey.currentState!.validate()) {
                           //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
                           //* dari halaman register atau belum
-                          if (dataForm == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
+
+                          bool isUsernameRegistered =
+                              await checkUsername(usernameController.text);
+                          bool isRegistered = await checkLogin(
+                              usernameController.text, passwordController.text);
+                          if (!isUsernameRegistered) {
+                            scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 duration: Duration(seconds: 2),
                                 content:
                                     Text('Anda belum terdaftar sebagai user!'),
                               ),
                             );
-                          } else if (dataForm['username'] ==
-                                  usernameController.text &&
-                              dataForm['password'] == passwordController.text) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const HomeView()));
+                          } else if (isRegistered) {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+
+                            final data = await getID(usernameController.text,
+                                passwordController.text);
+                            prefs.setInt('id', data.first['id']);
+
+                            navPush(MaterialPageRoute(
+                                builder: (_) => const HomeView(
+                                      selectedIndex: 0,
+                                    )));
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text('Berhasil Melakukan Login'),
+                              ),
+                            );
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 content: Text(
                                     'Username atau password yang Anda masukkan salah'),
@@ -146,7 +158,8 @@ class _LoginViewState extends State<LoginView> {
                             );
                           }
                         }
-                      },
+                      }, // onPressed end curly bracket
+
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 15.0, vertical: 10.0),
@@ -175,6 +188,8 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void pushRegister(BuildContext context) {
+    FocusManager.instance.primaryFocus!.unfocus();
+
     Navigator.push(
       context,
       MaterialPageRoute(
