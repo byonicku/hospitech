@@ -80,4 +80,12 @@ class SQLHelper {
     final data = await db.query('user', where: 'email = ?', whereArgs: [email]);
     return data.isNotEmpty;
   }
+
+  static Future<bool> checkLogin(String? username, String? password) async {
+    final db = await SQLHelper.db();
+    final data = await db.query('user',
+        where: 'username = ? AND password = ?',
+        whereArgs: [username, password]);
+    return data.isNotEmpty;
+  }
 }

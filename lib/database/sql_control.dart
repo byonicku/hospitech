@@ -24,3 +24,8 @@ Future<String> checkEmail(String? email) async {
   final bool data = await SQLHelper.checkEmail(email);
   return data ? "Email sudah terdaftar" : "Email belum terdaftar";
 }
+
+Future<bool> checkLogin(String? username, String? password) async {
+  final bool data = await SQLHelper.checkLogin(username, password);
+  return data;
+}
