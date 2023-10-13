@@ -81,6 +81,13 @@ class SQLHelper {
     return data.isNotEmpty;
   }
 
+  static Future<bool> checkUsername(String? username) async {
+    final db = await SQLHelper.db();
+    final data =
+        await db.query('user', where: 'username = ?', whereArgs: [username]);
+    return data.isNotEmpty;
+  }
+
   static Future<bool> checkLogin(String? username, String? password) async {
     final db = await SQLHelper.db();
     final data = await db.query('user',

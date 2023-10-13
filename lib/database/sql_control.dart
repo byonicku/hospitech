@@ -25,6 +25,11 @@ Future<bool> checkEmail(String? email) async {
   return data;
 }
 
+Future<bool> checkUsername(String? username) async {
+  final bool data = await SQLHelper.checkUsername(username);
+  return data;
+}
+
 Future<bool> checkLogin(String? username, String? password) async {
   final bool data = await SQLHelper.checkLogin(username, password);
   return data;
