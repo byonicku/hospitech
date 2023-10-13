@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tugas_besar_hospital_pbp/View/home.dart';
+import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
+import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:intl/intl.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
-import 'package:tugas_besar_hospital_pbp/View/login.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class RegisterView extends StatefulWidget {
-  const RegisterView({
+class UpdateProfilePage extends StatefulWidget {
+  const UpdateProfilePage({
     super.key,
   });
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  State<UpdateProfilePage> createState() => _ProfilePageState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
+class _ProfilePageState extends State<UpdateProfilePage> {
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController usernameController = TextEditingController();
@@ -26,6 +27,7 @@ class _RegisterViewState extends State<RegisterView> {
   TextEditingController notelpController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   String? gender;
+
   bool? isChecked = false;
   bool _isObscured = true;
   bool isDark = darkNotifier.value;
@@ -34,21 +36,15 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Register',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const Text('Edit Profile'),
       ),
       body: SafeArea(
         child: Form(
           key: _formKey,
-          child: Container(
-            alignment: Alignment.center,
-            child: SingleChildScrollView(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   inputForm((username) {
                     if (username == null || username.isEmpty) {
@@ -226,151 +222,113 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                   ),
-                  //check box
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: SizedBox(
-                        width: 360,
-                        child: FormBuilderCheckbox(
-                          name: 'accept_terms',
-                          onChanged: (value) {
-                            setState(() {
-                              isChecked = value;
-                            });
-                          },
-                          validator: FormBuilderValidators.equal(
-                            true,
-                            errorText:
-                                'You must accept terms and conditions to continue',
-                          ),
-                          title: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'I have read and agree to the ',
-                                  style: TextStyle(
-                                      color:
-                                          isDark ? Colors.white : Colors.black),
-                                ),
-                                TextSpan(
-                                  text: 'Terms and Conditions',
-                                  style: TextStyle(
-                                      color: isDark
-                                          ? Colors.indigo[300]
-                                          : Colors.blue),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )),
-                  const SizedBox(
-                    height: 12,
-                  ),
+                  const SizedBox(height: 20),
                   ElevatedButton(
-                      onPressed: () async {
-                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+                    onPressed: () async {
+                      final scaffoldMessenger = ScaffoldMessenger.of(context);
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      final data = await getUserByID(prefs.getInt('id'));
 
-                        if (_formKey.currentState!.validate()) {
-                          Map<String, dynamic> formData = {};
-                          formData['username'] = usernameController.text;
-                          formData['password'] = passwordController.text;
-                          formData['email'] = emailController.text;
-                          formData['noTelp'] = notelpController.text;
-                          formData['tglLahir'] = dateController.text;
-                          formData['gender'] = gender;
+                      if (_formKey.currentState!.validate()) {
+                        Map<String, dynamic> formData = {};
+                        formData['username'] = usernameController.text;
+                        formData['password'] = passwordController.text;
+                        formData['email'] = emailController.text;
+                        formData['noTelp'] = notelpController.text;
+                        formData['tglLahir'] = dateController.text;
+                        formData['gender'] = gender;
 
-                          bool isEmailRegistered =
-                              await checkEmail(emailController.text);
+                        bool isEmailRegistered =
+                            await checkEmail(emailController.text);
 
-                          if (isEmailRegistered) {
-                            scaffoldMessenger.showSnackBar(
-                              const SnackBar(
-                                duration: Duration(seconds: 2),
-                                content: Text('Email sudah terdaftar!'),
-                              ),
-                            );
-                            return;
-                          }
-
-                          // kalo register masalah kemungkinan ini
-                          // ignore: use_build_context_synchronously
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                    title: const Text('Konfirmasi',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    content: const Text(
-                                        'Apakah data Anda sudah benar?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          addUser(User(
-                                              id: null,
-                                              username: usernameController.text,
-                                              email: emailController.text,
-                                              jenisKelamin: gender,
-                                              noTelp: notelpController.text,
-                                              password: passwordController.text,
-                                              tglLahir: dateController.text));
-                                          Navigator.of(context).pop();
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const LoginView()),
-                                          );
-                                          getUser();
-
-                                          scaffoldMessenger.showSnackBar(
-                                            const SnackBar(
-                                              duration: Duration(seconds: 2),
-                                              content: Text(
-                                                  'Berhasil Melakukan Registrasi'),
-                                            ),
-                                          );
-                                        },
-                                        child: Text('Sudah',
-                                            style: TextStyle(
-                                                color: isDark
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          scaffoldMessenger.showSnackBar(
-                                            const SnackBar(
-                                              duration: Duration(seconds: 2),
-                                              content: Text(
-                                                  'Gagal Melakukan Registrasi'),
-                                            ),
-                                          );
-                                        },
-                                        child: Text('Belum',
-                                            style: TextStyle(
-                                                color: isDark
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    ],
-                                  ));
+                        if (isEmailRegistered) {
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(
+                              duration: Duration(seconds: 2),
+                              content: Text('Email sudah terdaftar!'),
+                            ),
+                          );
+                          return;
                         }
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 10.0),
-                        child: Text(
-                          'Register',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      )),
-                  const SizedBox(
-                    height: 12,
+
+                        // kalo UPDATE masalah kemungkinan ini
+                        // ignore: use_build_context_synchronously
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('Konfirmasi',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            content: const Text(
+                                'Apakah data update Anda sudah benar?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  User user = User(
+                                      id: data.first['id'],
+                                      email: emailController.text,
+                                      jenisKelamin: gender,
+                                      noTelp: notelpController.text,
+                                      password: passwordController.text,
+                                      tglLahir: dateController.text,
+                                      username: usernameController.text);
+                                  updateUserByID(data.first['id'], user);
+
+                                  Navigator.of(context)
+                                      .popUntil((route) => route.isFirst);
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (_) => const HomeView(),
+                                    ),
+                                  );
+
+                                  scaffoldMessenger.showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 2),
+                                      content:
+                                          Text('Berhasil Melakukan Update'),
+                                    ),
+                                  );
+                                },
+                                child: Text('Sudah',
+                                    style: TextStyle(
+                                        color: isDark
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  scaffoldMessenger.showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 2),
+                                      content: Text('Gagal Melakukan Update'),
+                                    ),
+                                  );
+                                },
+                                child: Text('Belum',
+                                    style: TextStyle(
+                                        color: isDark
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 15.0, vertical: 10.0),
+                      child: Text(
+                        'Update',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
                   ),
+                  const SizedBox(height: 16.0),
                 ],
               ),
             ),

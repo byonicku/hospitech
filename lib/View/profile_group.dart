@@ -63,8 +63,10 @@ class ProfileView extends StatelessWidget {
       length: 5,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: null,
           title: const Text(
-            "Profile Group",
+            "Developers",
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ),

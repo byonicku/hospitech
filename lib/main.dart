@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/View/login.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MainApp());
 }
 
