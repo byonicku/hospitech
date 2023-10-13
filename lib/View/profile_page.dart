@@ -130,7 +130,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
     Navigator.popUntil(context, (route) => route.isFirst);
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => const LoginView()));
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginView(),
+      ),
+    );
   }
 }
 

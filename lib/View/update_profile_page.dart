@@ -278,7 +278,9 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                                       .popUntil((route) => route.isFirst);
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (_) => const HomeView(),
+                                      builder: (_) => const HomeView(
+                                        selectedIndex: 1,
+                                      ),
                                     ),
                                   );
 

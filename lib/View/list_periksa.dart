@@ -33,7 +33,12 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Periksa'),
+        title: const Text(
+          'Daftar Periksa',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        automaticallyImplyLeading: false,
+        leading: null,
       ),
       body: listPeriksaRaw.isNotEmpty
           ? ListView.builder(
@@ -80,27 +85,76 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Container(height: 5),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       // Nama Pasien
                                       Text(
                                         listPeriksaRaw[index]['nama_pasien'],
                                       ),
-                                      Container(height: 5),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       Text(
                                         listPeriksaRaw[index]
                                             ['jenis_perawatan'],
                                         style:
                                             const TextStyle(color: Colors.grey),
                                       ),
-                                      Container(height: 10),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
                                       // Tanggal periksa
                                       // ignore: prefer_interpolation_to_compose_strings
                                       Text('Tanggal Periksa : ' +
                                           listPeriksaRaw[index]
                                               ['tanggal_periksa']),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
                                       Row(
                                         children: [
-                                          TextButton(
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => EditPeriksaView(
+                                                      id: listPeriksaRaw[index]
+                                                          ['id_periksa'],
+                                                      namaPasien:
+                                                          listPeriksaRaw[index]
+                                                              ['nama_pasien'],
+                                                      dokterSpesialis:
+                                                          listPeriksaRaw[index][
+                                                              'dokter_spesialis'],
+                                                      jenisPerawatan:
+                                                          listPeriksaRaw[index][
+                                                              'jenis_perawatan'],
+                                                      tanggalPeriksa:
+                                                          listPeriksaRaw[index][
+                                                              'tanggal_periksa'],
+                                                      gambarDokter:
+                                                          listPeriksaRaw[index]
+                                                              ['gambar_dokter']),
+                                                ),
+                                              );
+                                            },
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.green),
+                                            ),
+                                            child: const Text(
+                                              'Edit',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          ElevatedButton(
                                             onPressed: () {
                                               final scaffoldMessenger =
                                                   ScaffoldMessenger.of(context);
@@ -178,61 +232,33 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                                                                 ),
                                                               );
                                                             },
-                                                            child: Text('Tidak',
-                                                                style: TextStyle(
-                                                                    color: isDark
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Colors
-                                                                            .black,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold)),
+                                                            child: Text(
+                                                              'Tidak',
+                                                              style: TextStyle(
+                                                                  color: isDark
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
                                                           ),
                                                         ],
                                                       ));
                                             },
-                                            style: TextButton.styleFrom(
+                                            style: ButtonStyle(
                                               backgroundColor:
-                                                  const Color.fromARGB(
-                                                      255, 197, 13, 0),
-                                              foregroundColor: Colors.white,
+                                                  MaterialStateProperty.all(
+                                                      Colors.red),
                                             ),
-                                            child: const Text('Delete'),
+                                            child: const Text(
+                                              'Delete',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
                                           ),
-                                          Container(width: 5),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => EditPeriksaView(
-                                                      id: listPeriksaRaw[index]
-                                                          ['id_periksa'],
-                                                      namaPasien:
-                                                          listPeriksaRaw[index]
-                                                              ['nama_pasien'],
-                                                      dokterSpesialis:
-                                                          listPeriksaRaw[index][
-                                                              'dokter_spesialis'],
-                                                      jenisPerawatan:
-                                                          listPeriksaRaw[index][
-                                                              'jenis_perawatan'],
-                                                      tanggalPeriksa:
-                                                          listPeriksaRaw[index][
-                                                              'tanggal_periksa'],
-                                                      gambarDokter:
-                                                          listPeriksaRaw[index]
-                                                              ['gambar_dokter']),
-                                                ),
-                                              );
-                                            },
-                                            style: TextButton.styleFrom(
-                                              backgroundColor: Colors.blue,
-                                              foregroundColor: Colors.white,
-                                            ),
-                                            child: const Text('Edit'),
-                                          )
                                         ],
                                       )
                                     ],
@@ -267,10 +293,8 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
           );
         },
         tooltip: "Tambah Periksa",
-        backgroundColor: Colors.blue,
         child: const Icon(
           Icons.add,
-          color: Colors.white,
         ),
       ),
     );

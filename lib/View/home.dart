@@ -50,8 +50,8 @@ class _HomeViewState extends State<HomeView> {
       ),
     ),
     const ProfilePage(),
-    const ProfileView(),
     const ListPeriksaView(),
+    const ProfileView(),
   ];
 
   @override
@@ -79,14 +79,14 @@ class _HomeViewState extends State<HomeView> {
             ),
             BottomNavigationBarItem(
                 icon: Icon(
+                  Icons.app_registration,
+                ),
+                label: 'List Periksa'),
+            BottomNavigationBarItem(
+                icon: Icon(
                   Icons.person,
                 ),
                 label: 'Developers'),
-             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.app_registration,
-              ),
-              label: 'List periksa'),
           ],
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
