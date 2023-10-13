@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/View/profile_page.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
@@ -138,7 +139,7 @@ class _LoginViewState extends State<LoginView> {
                             );
                           } else if (isRegistered) {
                             navPush(MaterialPageRoute(
-                                builder: (_) => const HomeView()));
+                                builder: (_) => const ProfilePage()));
                             scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 duration: Duration(seconds: 2),
