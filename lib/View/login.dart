@@ -3,10 +3,10 @@ import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
+import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 
 class LoginView extends StatefulWidget {
-  final Map? data;
-  const LoginView({super.key, this.data});
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -29,7 +29,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    Map? dataForm = widget.data;
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -117,12 +116,14 @@ class _LoginViewState extends State<LoginView> {
                     //* tombol login
                     ElevatedButton(
                       //* Fungsi yang dijalankan saat tombol ditekan.
-                      onPressed: () {
+                      onPressed: () async {
                         //* Cek statenya sudah valid atau belum valid
                         if (_formKey.currentState!.validate()) {
                           //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
                           //* dari halaman register atau belum
-                          if (dataForm == null) {
+                          bool isRegistered = await checkLogin(
+                              usernameController.text, passwordController.text);
+                          if (!isRegistered) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 duration: Duration(seconds: 2),
@@ -130,9 +131,7 @@ class _LoginViewState extends State<LoginView> {
                                     Text('Anda belum terdaftar sebagai user!'),
                               ),
                             );
-                          } else if (dataForm['username'] ==
-                                  usernameController.text &&
-                              dataForm['password'] == passwordController.text) {
+                          } else if (isRegistered) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -178,7 +177,14 @@ class _LoginViewState extends State<LoginView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const RegisterView(),
+        builder: (_) => const RegisterView(
+            id: null,
+            email: null,
+            jenisKelamin: null,
+            noTelp: null,
+            password: null,
+            tglLahir: null,
+            username: null),
       ),
     );
   }
