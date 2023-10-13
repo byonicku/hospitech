@@ -20,9 +20,9 @@ Future<void> getUser() async {
   print(data);
 }
 
-Future<String> checkEmail(String? email) async {
+Future<bool> checkEmail(String? email) async {
   final bool data = await SQLHelper.checkEmail(email);
-  return data ? "Email sudah terdaftar" : "Email belum terdaftar";
+  return data;
 }
 
 Future<bool> checkLogin(String? username, String? password) async {
