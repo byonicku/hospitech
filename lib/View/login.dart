@@ -139,6 +139,12 @@ class _LoginViewState extends State<LoginView> {
                           } else if (isRegistered) {
                             navPush(MaterialPageRoute(
                                 builder: (_) => const HomeView()));
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text('Berhasil Melakukan Login'),
+                              ),
+                            );
                           } else {
                             scaffoldMessenger.showSnackBar(
                               const SnackBar(
