@@ -34,3 +34,28 @@ Future<bool> checkLogin(String? username, String? password) async {
   final bool data = await SQLHelper.checkLogin(username, password);
   return data;
 }
+
+Future<List<Map<String, dynamic>>> getID(
+    String? username, String? password) async {
+  return await SQLHelper.getID(username, password);
+}
+
+Future<List<Map<String, dynamic>>> getUserByID(int? id) async {
+  return SQLHelper.getUserByID(id);
+}
+
+Future<void> updateUserByID(int? id, User? user) async {
+  Map<String, dynamic> data = {
+    'id': user!.id,
+    'username': user.username,
+    'email': user.email,
+    'password': user.password,
+    'no_telp': user.noTelp,
+    'tanggal_lahir': user.tglLahir,
+    'jenis_kelamin': user.jenisKelamin
+  };
+
+  print(data);
+
+  await SQLHelper.updateUserByID(id, data);
+}

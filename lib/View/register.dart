@@ -334,6 +334,14 @@ class _RegisterViewState extends State<RegisterView> {
                                                     const LoginView()),
                                           );
                                           getUser();
+
+                                          scaffoldMessenger.showSnackBar(
+                                            const SnackBar(
+                                              duration: Duration(seconds: 2),
+                                              content: Text(
+                                                  'Berhasil Melakukan Registrasi'),
+                                            ),
+                                          );
                                         },
                                         child: Text('Sudah',
                                             style: TextStyle(
@@ -345,6 +353,13 @@ class _RegisterViewState extends State<RegisterView> {
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context).pop();
+                                          scaffoldMessenger.showSnackBar(
+                                            const SnackBar(
+                                              duration: Duration(seconds: 2),
+                                              content: Text(
+                                                  'Gagal Melakukan Registrasi'),
+                                            ),
+                                          );
                                         },
                                         child: Text('Belum',
                                             style: TextStyle(
