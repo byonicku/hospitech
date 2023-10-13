@@ -3,7 +3,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:tugas_besar_hospital_pbp/View/list_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
@@ -24,8 +23,8 @@ List<String> listDokterSpesialis = [
   'Spesialis Ortopedi'
 ];
 
-class TambahPeriksa extends StatefulWidget {
-  const TambahPeriksa(
+class EditPeriksaView extends StatefulWidget {
+  const EditPeriksaView(
       {super.key,
       required this.id,
       required this.namaPasien,
@@ -42,21 +41,38 @@ class TambahPeriksa extends StatefulWidget {
   final int? id;
 
   @override
-  State<TambahPeriksa> createState() => _TambahPeriksaState();
+  State<EditPeriksaView> createState() => _EditPeriksaViewState();
 }
 
-class _TambahPeriksaState extends State<TambahPeriksa> {
+class _EditPeriksaViewState extends State<EditPeriksaView> {
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController namaPasienController = TextEditingController();
   TextEditingController tanggalPeriksaController = TextEditingController();
   bool isDark = darkNotifier.value;
 
-  String? selectedJenisPerawatan;
   String? selectedDokterSpesialis;
+  String? selectedJenisPerawatan;
+  bool changeDokterSpesialis = false;
+  bool changeJenisPerawatan = false;
+  bool changeNamaPasien = false;
 
+  // NOTES
+  // Disini masih belum sempurna sih, dia waktu edit tu biar data sebelumnya tu kebawa ke controller sini tapi
+  // pas di edit tu dia ngga ke reset klo pindah Text field nya gtu itu blm ketemu aku alurnya biar ga ilang editannya
+  // klo ini udh berhasil udh selesai sih bagian CRUD ini 👍
   @override
   Widget build(BuildContext context) {
+    String dokterSpesialisSelected = widget.dokterSpesialis!;
+    String jenisPerawatanSelected = widget.jenisPerawatan!;
+    String tanggalPeriksaSebelumnya = widget.tanggalPeriksa!;
+    String namaPasienSebelumnya = widget.namaPasien!;
+
+    if (widget.id != null) {
+      namaPasienController.text = widget.namaPasien!;
+      tanggalPeriksaController.text = widget.tanggalPeriksa!;
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -71,7 +87,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                     height: 32,
                   ),
                   const Text(
-                    "Daftar Periksa",
+                    "Edit Daftar Periksa",
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
@@ -110,12 +126,12 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton2<String>(
                         isExpanded: true,
-                        hint: const Row(
+                        hint: Row(
                           children: [
                             Expanded(
                               child: Text(
-                                'Pilih Dokter Spesialis',
-                                style: TextStyle(
+                                dokterSpesialisSelected,
+                                style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.normal,
                                   color: Colors.black,
@@ -141,6 +157,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                             .toList(),
                         value: selectedDokterSpesialis,
                         onChanged: (value) {
+                          changeDokterSpesialis = true;
                           setState(() {
                             selectedDokterSpesialis = value;
                           });
@@ -193,12 +210,12 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton2<String>(
                         isExpanded: true,
-                        hint: const Row(
+                        hint: Row(
                           children: [
                             Expanded(
                               child: Text(
-                                'Pilih Jenis Perawatan',
-                                style: TextStyle(
+                                jenisPerawatanSelected,
+                                style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.normal,
                                   color: Colors.black,
@@ -224,6 +241,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                             .toList(),
                         value: selectedJenisPerawatan,
                         onChanged: (value) {
+                          changeJenisPerawatan = true;
                           setState(() {
                             selectedJenisPerawatan = value;
                           });
@@ -279,12 +297,6 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                       child: TextFormField(
                         autofocus: false,
                         controller: tanggalPeriksaController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Tanggal Periksa tidak boleh kosong';
-                          }
-                          return null;
-                        },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -327,12 +339,21 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
 
                         if (_formKey.currentState!.validate()) {
                           Map<String, dynamic> formData = {};
-                          formData['nama_pasien'] = namaPasienController.text;
-                          formData['dokter_spesialis'] =
-                              selectedDokterSpesialis;
-                          formData['jenis_perawatan'] = selectedJenisPerawatan;
+                          formData['nama_pasien'] =
+                              namaPasienController.text == namaPasienSebelumnya
+                                  ? namaPasienSebelumnya
+                                  : namaPasienController.text;
+                          formData['dokter_spesialis'] = changeDokterSpesialis
+                              ? selectedDokterSpesialis
+                              : dokterSpesialisSelected;
+                          formData['jenis_perawatan'] = changeJenisPerawatan
+                              ? selectedJenisPerawatan
+                              : jenisPerawatanSelected;
                           formData['tanggal_periksa'] =
-                              tanggalPeriksaController.text;
+                              tanggalPeriksaController.text ==
+                                      widget.tanggalPeriksa!
+                                  ? widget.tanggalPeriksa!
+                                  : tanggalPeriksaController.text;
                           formData['gambar_dokter'] = listGambarProfilDokter
                               .elementAt(Random().nextInt(3));
 
@@ -349,18 +370,21 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-                                          final Periksa newPeriksa = Periksa(
-                                              namaPasien:
-                                                  namaPasienController.text,
-                                              dokterSpesialis:
-                                                  selectedDokterSpesialis,
-                                              jenisPerawatan:
-                                                  selectedJenisPerawatan,
-                                              tanggalPeriksa:
-                                                  tanggalPeriksaController.text,
-                                              gambarDokter:
-                                                  formData['gambar_dokter']);
-                                          addDaftarPeriksa(newPeriksa);
+                                          final Periksa updatedPeriksa =
+                                              Periksa(
+                                                  id: widget.id,
+                                                  namaPasien:
+                                                      namaPasienController.text,
+                                                  dokterSpesialis: formData[
+                                                      'dokter_spesialis'],
+                                                  jenisPerawatan: formData[
+                                                      'jenis_perawatan'],
+                                                  tanggalPeriksa:
+                                                      tanggalPeriksaController
+                                                          .text,
+                                                  gambarDokter: formData[
+                                                      'gambar_dokter']);
+                                          editPeriksa(updatedPeriksa);
                                           Navigator.of(context).pop();
                                           Navigator.push(
                                             context,
@@ -374,7 +398,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                             const SnackBar(
                                               duration: Duration(seconds: 2),
                                               content: Text(
-                                                  'Berhasil Melakukan Pendaftaran Periksa'),
+                                                  'Berhasil Melakukan Update Data Periksa'),
                                             ),
                                           );
                                         },
@@ -392,7 +416,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                             const SnackBar(
                                               duration: Duration(seconds: 2),
                                               content: Text(
-                                                  'Gagal Melakukan Pendaftaran Periksa'),
+                                                  'Gagal Melakukan Update data Periksa'),
                                             ),
                                           );
                                         },
@@ -412,7 +436,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 15.0, vertical: 10.0),
                         child: Text(
-                          'Daftar Periksa',
+                          'Edit Periksa',
                           style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       )),

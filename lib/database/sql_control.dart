@@ -9,8 +9,12 @@ Future<void> addUser(User user) async {
 }
 
 Future<void> addDaftarPeriksa(Periksa periksa) async {
-  await SQLHelper.addDaftarPeriksa(periksa.namaPasien!, periksa.dokterSpesialis!,
-      periksa.jenisPerawatan!, periksa.tanggalPeriksa!, periksa.gambarDokter!);
+  await SQLHelper.addDaftarPeriksa(
+      periksa.namaPasien!,
+      periksa.dokterSpesialis!,
+      periksa.jenisPerawatan!,
+      periksa.tanggalPeriksa!,
+      periksa.gambarDokter!);
 }
 
 // Edit data in database
@@ -19,9 +23,23 @@ Future<void> editUser(User user) async {
       user.password!, user.noTelp!, user.tglLahir!, user.jenisKelamin!);
 }
 
+Future<void> editPeriksa(Periksa dataPeriksa) async {
+  await SQLHelper.editDaftarPeriksa(
+      dataPeriksa.id!,
+      dataPeriksa.namaPasien!,
+      dataPeriksa.dokterSpesialis!,
+      dataPeriksa.jenisPerawatan!,
+      dataPeriksa.tanggalPeriksa!,
+      dataPeriksa.gambarDokter!);
+}
+
 // Delete data in database
 Future<void> deleteUser(User user) async {
   await SQLHelper.deleteUser(user.id!);
+}
+
+Future<void> deleteDaftarPeriksa(int id) async {
+  await SQLHelper.deleteDaftarPeriksa(id);
 }
 
 // Getting data from database

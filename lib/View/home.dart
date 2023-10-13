@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/View/home_grid.dart';
+import 'package:tugas_besar_hospital_pbp/View/list_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/profile_group.dart';
-import 'package:tugas_besar_hospital_pbp/View/tambah_periksa.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  const HomeView({super.key, required this.selectedIndex});
+
+  final int? selectedIndex;
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -17,6 +19,16 @@ class _HomeViewState extends State<HomeView> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void setSelectedIndex(int index) {
+    _selectedIndex = index;
+  }
+
+  @override
+  void initState() {
+    setSelectedIndex(widget.selectedIndex!);
+    super.initState();
   }
 
   static final List<Widget> _widgetOptions = <Widget>[
@@ -34,13 +46,7 @@ class _HomeViewState extends State<HomeView> {
       ),
     ),
     const ProfileView(),
-    const TambahPeriksa(
-        id: null,
-        namaPasien: null,
-        dokterSpesialis: null,
-        jenisPerawatan: null,
-        tanggalPeriksa: null,
-        gambarDokter: null),
+    const ListPeriksaView(),
   ];
 
   @override
@@ -62,7 +68,7 @@ class _HomeViewState extends State<HomeView> {
               icon: Icon(
                 Icons.app_registration,
               ),
-              label: 'Daftar periksa'),
+              label: 'List periksa'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
