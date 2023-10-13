@@ -5,6 +5,7 @@ Padding inputForm(Function(String?) validasi,
     required String hintTxt,
     required String labelTxt,
     required IconData iconData,
+    TextInputType? textInputType,
     bool password = false}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -15,6 +16,7 @@ Padding inputForm(Function(String?) validasi,
           autofocus: false,
           controller: controller,
           obscureText: password,
+          keyboardType: textInputType,
           decoration: InputDecoration(
               labelText: labelTxt,
               hintText: hintTxt,

@@ -65,6 +65,10 @@ class _RegisterViewState extends State<RegisterView> {
                   inputForm((username) {
                     if (username == null || username.isEmpty) {
                       return 'Username tidak boleh kosong';
+                    } else if (username.length < 5) {
+                      return 'Username minimal 5 karakter';
+                    } else {
+                      return null;
                     }
                   },
                       controller: usernameController,
@@ -143,7 +147,9 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   inputForm((noTelp) {
                     if (noTelp == null || noTelp.isEmpty) {
-                      return 'No Telp tidak boleh kosong';
+                      return 'No telepon tidak boleh kosong';
+                    } else if (noTelp.length < 10) {
+                      return 'No telepon minimal 10 karakter';
                     } else {
                       return null;
                     }
@@ -151,7 +157,8 @@ class _RegisterViewState extends State<RegisterView> {
                       controller: notelpController,
                       hintTxt: "No Telepon",
                       labelTxt: "No Telepon",
-                      iconData: Icons.phone_android),
+                      iconData: Icons.phone_android,
+                      textInputType: TextInputType.number),
                   const SizedBox(
                     height: 12,
                   ),
@@ -163,9 +170,22 @@ class _RegisterViewState extends State<RegisterView> {
                       child: TextFormField(
                         autofocus: false,
                         controller: dateController,
-                        validator: (value) => value!.isEmpty
-                            ? 'Tanggal lahir tidak boleh kosong'
-                            : null,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Tanggal lahir tidak boleh kosong';
+                          } else {
+                            final inputDate = DateFormat('M/d/y').parse(value);
+                            final currentDate = DateTime.now();
+
+                            final age = currentDate.year - inputDate.year;
+
+                            if (age < 13) {
+                              return 'Harus berusia minimal 13 tahun';
+                            } else {
+                              return null;
+                            }
+                          }
+                        },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             icon: Icon(Icons.calendar_today),
