@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/View/home_grid.dart';
 import 'package:tugas_besar_hospital_pbp/View/profile_group.dart';
+import 'package:tugas_besar_hospital_pbp/View/tambah_periksa.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -33,6 +34,13 @@ class _HomeViewState extends State<HomeView> {
       ),
     ),
     const ProfileView(),
+    const TambahPeriksa(
+        id: null,
+        namaPasien: null,
+        dokterSpesialis: null,
+        jenisPerawatan: null,
+        tanggalPeriksa: null,
+        gambarDokter: null),
   ];
 
   @override
@@ -50,6 +58,11 @@ class _HomeViewState extends State<HomeView> {
                 Icons.person,
               ),
               label: 'Profile Group'),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.app_registration,
+              ),
+              label: 'Daftar periksa'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

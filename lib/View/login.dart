@@ -154,7 +154,8 @@ class _LoginViewState extends State<LoginView> {
                             );
                           }
                         }
-                      },
+                      }, // onPressed end curly bracket
+
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 15.0, vertical: 10.0),
