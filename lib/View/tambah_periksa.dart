@@ -53,6 +53,8 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
 
   String? selectedJenisPerawatan;
   String? selectedDokterSpesialis;
+  bool isPickedPerawatan = false;
+  bool isPickedDokter = false;
 
   @override
   Widget build(BuildContext context) {
@@ -188,6 +190,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         value: selectedDokterSpesialis,
                         onChanged: (value) {
                           setState(() {
+                            isPickedDokter = true;
                             selectedDokterSpesialis = value;
                           });
                         },
@@ -270,6 +273,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         value: selectedJenisPerawatan,
                         onChanged: (value) {
                           setState(() {
+                            isPickedPerawatan = true;
                             selectedJenisPerawatan = value;
                           });
                         },
@@ -319,6 +323,26 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
 
                         if (_formKey.currentState!.validate()) {
+                          if (!isPickedDokter) {
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text('Pilih Dokter Spesialis'),
+                              ),
+                            );
+                          } else if (!isPickedPerawatan) {
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text('Pilih Jenis Perawatan'),
+                              ),
+                            );
+                          }
+
+                          if (!isPickedPerawatan || !isPickedDokter) {
+                            return;
+                          }
+
                           Map<String, dynamic> formData = {};
                           formData['nama_pasien'] = namaPasienController.text;
                           formData['dokter_spesialis'] =

@@ -49,7 +49,6 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
 
     return SizedBox(
       height: 150,
-      width: 170, // Set a fixed height for the container
       child: Column(
         children: [
           SizedBox(
