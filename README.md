@@ -22,3 +22,8 @@ Aplikasi Android menggunakan framework flutter, berfokus untuk membuat aplikasi 
 > - Check Box & Radio Button di Halaman Register
 > - Floating Action Button Switch Dark / Light Mode di Halaman Login
 > - (BONUS) Profile masing - masing anggota kelompok
+> ## UGD 5 & 6
+> - SQFLITE DB, Unique Email, Validasi, Login, shared_preference, merging git - Nico Herlim
+> - Snack Bar Register / Login - Andre Victory
+> - Profile & Edit Profile - Berly, Hendryanto
+> - CRUD Periksa Dokter - Fredo
