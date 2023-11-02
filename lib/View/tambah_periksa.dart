@@ -1,12 +1,11 @@
 import 'dart:math';
+import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:tugas_besar_hospital_pbp/View/list_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
-import 'package:tugas_besar_hospital_pbp/main.dart';
 
 List<String> listGambarProfilDokter = [
   'assets/images/doctorProfilePictures/profileDoctor1.jpg',
@@ -54,6 +53,8 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
 
   String? selectedJenisPerawatan;
   String? selectedDokterSpesialis;
+  bool isPickedPerawatan = false;
+  bool isPickedDokter = false;
 
   @override
   Widget build(BuildContext context) {
@@ -90,183 +91,15 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                             }
                           },
                           controller: namaPasienController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
                             hintText: "Nama Pasien",
                             labelText: "Nama Pasien",
-                            hintStyle: const TextStyle(fontSize: 14),
-                            labelStyle: const TextStyle(fontSize: 14),
-                            prefixIcon: const Icon(Icons.person),
+                            hintStyle: TextStyle(fontSize: 14),
+                            labelStyle: TextStyle(fontSize: 14),
+                            icon: Icon(Icons.person),
                           ),
                         )),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: const Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Pilih Dokter Spesialis',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.black,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                        items: listDokterSpesialis
-                            .map((String item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.black,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ))
-                            .toList(),
-                        value: selectedDokterSpesialis,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDokterSpesialis = value;
-                          });
-                        },
-                        buttonStyleData: ButtonStyleData(
-                          height: 50,
-                          padding: const EdgeInsets.only(left: 14, right: 14),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: Colors.black26,
-                            ),
-                            color: Colors.white,
-                          ),
-                          elevation: 2,
-                        ),
-                        iconStyleData: const IconStyleData(
-                          icon: Icon(
-                            Icons.arrow_forward_ios_outlined,
-                          ),
-                          iconSize: 14,
-                          iconEnabledColor: Colors.black,
-                          iconDisabledColor: Colors.grey,
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                          maxHeight: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: Colors.white,
-                          ),
-                          offset: const Offset(0, 0),
-                          scrollbarTheme: ScrollbarThemeData(
-                            radius: const Radius.circular(40),
-                            thickness: MaterialStateProperty.all(6),
-                            thumbVisibility: MaterialStateProperty.all(true),
-                          ),
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.only(left: 14, right: 14),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: const Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Pilih Jenis Perawatan',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.black,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                        items: listJenisPerawatan
-                            .map((String item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.black,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ))
-                            .toList(),
-                        value: selectedJenisPerawatan,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedJenisPerawatan = value;
-                          });
-                        },
-                        buttonStyleData: ButtonStyleData(
-                          height: 50,
-                          padding: const EdgeInsets.only(left: 14, right: 14),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: Colors.black26,
-                            ),
-                            color: Colors.white,
-                          ),
-                          elevation: 2,
-                        ),
-                        iconStyleData: const IconStyleData(
-                          icon: Icon(
-                            Icons.arrow_forward_ios_outlined,
-                          ),
-                          iconSize: 14,
-                          iconEnabledColor: Colors.black,
-                          iconDisabledColor: Colors.grey,
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                          maxHeight: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: Colors.white,
-                          ),
-                          offset: const Offset(0, 0),
-                          scrollbarTheme: ScrollbarThemeData(
-                            radius: const Radius.circular(40),
-                            thickness: MaterialStateProperty.all(6),
-                            thumbVisibility: MaterialStateProperty.all(true),
-                          ),
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.only(left: 14, right: 14),
-                        ),
-                      ),
-                    ),
                   ),
                   const SizedBox(
                     height: 12,
@@ -285,15 +118,13 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           }
                           return null;
                         },
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          prefixIcon: const Icon(Icons.calendar_today),
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          icon: Icon(Icons.calendar_today),
                           hintText: "Tanggal Periksa",
                           labelText: "Tanggal Periksa",
-                          hintStyle: const TextStyle(fontSize: 14),
-                          labelStyle: const TextStyle(fontSize: 14),
+                          hintStyle: TextStyle(fontSize: 14),
+                          labelStyle: TextStyle(fontSize: 14),
                         ),
                         readOnly: true, //ketika true maka user gabisa edit
                         showCursor: false,
@@ -321,11 +152,197 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                   const SizedBox(
                     height: 12,
                   ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(right: 32.0, left: 72.0),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2<String>(
+                        isExpanded: true,
+                        hint: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Pilih Dokter Spesialis',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.grey.shade700,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        items: listDokterSpesialis
+                            .map((String item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                            .toList(),
+                        value: selectedDokterSpesialis,
+                        onChanged: (value) {
+                          setState(() {
+                            isPickedDokter = true;
+                            selectedDokterSpesialis = value;
+                          });
+                        },
+                        buttonStyleData: ButtonStyleData(
+                          height: 50,
+                          padding: const EdgeInsets.only(left: 14, right: 14),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey.shade700,
+                            ),
+                            color: isDark ? Colors.grey.shade900 : Colors.white,
+                          ),
+                          elevation: 2,
+                        ),
+                        iconStyleData: IconStyleData(
+                          icon: const Icon(
+                            Icons.arrow_forward_ios_outlined,
+                          ),
+                          iconSize: 14,
+                          iconEnabledColor: Colors.grey.shade700,
+                          iconDisabledColor: Colors.grey,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          maxHeight: 200,
+                          decoration: BoxDecoration(
+                            color: isDark ? Colors.grey.shade900 : Colors.white,
+                          ),
+                          offset: const Offset(0, 0),
+                          scrollbarTheme: ScrollbarThemeData(
+                            radius: const Radius.circular(40),
+                            thickness: MaterialStateProperty.all(6),
+                            thumbVisibility: MaterialStateProperty.all(true),
+                          ),
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          height: 40,
+                          padding: EdgeInsets.only(left: 14, right: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(right: 32.0, left: 72.0),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2<String>(
+                        isExpanded: true,
+                        hint: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Pilih Jenis Perawatan',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.grey.shade700,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        items: listJenisPerawatan
+                            .map((String item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                            .toList(),
+                        value: selectedJenisPerawatan,
+                        onChanged: (value) {
+                          setState(() {
+                            isPickedPerawatan = true;
+                            selectedJenisPerawatan = value;
+                          });
+                        },
+                        buttonStyleData: ButtonStyleData(
+                          height: 50,
+                          padding: const EdgeInsets.only(left: 14, right: 14),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey.shade700,
+                            ),
+                            color: isDark ? Colors.grey.shade900 : Colors.white,
+                          ),
+                          elevation: 2,
+                        ),
+                        iconStyleData: IconStyleData(
+                          icon: const Icon(
+                            Icons.arrow_forward_ios_outlined,
+                          ),
+                          iconSize: 14,
+                          iconEnabledColor: Colors.grey.shade700,
+                          iconDisabledColor: Colors.grey,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          maxHeight: 200,
+                          decoration: BoxDecoration(
+                            color: isDark ? Colors.grey.shade900 : Colors.white,
+                          ),
+                          offset: const Offset(0, 0),
+                          scrollbarTheme: ScrollbarThemeData(
+                            radius: const Radius.circular(40),
+                            thickness: MaterialStateProperty.all(6),
+                            thumbVisibility: MaterialStateProperty.all(true),
+                          ),
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          height: 40,
+                          padding: EdgeInsets.only(left: 14, right: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
                   ElevatedButton(
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
 
                         if (_formKey.currentState!.validate()) {
+                          if (!isPickedDokter) {
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text('Pilih Dokter Spesialis'),
+                              ),
+                            );
+                          } else if (!isPickedPerawatan) {
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text('Pilih Jenis Perawatan'),
+                              ),
+                            );
+                          }
+
+                          if (!isPickedPerawatan || !isPickedDokter) {
+                            return;
+                          }
+
                           Map<String, dynamic> formData = {};
                           formData['nama_pasien'] = namaPasienController.text;
                           formData['dokter_spesialis'] =
@@ -361,14 +378,14 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                               gambarDokter:
                                                   formData['gambar_dokter']);
                                           addDaftarPeriksa(newPeriksa);
-                                          Navigator.of(context).pop();
-                                          Navigator.push(
+                                          Navigator.of(context).popUntil(
+                                              (route) => route.isFirst);
+                                          Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (_) => const HomeView(
                                                     selectedIndex: 2)),
                                           );
-                                          getDaftarPeriksa();
 
                                           scaffoldMessenger.showSnackBar(
                                             const SnackBar(

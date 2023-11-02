@@ -130,7 +130,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
     Navigator.popUntil(context, (route) => route.isFirst);
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => const LoginView()));
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginView(),
+      ),
+    );
   }
 }
 
@@ -138,7 +142,7 @@ class ProfileInfo extends StatelessWidget {
   final String label;
   final String? value;
 
-  const ProfileInfo({required this.label, this.value});
+  const ProfileInfo({super.key, required this.label, this.value});
 
   @override
   Widget build(BuildContext context) {

@@ -42,17 +42,6 @@ Future<void> deleteDaftarPeriksa(int id) async {
   await SQLHelper.deleteDaftarPeriksa(id);
 }
 
-// Getting data from database
-Future<void> getUser() async {
-  final data = await SQLHelper.getUser();
-  print(data);
-}
-
-Future<void> getDaftarPeriksa() async {
-  final data = await SQLHelper.getDaftarPeriksa();
-  print(data);
-}
-
 // Checking data with data in database
 Future<bool> checkEmail(String? email) async {
   final bool data = await SQLHelper.checkEmail(email);

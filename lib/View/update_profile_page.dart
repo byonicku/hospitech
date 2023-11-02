@@ -78,7 +78,7 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                           },
                           controller: emailController,
                           decoration: const InputDecoration(
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(),
                             hintText: "Email",
                             labelText: "Email",
                             icon: Icon(Icons.email),
@@ -95,7 +95,7 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       child: TextFormField(
                         validator: (password) {
                           if (password!.isEmpty) {
-                            return "Tolong isikan password Anda";
+                            return "Password tidak boleh kosong";
                           } else if (password.length < 5) {
                             return "Password minimal 5 karakter";
                           } else {
@@ -278,7 +278,9 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                                       .popUntil((route) => route.isFirst);
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (_) => const HomeView(),
+                                      builder: (_) => const HomeView(
+                                        selectedIndex: 1,
+                                      ),
                                     ),
                                   );
 

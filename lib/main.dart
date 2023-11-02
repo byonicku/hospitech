@@ -77,7 +77,8 @@ class MainApp extends StatelessWidget {
               ),
               useMaterial3: true,
             ),
-            home: const LoginView(),
+            // ignore: prefer_const_constructors
+            home: LoginView(), // jangan di const ntah kenapa bikin error :v
           );
         });
   }
