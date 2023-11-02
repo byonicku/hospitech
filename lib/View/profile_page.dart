@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:tugas_besar_hospital_pbp/View/update_profile_page.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 
@@ -38,35 +39,77 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profil'),
+        title: const Text(
+          'Profil',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        leading: null,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircleAvatar(
-                radius: 80,
-                backgroundImage: AssetImage('assets/images/profil.png'),
-              ),
-              const SizedBox(height: 20),
-              ProfileInfo(label: 'Nama', value: name),
-              ProfileInfo(label: 'Email', value: email),
-              ProfileInfo(label: 'No. Telepon', value: noTelp),
-              ProfileInfo(label: 'Tanggal Lahir', value: tglLahir),
-              ProfileInfo(label: 'Jenis Kelamin', value: jenisKelamin),
-              const Divider(
-                height: 20,
-                color: Colors.grey,
-              ),
-              ElevatedButton(
-                child: const Text('Edit Profil'),
-                onPressed: () async {
-                  pushUpdate(context);
-                },
-              ),
-            ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const CircleAvatar(
+                  radius: 80,
+                  backgroundImage: AssetImage('assets/images/profil.png'),
+                ),
+                const SizedBox(height: 20),
+                ProfileInfo(label: 'Username', value: name),
+                ProfileInfo(label: 'Email', value: email),
+                ProfileInfo(label: 'No. Telepon', value: noTelp),
+                ProfileInfo(label: 'Tanggal Lahir', value: tglLahir),
+                ProfileInfo(label: 'Jenis Kelamin', value: jenisKelamin),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  child: const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                    child: Text(
+                      'Edit Profile',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                  onPressed: () async {
+                    pushUpdate(context);
+                  },
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                  ),
+                  child: const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                    child: Text(
+                      'Logout',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                  onPressed: () async {
+                    final scaffoldMessenger = ScaffoldMessenger.of(context);
+                    pushLogout(context);
+
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.remove('id');
+
+                    scaffoldMessenger.showSnackBar(
+                      const SnackBar(
+                        content: Text('Berhasil Melakukan Logout'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -81,13 +124,25 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  void pushLogout(BuildContext context) {
+    FocusManager.instance.primaryFocus!.unfocus();
+
+    Navigator.popUntil(context, (route) => route.isFirst);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginView(),
+      ),
+    );
+  }
 }
 
 class ProfileInfo extends StatelessWidget {
   final String label;
   final String? value;
 
-  const ProfileInfo({required this.label, this.value});
+  const ProfileInfo({super.key, required this.label, this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -95,14 +150,14 @@ class ProfileInfo extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           value ?? 'Tidak Tersedia',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
           ),
         ),
