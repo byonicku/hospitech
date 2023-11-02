@@ -99,7 +99,7 @@ class _RegisterViewState extends State<RegisterView> {
                       child: TextFormField(
                         validator: (password) {
                           if (password!.isEmpty) {
-                            return "Tolong isikan password Anda";
+                            return "Password tidak boleh kosong";
                           } else if (password.length < 5) {
                             return "Password minimal 5 karakter";
                           } else {
@@ -321,7 +321,6 @@ class _RegisterViewState extends State<RegisterView> {
                                                 builder: (_) =>
                                                     const LoginView()),
                                           );
-                                          getUser();
 
                                           scaffoldMessenger.showSnackBar(
                                             const SnackBar(
@@ -359,7 +358,8 @@ class _RegisterViewState extends State<RegisterView> {
                                     ],
                                   ));
                         }
-                      },
+                      }, // onPressed end curly bracket
+
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 15.0, vertical: 10.0),

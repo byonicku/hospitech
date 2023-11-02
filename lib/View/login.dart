@@ -140,7 +140,9 @@ class _LoginViewState extends State<LoginView> {
                             prefs.setInt('id', data.first['id']);
 
                             navPush(MaterialPageRoute(
-                                builder: (_) => const HomeView()));
+                                builder: (_) => const HomeView(
+                                      selectedIndex: 0,
+                                    )));
                             scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 duration: Duration(seconds: 2),
@@ -156,7 +158,8 @@ class _LoginViewState extends State<LoginView> {
                             );
                           }
                         }
-                      },
+                      }, // onPressed end curly bracket
+
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 15.0, vertical: 10.0),

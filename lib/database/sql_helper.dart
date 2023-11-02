@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart' as sql;
 
+// creating database ========================================================================================
 class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
     await database.execute("""
@@ -13,6 +14,17 @@ class SQLHelper {
         jenis_kelamin TEXT
       )
     """);
+
+    await database.execute("""
+      CREATE TABLE DAFTAR_PERIKSA (
+        id_periksa INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        nama_pasien TEXT,
+        dokter_spesialis TEXT,
+        jenis_perawatan TEXT,
+        tanggal_periksa TEXT,
+        gambar_dokter TEXT
+      )
+    """);
   }
 
   static Future<sql.Database> db() async {
@@ -22,6 +34,7 @@ class SQLHelper {
     });
   }
 
+  // Adding data to database ========================================================================================
   static Future<int> addUser(
     String username,
     String email,
@@ -43,11 +56,32 @@ class SQLHelper {
     return await db.insert('user', data);
   }
 
+  static Future<int> addDaftarPeriksa(String namaPasien, String dokterSpesialis,
+      String jenisPerawatan, String tanggalPeriksa, String gambarDokter) async {
+    final db = await SQLHelper.db();
+    final data = {
+      'nama_pasien': namaPasien,
+      'dokter_spesialis': dokterSpesialis,
+      'jenis_perawatan': jenisPerawatan,
+      'tanggal_periksa': tanggalPeriksa,
+      'gambar_dokter': gambarDokter
+    };
+
+    return await db.insert('daftar_periksa', data);
+  }
+
+  // Getting data from database ========================================================================================
   static Future<List<Map<String, dynamic>>> getUser() async {
     final db = await SQLHelper.db();
     return db.query('user');
   }
 
+  static Future<List<Map<String, dynamic>>> getDaftarPeriksa() async {
+    final db = await SQLHelper.db();
+    return db.query('daftar_periksa');
+  }
+
+  // Editing data in database ========================================================================================
   static Future<int> editUser(
     int id,
     String username,
@@ -70,11 +104,38 @@ class SQLHelper {
     return await db.update('user', data, where: 'id = $id');
   }
 
+  static Future<int> editDaftarPeriksa(
+      int idPeriksa,
+      String namaPasien,
+      String dokterSpesialis,
+      String jenisPerawatan,
+      String tanggalPeriksa,
+      String gambarDokter) async {
+    final db = await SQLHelper.db();
+    final updatedData = {
+      'nama_pasien': namaPasien,
+      'dokter_spesialis': dokterSpesialis,
+      'jenis_perawatan': jenisPerawatan,
+      'tanggal_periksa': tanggalPeriksa,
+      'gambar_dokter': gambarDokter,
+    };
+
+    return await db.update('daftar_periksa', updatedData,
+        where: 'id_periksa = $idPeriksa');
+  }
+
+  // Delete data in database ========================================================================================
   static Future<int> deleteUser(int id) async {
     final db = await SQLHelper.db();
     return await db.delete('user', where: 'id = $id');
   }
 
+  static Future<int> deleteDaftarPeriksa(int id) async {
+    final db = await SQLHelper.db();
+    return await db.delete('daftar_periksa', where: 'id_periksa = $id');
+  }
+
+  // checking into database ========================================================================================
   static Future<bool> checkEmail(String? email) async {
     final db = await SQLHelper.db();
     final data = await db.query('user', where: 'email = ?', whereArgs: [email]);

@@ -1,25 +1,48 @@
 import 'package:tugas_besar_hospital_pbp/database/sql_helper.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
+import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 
+// Add data into database
 Future<void> addUser(User user) async {
   await SQLHelper.addUser(user.username!, user.email!, user.password!,
       user.noTelp!, user.tglLahir!, user.jenisKelamin!);
 }
 
+Future<void> addDaftarPeriksa(Periksa periksa) async {
+  await SQLHelper.addDaftarPeriksa(
+      periksa.namaPasien!,
+      periksa.dokterSpesialis!,
+      periksa.jenisPerawatan!,
+      periksa.tanggalPeriksa!,
+      periksa.gambarDokter!);
+}
+
+// Edit data in database
 Future<void> editUser(User user) async {
   await SQLHelper.editUser(user.id!, user.username!, user.email!,
       user.password!, user.noTelp!, user.tglLahir!, user.jenisKelamin!);
 }
 
+Future<void> editPeriksa(Periksa dataPeriksa) async {
+  await SQLHelper.editDaftarPeriksa(
+      dataPeriksa.id!,
+      dataPeriksa.namaPasien!,
+      dataPeriksa.dokterSpesialis!,
+      dataPeriksa.jenisPerawatan!,
+      dataPeriksa.tanggalPeriksa!,
+      dataPeriksa.gambarDokter!);
+}
+
+// Delete data in database
 Future<void> deleteUser(User user) async {
   await SQLHelper.deleteUser(user.id!);
 }
 
-Future<void> getUser() async {
-  final data = await SQLHelper.getUser();
-  print(data);
+Future<void> deleteDaftarPeriksa(int id) async {
+  await SQLHelper.deleteDaftarPeriksa(id);
 }
 
+// Checking data with data in database
 Future<bool> checkEmail(String? email) async {
   final bool data = await SQLHelper.checkEmail(email);
   return data;
