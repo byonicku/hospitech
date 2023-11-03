@@ -3,6 +3,7 @@ import 'package:tugas_besar_hospital_pbp/View/edit_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/tambah_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_helper.dart';
+import 'package:tugas_besar_hospital_pbp/qr_scanner/scan_qr_page.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 
 class ListPeriksaView extends StatefulWidget {
@@ -80,6 +81,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
           Text(periksa['jenis_perawatan'],
               style: const TextStyle(color: Colors.grey)),
           Text('Tanggal Periksa: ${periksa['tanggal_periksa']}'),
+          Text('Ruangan: ${periksa['ruangan']}'),
           buildEditDeleteButtons(
             periksa,
             index: index,
@@ -115,7 +117,6 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
           ),
           child: const Text('Edit', style: TextStyle(color: Colors.white)),
         ),
-        const SizedBox(width: 10),
         ElevatedButton(
           onPressed: () {
             final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -179,6 +180,41 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
           ),
           child: const Text('Delete', style: TextStyle(color: Colors.white)),
         ),
+        listPeriksaRaw[index!]['status_checkin'] == 1
+            ? ElevatedButton(
+                onPressed: null,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
+                ),
+                child: const Text('Check In'))
+            : ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BarcodeScannerPageView(
+                        id: listPeriksaRaw[index]['id_periksa'],
+                        namaPasien: listPeriksaRaw[index]['nama_pasien'],
+                        dokterSpesialis: listPeriksaRaw[index]
+                            ['dokter_spesialis'],
+                        jenisPerawatan: listPeriksaRaw[index]
+                            ['jenis_perawatan'],
+                        tanggalPeriksa: listPeriksaRaw[index]
+                            ['tanggal_periksa'],
+                        gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
+                        ruang: listPeriksaRaw[index]['ruangan'],
+                      ),
+                    ),
+                  );
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                ),
+                child: const Text(
+                  'Check In',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
       ],
     );
   }
@@ -212,12 +248,14 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
             context,
             MaterialPageRoute(
               builder: (_) => const TambahPeriksa(
-                  id: null,
-                  namaPasien: null,
-                  dokterSpesialis: null,
-                  jenisPerawatan: null,
-                  tanggalPeriksa: null,
-                  gambarDokter: null),
+                id: null,
+                namaPasien: null,
+                dokterSpesialis: null,
+                jenisPerawatan: null,
+                tanggalPeriksa: null,
+                gambarDokter: null,
+                ruangan: null,
+              ),
             ),
           );
         },

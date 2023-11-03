@@ -14,13 +14,21 @@ Future<void> addDaftarPeriksa(Periksa periksa) async {
       periksa.dokterSpesialis!,
       periksa.jenisPerawatan!,
       periksa.tanggalPeriksa!,
-      periksa.gambarDokter!);
+      periksa.gambarDokter!,
+      periksa.ruangan!);
 }
 
 // Edit data in database
 Future<void> editUser(User user) async {
-  await SQLHelper.editUser(user.id!, user.username!, user.email!,
-      user.password!, user.noTelp!, user.tglLahir!, user.jenisKelamin!, user.profilePhoto!);
+  await SQLHelper.editUser(
+      user.id!,
+      user.username!,
+      user.email!,
+      user.password!,
+      user.noTelp!,
+      user.tglLahir!,
+      user.jenisKelamin!,
+      user.profilePhoto!);
 }
 
 Future<void> editPeriksa(Periksa dataPeriksa) async {
@@ -30,7 +38,9 @@ Future<void> editPeriksa(Periksa dataPeriksa) async {
       dataPeriksa.dokterSpesialis!,
       dataPeriksa.jenisPerawatan!,
       dataPeriksa.tanggalPeriksa!,
-      dataPeriksa.gambarDokter!);
+      dataPeriksa.gambarDokter!,
+      dataPeriksa.ruangan!,
+      dataPeriksa.statusCheckin!);
 }
 
 // Delete data in database
