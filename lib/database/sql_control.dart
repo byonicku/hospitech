@@ -20,7 +20,7 @@ Future<void> addDaftarPeriksa(Periksa periksa) async {
 // Edit data in database
 Future<void> editUser(User user) async {
   await SQLHelper.editUser(user.id!, user.username!, user.email!,
-      user.password!, user.noTelp!, user.tglLahir!, user.jenisKelamin!);
+      user.password!, user.noTelp!, user.tglLahir!, user.jenisKelamin!, user.profilePhoto!);
 }
 
 Future<void> editPeriksa(Periksa dataPeriksa) async {
@@ -63,7 +63,7 @@ Future<List<Map<String, dynamic>>> getID(
   return await SQLHelper.getID(username, password);
 }
 
-Future<List<Map<String, dynamic>>> getUserByID(int? id) async {
+Future<User> getUserByID(int? id) async {
   return SQLHelper.getUserByID(id);
 }
 
