@@ -23,21 +23,31 @@ List<String> listDokterSpesialis = [
   'Spesialis Ortopedi'
 ];
 
+List<String> listRuangan = [
+  'Ruang 1',
+  'Ruang 2',
+  'Ruang 3',
+];
+
 class TambahPeriksa extends StatefulWidget {
-  const TambahPeriksa(
-      {super.key,
-      required this.id,
-      required this.namaPasien,
-      required this.dokterSpesialis,
-      required this.jenisPerawatan,
-      required this.tanggalPeriksa,
-      required this.gambarDokter});
+  const TambahPeriksa({
+    super.key,
+    required this.id,
+    required this.namaPasien,
+    required this.dokterSpesialis,
+    required this.jenisPerawatan,
+    required this.tanggalPeriksa,
+    required this.gambarDokter,
+    required this.ruangan,
+  });
 
   final String? namaPasien,
       dokterSpesialis,
       jenisPerawatan,
       tanggalPeriksa,
-      gambarDokter;
+      gambarDokter,
+      ruangan;
+
   final int? id;
 
   @override
@@ -352,6 +362,8 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                               tanggalPeriksaController.text;
                           formData['gambar_dokter'] = listGambarProfilDokter
                               .elementAt(Random().nextInt(3));
+                          formData['ruangan'] =
+                              listRuangan.elementAt(Random().nextInt(2));
 
                           // kalo ada masalah kemungkinan ini
                           // ignore: use_build_context_synchronously
@@ -376,7 +388,8 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                               tanggalPeriksa:
                                                   tanggalPeriksaController.text,
                                               gambarDokter:
-                                                  formData['gambar_dokter']);
+                                                  formData['gambar_dokter'],
+                                              ruangan: formData['ruangan']);
                                           addDaftarPeriksa(newPeriksa);
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);
