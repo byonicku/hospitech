@@ -1,10 +1,11 @@
 class Periksa {
-  final int? id;
+  final int? id, statusCheckin;
   String? namaPasien,
       dokterSpesialis,
       jenisPerawatan,
       tanggalPeriksa,
-      gambarDokter;
+      gambarDokter,
+      ruangan;
 
   Periksa(
       {this.id,
@@ -12,5 +13,7 @@ class Periksa {
       this.dokterSpesialis,
       this.jenisPerawatan,
       this.tanggalPeriksa,
-      this.gambarDokter});
+      this.gambarDokter,
+      this.ruangan,
+      this.statusCheckin});
 }

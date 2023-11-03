@@ -4,6 +4,8 @@ import 'package:tugas_besar_hospital_pbp/View/list_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/profile_group.dart';
 import 'package:tugas_besar_hospital_pbp/View/profile_page.dart';
 import 'dart:io';
+import 'dart:math';
+import 'package:shake/shake.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key, required this.selectedIndex});
@@ -16,6 +18,21 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
+
+  final List<String> dailyTips = [
+    'Drink plenty of water',
+    'Get enough sleep',
+    'Take breaks from screen time',
+    'Eat a balanced diet',
+    'Exercise regularly',
+    'Practice mindfulness',
+    'Read a book',
+    'Learn something new',
+    'Tetap hidup walaupun berat'
+  ];
+
+  String selectedTip = '';
+  bool currentShow = true;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -31,6 +48,40 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     setSelectedIndex(widget.selectedIndex!);
     super.initState();
+    selectedTip = dailyTips[Random().nextInt(dailyTips.length)];
+    ShakeDetector.autoStart(onPhoneShake: () => showTipDialog());
+  }
+
+  void showTipDialog() {
+    if (!currentShow) {
+      return;
+    }
+
+    setState(() {
+      selectedTip = dailyTips[Random().nextInt(dailyTips.length)];
+      currentShow = false;
+    });
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Daily Tip'),
+          content: Text(selectedTip),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  currentShow = true;
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   static final List<Widget> _widgetOptions = <Widget>[
