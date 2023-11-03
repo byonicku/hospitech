@@ -18,6 +18,7 @@ dependencies:
   camera: ^0.10.5+2 # access to hardware camera
   mobile_scanner: ^3.2.0
   image_picker: ^0.8.6
+  shake: ^2.2.0
   path_provider: ^2.0.15
 
 dev_dependencies:
