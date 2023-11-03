@@ -32,6 +32,7 @@ class _HomeViewState extends State<HomeView> {
   ];
 
   String selectedTip = '';
+  bool currentShow = true;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -48,17 +49,21 @@ class _HomeViewState extends State<HomeView> {
     setSelectedIndex(widget.selectedIndex!);
     super.initState();
     selectedTip = dailyTips[Random().nextInt(dailyTips.length)];
-    ShakeDetector.autoStart(onPhoneShake: () {
-      showTipDialog();
-    });
+    ShakeDetector.autoStart(onPhoneShake: () => showTipDialog());
   }
 
   void showTipDialog() {
+    if (!currentShow) {
+      return;
+    }
+
     setState(() {
       selectedTip = dailyTips[Random().nextInt(dailyTips.length)];
+      currentShow = false;
     });
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Daily Tip'),
@@ -68,6 +73,9 @@ class _HomeViewState extends State<HomeView> {
               child: const Text('Close'),
               onPressed: () {
                 Navigator.of(context).pop();
+                setState(() {
+                  currentShow = true;
+                });
               },
             ),
           ],
