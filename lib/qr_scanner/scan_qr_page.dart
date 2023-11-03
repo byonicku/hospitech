@@ -4,6 +4,7 @@ import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/qr_scanner/scanner_error_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:geolocator/geolocator.dart';
 
 class BarcodeScannerPageView extends StatefulWidget {
   final int id;
@@ -31,10 +32,62 @@ class BarcodeScannerPageView extends StatefulWidget {
 
 class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
     with SingleTickerProviderStateMixin {
+  Position? pos;
+  Position hospitalPos = Position(
+      longitude: 110.4153906,
+      latitude: -7.7793547,
+      timestamp: DateTime.now(),
+      accuracy: 0,
+      altitude: 0,
+      altitudeAccuracy: 0,
+      heading: 0,
+      headingAccuracy: 0,
+      speed: 0,
+      speedAccuracy: 0);
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  void getPos() async {
+    Position temp = pos = await _determinePosition();
+
+    setState(() {
+      pos = temp;
+    });
+  }
+
+  @override
+  void initState() {
+    getPos();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color.fromARGB(255, 150, 138, 138),
       body: PageView(children: [
         cameraView(),
         Container(),
@@ -102,8 +155,24 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
     final String? res = barcodeCapture.barcodes.first.rawValue;
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     if (res != null) {
-      print('BERHASIL!!!!!!!!!!');
+      double distance = Geolocator.distanceBetween(hospitalPos.latitude,
+          hospitalPos.longitude, pos!.latitude, pos!.longitude);
       if (res.contains(widget.ruang)) {
+        if (distance > 20) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const HomeView(selectedIndex: 2)),
+          );
+
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              duration: Duration(seconds: 2),
+              content: Text('Anda tidak berada di lokasi hospital!'),
+            ),
+          );
+          return;
+        }
         final Periksa updatedPeriksa = Periksa(
           id: widget.id,
           namaPasien: widget.namaPasien,
@@ -129,7 +198,6 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
           ),
         );
       } else {
-        print('nope!!!!!!!!!!');
         Navigator.of(context).popUntil((route) => route.isFirst);
         Navigator.pushReplacement(
           context,
