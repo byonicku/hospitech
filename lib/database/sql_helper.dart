@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart' as sql;
+import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 
 // creating database ========================================================================================
 class SQLHelper {
@@ -11,7 +12,8 @@ class SQLHelper {
         password TEXT,
         no_telp TEXT,
         tanggal_lahir TEXT,
-        jenis_kelamin TEXT
+        jenis_kelamin TEXT,
+        profile_photo TEXT
       )
     """);
 
@@ -51,6 +53,7 @@ class SQLHelper {
       'no_telp': noTelp,
       'tanggal_lahir': tglLahir,
       'jenis_kelamin': jenisKelamin,
+      'profile_photo': null
     };
 
     return await db.insert('user', data);
@@ -83,14 +86,14 @@ class SQLHelper {
 
   // Editing data in database ========================================================================================
   static Future<int> editUser(
-    int id,
-    String username,
-    String email,
-    String password,
-    String noTelp,
-    String tglLahir,
-    String jenisKelamin,
-  ) async {
+      int id,
+      String username,
+      String email,
+      String password,
+      String noTelp,
+      String tglLahir,
+      String jenisKelamin,
+      String decodedImage) async {
     final db = await SQLHelper.db();
     final data = {
       'username': username,
@@ -99,6 +102,7 @@ class SQLHelper {
       'no_telp': noTelp,
       'tanggal_lahir': tglLahir,
       'jenis_kelamin': jenisKelamin,
+      'profile_photo': decodedImage
     };
 
     return await db.update('user', data, where: 'id = $id');
@@ -138,14 +142,14 @@ class SQLHelper {
   // checking into database ========================================================================================
   static Future<bool> checkEmail(String? email) async {
     final db = await SQLHelper.db();
-    final data = await db.query('user', where: 'email = ?', whereArgs: [email]);
+    final data = await db.query('user', where: 'email = ?', whereArgs: [email], columns: ['id']);
     return data.isNotEmpty;
   }
 
   static Future<bool> checkUsername(String? username) async {
     final db = await SQLHelper.db();
     final data =
-        await db.query('user', where: 'username = ?', whereArgs: [username]);
+        await db.query('user', where: 'username = ?', whereArgs: [username], columns: ['id']);
     return data.isNotEmpty;
   }
 
@@ -153,7 +157,7 @@ class SQLHelper {
     final db = await SQLHelper.db();
     final data = await db.query('user',
         where: 'username = ? AND password = ?',
-        whereArgs: [username, password]);
+        whereArgs: [username, password], columns: ['id']);
     return data.isNotEmpty;
   }
 
@@ -162,14 +166,40 @@ class SQLHelper {
     final db = await SQLHelper.db();
     final data = await db.query('user',
         where: 'username = ? AND password = ?',
-        whereArgs: [username, password]);
+        whereArgs: [username, password], columns: ['id', 'username', 'password', 'email', 'tanggal_lahir', 'no_telp', 'jenis_kelamin']);
     return data;
   }
 
-  static Future<List<Map<String, dynamic>>> getUserByID(int? id) async {
+  static Future<User> getUserByID(int? id) async {
     final db = await SQLHelper.db();
-    final data =
-        await db.query('user', where: 'id = ?', whereArgs: [id.toString()]);
+    final dataUser = await db.query('user', where: 'id = ?', whereArgs: [
+      id.toString()
+    ], columns: [
+      'id',
+      'username',
+      'email',
+      'no_telp',
+      'tanggal_lahir',
+      'jenis_kelamin',
+      'password'
+    ]);
+    final dataProfilePicture = await db.query('user',
+        where: 'id = ?',
+        whereArgs: [id.toString()],
+        columns: ['profile_photo']);
+
+    List<Map<String, dynamic>> userData = dataUser;
+    Map<String, dynamic> userPhotoProfile = dataProfilePicture.first; 
+
+    User data = User(
+        id: userData.first['id'],
+        username: userData.first['username'],
+        email: userData.first['email'],
+        jenisKelamin: userData.first['jenis_kelamin'],
+        noTelp: userData.first['no_telp'],
+        password: userData.first['password'],
+        tglLahir: userData.first['tanggal_lahir'],
+        profilePhoto: userPhotoProfile['profile_photo']);
     return data;
   }
 

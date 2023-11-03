@@ -95,7 +95,7 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       child: TextFormField(
                         validator: (password) {
                           if (password!.isEmpty) {
-                            return "Password tidak boleh kosong";
+                            return "Tolong isikan password Anda";
                           } else if (password.length < 5) {
                             return "Password minimal 5 karakter";
                           } else {
@@ -265,14 +265,14 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                               TextButton(
                                 onPressed: () {
                                   User user = User(
-                                      id: data.first['id'],
+                                      id: data.id,
                                       email: emailController.text,
                                       jenisKelamin: gender,
                                       noTelp: notelpController.text,
                                       password: passwordController.text,
                                       tglLahir: dateController.text,
                                       username: usernameController.text);
-                                  updateUserByID(data.first['id'], user);
+                                  updateUserByID(data.id, user);
 
                                   Navigator.of(context)
                                       .popUntil((route) => route.isFirst);
