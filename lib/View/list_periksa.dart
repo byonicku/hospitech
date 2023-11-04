@@ -31,15 +31,18 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
   }
 
   Widget buildPeriksaCard(Map<String, dynamic> periksa, int index) {
-    return Card(
-      child: InkWell(
-        onTap: () {},
-        child: Row(
-          children: [
-            buildDokterInfo(periksa),
-            const SizedBox(width: 20),
-            buildPeriksaInfo(periksa, index: index),
-          ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      child: Card(
+        elevation: 1,
+        child: InkWell(
+          onTap: () {},
+          child: Row(
+            children: [
+              buildDokterInfo(periksa),
+              buildPeriksaInfo(periksa, index: index),
+            ],
+          ),
         ),
       ),
     );
@@ -47,25 +50,31 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
 
   Widget buildDokterInfo(Map<String, dynamic> periksa) {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final deviceSize = MediaQuery.of(context).size;
+    final imageWidth = deviceSize.width * 0.2;
 
     return SizedBox(
-      height: 150,
+      width: deviceSize.width * 0.25,
+      height: deviceSize.height * 0.2,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 100,
-            height: 100,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
             child: Image.asset(
               periksa['gambar_dokter'],
+              width: imageWidth,
+              height: imageWidth,
               cacheWidth: (300 * devicePixelRatio).round(),
               filterQuality: FilterQuality.none,
               fit: BoxFit.cover,
             ),
           ),
-          const Text('Nama Dokter'),
+          const Text('Nama Dokter', style: TextStyle(fontSize: 12)),
           Text(
             periksa['dokter_spesialis'],
-            style: const TextStyle(color: Colors.grey),
+            style: const TextStyle(color: Colors.grey, fontSize: 12),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -77,144 +86,158 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(periksa['nama_pasien']),
+          Text(periksa['nama_pasien'],
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
           Text(periksa['jenis_perawatan'],
               style: const TextStyle(color: Colors.grey)),
           Text('Tanggal Periksa: ${periksa['tanggal_periksa']}'),
           Text('Ruangan: ${periksa['ruangan']}'),
           buildEditDeleteButtons(
             periksa,
-            index: index,
+            index!,
           ),
         ],
       ),
     );
   }
 
-  Widget buildEditDeleteButtons(
-    Map<String, dynamic> periksa, {
-    int? index,
-  }) {
-    return Row(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => EditPeriksaView(
-                    id: listPeriksaRaw[index!]['id_periksa'],
-                    namaPasien: listPeriksaRaw[index]['nama_pasien'],
-                    dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
-                    jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
-                    tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
-                    gambarDokter: listPeriksaRaw[index]['gambar_dokter']),
-              ),
-            );
-          },
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.green),
+  Widget buildEditButton(Map<String, dynamic> periksa, int index) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => EditPeriksaView(
+              id: listPeriksaRaw[index]['id_periksa'],
+              namaPasien: listPeriksaRaw[index]['nama_pasien'],
+              dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
+              jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
+              tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
+              gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
+            ),
           ),
-          child: const Text('Edit', style: TextStyle(color: Colors.white)),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            final scaffoldMessenger = ScaffoldMessenger.of(context);
+        );
+      },
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.green),
+        minimumSize: MaterialStateProperty.all(const Size(20, 35)),
+      ),
+      child: const Text('Edit', style: TextStyle(color: Colors.white)),
+    );
+  }
 
-            final namaPasienHapus = listPeriksaRaw[index!]['nama_pasien'];
+  Widget buildDeleteButton(Map<String, dynamic> periksa, int index) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final namaPasienHapus = listPeriksaRaw[index]['nama_pasien'];
 
-            showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                title: const Text('Konfirmasi',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                content: Text(
-                    'Apakah yakin ingin menghapus data pasien $namaPasienHapus?'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      // Menghapus Data Yang di pilih
-                      final idHapus = listPeriksaRaw[index]['id_periksa'];
-
-                      deleteDaftarPeriksa(idHapus);
-
-                      Navigator.pop(context);
-
-                      scaffoldMessenger.showSnackBar(
-                        const SnackBar(
-                          duration: Duration(seconds: 2),
-                          content: Text('Berhasil Menghapus Data'),
-                        ),
-                      );
-
-                      refresh();
-                    },
-                    child: Text('Ya',
-                        style: TextStyle(
-                            color: isDark ? Colors.white : Colors.black,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      scaffoldMessenger.showSnackBar(
-                        const SnackBar(
-                          duration: Duration(seconds: 2),
-                          content: Text('Batal Menghapus Data'),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Tidak',
-                      style: TextStyle(
-                          color: isDark ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.red),
-          ),
-          child: const Text('Delete', style: TextStyle(color: Colors.white)),
-        ),
-        listPeriksaRaw[index!]['status_checkin'] == 1
-            ? ElevatedButton(
-                onPressed: null,
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
-                ),
-                child: const Text('Check In'))
-            : ElevatedButton(
+    return ElevatedButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Konfirmasi',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            content: Text(
+                'Apakah yakin ingin menghapus data pasien $namaPasienHapus?'),
+            actions: [
+              TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BarcodeScannerPageView(
-                        id: listPeriksaRaw[index]['id_periksa'],
-                        namaPasien: listPeriksaRaw[index]['nama_pasien'],
-                        dokterSpesialis: listPeriksaRaw[index]
-                            ['dokter_spesialis'],
-                        jenisPerawatan: listPeriksaRaw[index]
-                            ['jenis_perawatan'],
-                        tanggalPeriksa: listPeriksaRaw[index]
-                            ['tanggal_periksa'],
-                        gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
-                        ruang: listPeriksaRaw[index]['ruangan'],
-                      ),
+                  // Menghapus Data Yang di pilih
+                  final idHapus = listPeriksaRaw[index]['id_periksa'];
+
+                  deleteDaftarPeriksa(idHapus);
+
+                  Navigator.pop(context);
+
+                  scaffoldMessenger.showSnackBar(
+                    const SnackBar(
+                      duration: Duration(seconds: 2),
+                      content: Text('Berhasil Menghapus Data'),
+                    ),
+                  );
+
+                  refresh();
+                },
+                child: Text('Ya',
+                    style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold)),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  scaffoldMessenger.showSnackBar(
+                    const SnackBar(
+                      duration: Duration(seconds: 2),
+                      content: Text('Batal Menghapus Data'),
                     ),
                   );
                 },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                ),
-                child: const Text(
-                  'Check In',
-                  style: TextStyle(color: Colors.white),
+                child: Text(
+                  'Tidak',
+                  style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
+            ],
+          ),
+        );
+      },
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.red),
+        minimumSize: MaterialStateProperty.all(const Size(20, 35)),
+      ),
+      child: const Text('Delete', style: TextStyle(color: Colors.white)),
+    );
+  }
+
+  Widget buildCheckInButton(Map<String, dynamic> periksa, int index) {
+    if (listPeriksaRaw[index]['status_checkin'] == 1) {
+      return ElevatedButton(
+        onPressed: null,
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
+          minimumSize: MaterialStateProperty.all(const Size(20, 35)),
+        ),
+        child: const Text('Check In'),
+      );
+    } else {
+      return ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BarcodeScannerPageView(
+                id: listPeriksaRaw[index]['id_periksa'],
+                namaPasien: listPeriksaRaw[index]['nama_pasien'],
+                dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
+                jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
+                tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
+                gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
+                ruang: listPeriksaRaw[index]['ruangan'],
+              ),
+            ),
+          );
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.blue),
+          minimumSize: MaterialStateProperty.all(const Size(20, 35)),
+        ),
+        child: const Text('Check In', style: TextStyle(color: Colors.white)),
+      );
+    }
+  }
+
+  Widget buildEditDeleteButtons(Map<String, dynamic> periksa, int index) {
+    return Row(
+      children: [
+        buildEditButton(periksa, index),
+        const SizedBox(width: 4),
+        buildDeleteButton(periksa, index),
+        const SizedBox(width: 4),
+        buildCheckInButton(periksa, index),
       ],
     );
   }

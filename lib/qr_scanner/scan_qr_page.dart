@@ -44,6 +44,7 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
       headingAccuracy: 0,
       speed: 0,
       speedAccuracy: 0);
+  bool hasScanned = false;
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -70,18 +71,18 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
     return await Geolocator.getCurrentPosition();
   }
 
+  @override
+  void initState() {
+    getPos();
+    super.initState();
+  }
+
   void getPos() async {
     Position temp = pos = await _determinePosition();
 
     setState(() {
       pos = temp;
     });
-  }
-
-  @override
-  void initState() {
-    getPos();
-    super.initState();
   }
 
   @override
@@ -101,37 +102,52 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
         return Stack(
           children: [
             MobileScanner(
-              startDelay: true,
-              controller: MobileScannerController(torchEnabled: false),
-              fit: BoxFit.contain,
-              onDetect: (capture) => setBarcodeCapture(capture),
+              controller: MobileScannerController(
+                torchEnabled: false,
+                facing: CameraFacing.back,
+              ),
+              fit: BoxFit.fitHeight,
+              onDetect: (capture) => {
+                getPos(),
+                setBarcodeCapture(capture),
+              },
               errorBuilder: (context, error, child) {
                 return ScannerErrorWidget(error: error);
               },
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                alignment: Alignment.bottomCenter,
-                height: 100,
-                color: Colors.black.withOpacity(0.4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Center(
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width - 120,
-                        height: 50,
-                        child: FittedBox(
-                          child: GestureDetector(
-                            child: barcodeCaptureTextResult(context),
-                          ),
-                        ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Expanded(
+                    child: Card(
+                      color: Colors.white,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Center(
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width - 120,
+                              height: 100,
+                              child: FittedBox(
+                                child: Text(
+                                  "Scan QR Code Ruangan Anda",
+                                  overflow: TextOverflow.fade,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium
+                                      ?.copyWith(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         );
@@ -139,78 +155,79 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
     );
   }
 
-  Text barcodeCaptureTextResult(BuildContext context) {
-    return Text(
-      "Scan QR Code Ruangan Anda",
-      overflow: TextOverflow.fade,
-      style: Theme.of(context)
-          .textTheme
-          .headlineMedium
-          ?.copyWith(color: Colors.white),
-    );
-  }
-
   void setBarcodeCapture(BarcodeCapture capture) {
     BarcodeCapture? barcodeCapture = capture;
     final String? res = barcodeCapture.barcodes.first.rawValue;
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    if (res != null) {
+    final ScaffoldMessengerState scaffoldMessenger =
+        ScaffoldMessenger.of(context);
+
+    void returnHome() {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeView(selectedIndex: 2)),
+      );
+    }
+
+    void showSnackBar(Text text) {
+      final SnackBar snackBar = SnackBar(
+        duration: const Duration(seconds: 2),
+        content: text,
+      );
+
+      scaffoldMessenger.showSnackBar(snackBar);
+    }
+
+    if (res != null && !hasScanned) {
+      hasScanned = true;
+
+      if (!res.contains(widget.ruang)) {
+        // Kalau tidak sama dengan ruangan yang di assign
+
+        returnHome();
+
+        showSnackBar(
+          const Text('Anda tidak berada di ruangan yang benar!'),
+        );
+
+        return;
+      }
+
       double distance = Geolocator.distanceBetween(hospitalPos.latitude,
           hospitalPos.longitude, pos!.latitude, pos!.longitude);
-      if (res.contains(widget.ruang)) {
-        if (distance > 20) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const HomeView(selectedIndex: 2)),
-          );
 
-          scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              duration: Duration(seconds: 2),
-              content: Text('Anda tidak berada di lokasi hospital!'),
-            ),
-          );
-          return;
-        }
-        final Periksa updatedPeriksa = Periksa(
-          id: widget.id,
-          namaPasien: widget.namaPasien,
-          dokterSpesialis: widget.dokterSpesialis,
-          jenisPerawatan: widget.jenisPerawatan,
-          tanggalPeriksa: widget.tanggalPeriksa,
-          gambarDokter: widget.gambarDokter,
-          ruangan: widget.ruang,
-          statusCheckin: 1,
-        );
-        editPeriksa(updatedPeriksa);
+      // ignore: avoid_print
+      print("distance: $distance"); //debug
 
-        Navigator.of(context).popUntil((route) => route.isFirst);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeView(selectedIndex: 2)),
+      if (distance > 30) {
+        // ketika jauh dari rumah sakit
+        returnHome();
+
+        showSnackBar(
+          const Text('Anda tidak berada di area rumah sakit!'),
         );
 
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            duration: Duration(seconds: 2),
-            content: Text('Berhasil melakukan check in!'),
-          ),
-        );
-      } else {
-        Navigator.of(context).popUntil((route) => route.isFirst);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeView(selectedIndex: 2)),
-        );
-
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            duration: Duration(seconds: 2),
-            content: Text('Anda berada di ruangan yang salah!'),
-          ),
-        );
+        return;
       }
+
+      final Periksa updatedPeriksa = Periksa(
+        id: widget.id,
+        namaPasien: widget.namaPasien,
+        dokterSpesialis: widget.dokterSpesialis,
+        jenisPerawatan: widget.jenisPerawatan,
+        tanggalPeriksa: widget.tanggalPeriksa,
+        gambarDokter: widget.gambarDokter,
+        ruangan: widget.ruang,
+        statusCheckin: 1,
+      );
+
+      editPeriksa(updatedPeriksa);
+
+      returnHome();
+
+      showSnackBar(
+        const Text('Anda berhasil check-in!'),
+      );
     }
   }
 }
