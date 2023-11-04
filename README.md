@@ -27,3 +27,8 @@ Aplikasi Android menggunakan framework flutter, berfokus untuk membuat aplikasi 
 > - Snack Bar Register / Login - Andre Victory
 > - Profile & Edit Profile - Berly, Hendryanto
 > - CRUD Periksa Dokter - Fredo
+> ## UGD 7
+> - Camera add user pic - Fredo
+> - QR Scanner masuk ruang - Nico
+> - Shake for Daily Tips - Hendryanto
+> - Geolocator untuk masuk ruang - Andre, Berly
