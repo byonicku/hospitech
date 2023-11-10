@@ -1,5 +1,5 @@
 class Periksa {
-  final int? id, statusCheckin;
+  final int? id, statusCheckin, price;
   String? namaPasien,
       dokterSpesialis,
       jenisPerawatan,
@@ -7,13 +7,15 @@ class Periksa {
       gambarDokter,
       ruangan;
 
-  Periksa(
-      {this.id,
-      this.namaPasien,
-      this.dokterSpesialis,
-      this.jenisPerawatan,
-      this.tanggalPeriksa,
-      this.gambarDokter,
-      this.ruangan,
-      this.statusCheckin});
+  Periksa({
+    this.id,
+    this.namaPasien,
+    this.dokterSpesialis,
+    this.jenisPerawatan,
+    this.tanggalPeriksa,
+    this.gambarDokter,
+    this.ruangan,
+    this.price,
+    this.statusCheckin,
+  });
 }

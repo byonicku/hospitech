@@ -8,6 +8,7 @@ import 'package:tugas_besar_hospital_pbp/View/update_profile_page.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -40,7 +41,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<String> saveImageLocally(File imageFile) async {
     final appDirectory = await getApplicationDocumentsDirectory();
-    final imagePath = '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final imagePath =
+        '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
     await imageFile.copy(imagePath);
 
@@ -107,14 +109,18 @@ class _ProfilePageState extends State<ProfilePage> {
               Navigator.of(context).pop();
               await getImageFromGallery();
             },
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.storage,
                   color: Colors.blue,
+                  size: 14.sp,
                 ),
-                Text("Gallery"),
+                Text(
+                  "Gallery",
+                  style: TextStyle(fontSize: 14.sp),
+                ),
               ],
             ),
           ),
@@ -124,14 +130,18 @@ class _ProfilePageState extends State<ProfilePage> {
               Navigator.of(context).pop();
               await getImageFromCamera();
             },
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.camera,
                   color: Colors.blue,
+                  size: 14.sp,
                 ),
-                Text("Camera"),
+                Text(
+                  "Camera",
+                  style: TextStyle(fontSize: 14.sp),
+                ),
               ],
             ),
           ),
@@ -150,10 +160,11 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Profil',
           style: TextStyle(
             fontWeight: FontWeight.bold,
+            fontSize: 16.sp,
           ),
         ),
         automaticallyImplyLeading: false,
@@ -167,7 +178,7 @@ class _ProfilePageState extends State<ProfilePage> {
               // mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 CircleAvatar(
-                  radius: 80,
+                  radius: 15.w,
                   backgroundImage: _image == null
                       ? const AssetImage('assets/images/profil.png')
                       : _image!.image,
@@ -178,8 +189,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         showPickImageOptions();
                       }, // Trigger image selection
                       child: Container(
-                        width: 40, // Adjust the size as needed
-                        height: 40, // Adjust the size as needed
+                        width: 10.w, // Adjust the size as needed
+                        height: 6.h, // Adjust the size as needed
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.blue,
@@ -192,37 +203,37 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 3.h),
                 ProfileInfo(label: 'Username', value: name),
                 ProfileInfo(label: 'Email', value: email),
                 ProfileInfo(label: 'No. Telepon', value: noTelp),
                 ProfileInfo(label: 'Tanggal Lahir', value: tglLahir),
                 ProfileInfo(label: 'Jenis Kelamin', value: jenisKelamin),
-                const SizedBox(height: 20),
+                SizedBox(height: 3.h),
                 ElevatedButton(
-                  child: const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 3.0.h, vertical: 2.0.w),
                     child: Text(
                       'Edit Profile',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(fontSize: 18.sp, color: Colors.white),
                     ),
                   ),
                   onPressed: () async {
                     pushUpdate(context);
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 2.h),
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
-                  child: const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 3.0.h, vertical: 2.0.w),
                     child: Text(
                       'Logout',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(fontSize: 18.sp, color: Colors.white),
                     ),
                   ),
                   onPressed: () async {
@@ -283,18 +294,18 @@ class ProfileInfo extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 18,
+          style: TextStyle(
+            fontSize: 18.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           value ?? 'Tidak Tersedia',
-          style: const TextStyle(
-            fontSize: 18,
+          style: TextStyle(
+            fontSize: 18.sp,
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 1.h),
       ],
     );
   }

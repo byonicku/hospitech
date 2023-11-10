@@ -5,6 +5,9 @@ import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_helper.dart';
 import 'package:tugas_besar_hospital_pbp/qr_scanner/scan_qr_page.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
+import 'package:uuid/uuid.dart';
+import 'package:tugas_besar_hospital_pbp/invoice/pdf_view.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ListPeriksaView extends StatefulWidget {
   const ListPeriksaView({super.key});
@@ -16,6 +19,7 @@ class ListPeriksaView extends StatefulWidget {
 class _ListPeriksaViewState extends State<ListPeriksaView> {
   List<Map<String, dynamic>> listPeriksaRaw = [];
   bool isDark = darkNotifier.value;
+  String id = const Uuid().v1();
 
   void refresh() async {
     final dataPeriksa = await SQLHelper.getDaftarPeriksa();
@@ -36,7 +40,13 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
       child: Card(
         elevation: 1,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            createPdf(listPeriksaRaw[index]['id_periksa'], id, context);
+            setState(() {
+              const uuid = Uuid();
+              id = uuid.v1();
+            });
+          },
           child: Row(
             children: [
               buildDokterInfo(periksa),
@@ -50,8 +60,10 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
 
   Widget buildDokterInfo(Map<String, dynamic> periksa) {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final orientation = MediaQuery.of(context).orientation;
     final deviceSize = MediaQuery.of(context).size;
-    final imageWidth = deviceSize.width * 0.2;
+    final imageWidth =
+        deviceSize.width * ((orientation == Orientation.portrait) ? 0.2 : 0.07);
 
     return SizedBox(
       width: deviceSize.width * 0.25,
@@ -70,10 +82,10 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
               fit: BoxFit.cover,
             ),
           ),
-          const Text('Nama Dokter', style: TextStyle(fontSize: 12)),
+          Text('Nama Dokter', style: TextStyle(fontSize: 14.sp)),
           Text(
             periksa['dokter_spesialis'],
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
+            style: TextStyle(color: Colors.grey, fontSize: 14.sp),
             textAlign: TextAlign.center,
           ),
         ],
@@ -87,12 +99,14 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(periksa['nama_pasien'],
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400)),
           Text(periksa['jenis_perawatan'],
-              style: const TextStyle(color: Colors.grey)),
-          Text('Tanggal Periksa: ${periksa['tanggal_periksa']}'),
-          Text('Ruangan: ${periksa['ruangan']}'),
+              style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
+          Text('Tanggal Periksa: ${periksa['tanggal_periksa']}',
+              style: TextStyle(color: Colors.black, fontSize: 14.sp)),
+          Text('Ruangan: ${periksa['ruangan']}',
+              style: TextStyle(fontSize: 14.sp)),
+          SizedBox(height: 0.5.h),
           buildEditDeleteButtons(
             periksa,
             index!,
@@ -121,9 +135,10 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
       },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.green),
-        minimumSize: MaterialStateProperty.all(const Size(20, 35)),
+        minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
       ),
-      child: const Text('Edit', style: TextStyle(color: Colors.white)),
+      child:
+          Text('Edit', style: TextStyle(color: Colors.white, fontSize: 14.sp)),
     );
   }
 
@@ -187,22 +202,23 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
       },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.red),
-        minimumSize: MaterialStateProperty.all(const Size(20, 35)),
+        minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
       ),
-      child: const Text('Delete', style: TextStyle(color: Colors.white)),
+      child: Text('Delete',
+          style: TextStyle(color: Colors.white, fontSize: 14.sp)),
     );
   }
 
   Widget buildCheckInButton(Map<String, dynamic> periksa, int index) {
     if (listPeriksaRaw[index]['status_checkin'] == 1) {
       return ElevatedButton(
-        onPressed: null,
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
-          minimumSize: MaterialStateProperty.all(const Size(20, 35)),
-        ),
-        child: const Text('Check In'),
-      );
+          onPressed: null,
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
+            minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
+          ),
+          child: Text('Check In',
+              style: TextStyle(color: Colors.white, fontSize: 14.sp)));
     } else {
       return ElevatedButton(
         onPressed: () {
@@ -223,9 +239,10 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
         },
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.blue),
-          minimumSize: MaterialStateProperty.all(const Size(20, 35)),
+          minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
         ),
-        child: const Text('Check In', style: TextStyle(color: Colors.white)),
+        child: Text('Check In',
+            style: TextStyle(color: Colors.white, fontSize: 14.sp)),
       );
     }
   }
@@ -234,9 +251,9 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     return Row(
       children: [
         buildEditButton(periksa, index),
-        const SizedBox(width: 4),
+        SizedBox(width: 1.5.w),
         buildDeleteButton(periksa, index),
-        const SizedBox(width: 4),
+        SizedBox(width: 1.5.w),
         buildCheckInButton(periksa, index),
       ],
     );
@@ -260,10 +277,11 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                 final periksa = listPeriksaRaw[index];
                 return buildPeriksaCard(periksa, index);
               },
-              separatorBuilder: (context, index) => const SizedBox(height: 8),
+              separatorBuilder: (context, index) => SizedBox(height: 2.h),
             )
-          : const Center(
-              child: Text("Daftar Periksa Kosong"),
+          : Center(
+              child: Text("Daftar Periksa Kosong",
+                  style: TextStyle(fontSize: 14.sp)),
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

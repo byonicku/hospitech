@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
@@ -36,14 +37,17 @@ class _ProfilePageState extends State<UpdateProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title: Text(
+          'Edit Profile',
+          style: TextStyle(fontSize: 16.sp),
+        ),
       ),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.symmetric(vertical: 10.h),
               child: Column(
                 children: [
                   inputForm((username) {
@@ -59,13 +63,13 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       hintTxt: "Username",
                       labelTxt: "Username",
                       iconData: Icons.person),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                        width: 360,
+                        width: 100.w,
                         child: TextFormField(
                           validator: (email) {
                             if (email!.isEmpty) {
@@ -85,13 +89,13 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                           ),
                         )),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         validator: (password) {
                           if (password!.isEmpty) {
@@ -126,8 +130,8 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   inputForm((noTelp) {
                     if (noTelp == null || noTelp.isEmpty) {
@@ -143,14 +147,14 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       labelTxt: "No Telepon",
                       iconData: Icons.phone_android,
                       textInputType: TextInputType.number),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //Date Picker
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         autofocus: false,
                         controller: dateController,
@@ -195,16 +199,16 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //radio button
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 6.0.h,
                     ),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: FormBuilderRadioGroup(
                         decoration: const InputDecoration(labelText: 'Gender'),
                         name: "gender",
@@ -222,7 +226,9 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 2.h,
+                  ),
                   ElevatedButton(
                     onPressed: () async {
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -321,16 +327,18 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                         );
                       }
                     },
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 15.0, vertical: 10.0),
+                          horizontal: 3.0.h, vertical: 2.0.w),
                       child: Text(
                         'Update',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style: TextStyle(fontSize: 16.sp, color: Colors.white),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16.0),
+                  SizedBox(
+                    height: 2.h,
+                  ),
                 ],
               ),
             ),
