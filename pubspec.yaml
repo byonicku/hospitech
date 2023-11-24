@@ -21,6 +21,8 @@ dependencies:
   image_picker: ^0.8.6
   shake: ^2.2.0
   path_provider: ^2.0.15
+  http: ^1.1.0
+  flutter_riverpod: ^2.4.7
 
 dev_dependencies:
   flutter_test:

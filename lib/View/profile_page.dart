@@ -5,7 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:tugas_besar_hospital_pbp/View/update_profile_page.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -24,7 +25,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void getUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    currentUser = await getUserByID(prefs.getInt('id'));
+    // currentUser = await getUserByID(prefs.getInt('id'));
+    currentUser = await UserClient.show(prefs.getString('id')!);
     setState(() {
       name = currentUser!.username;
       email = currentUser!.email;
@@ -34,13 +36,14 @@ class _ProfilePageState extends State<ProfilePage> {
       jenisKelamin = currentUser!.jenisKelamin;
       imgPath = currentUser!.profilePhoto;
 
-      _image = imgPath == null ? null : Image.file(File(imgPath!));
+      _image = imgPath == "" ? null : Image.file(File(imgPath!));
     });
   }
 
   Future<String> saveImageLocally(File imageFile) async {
     final appDirectory = await getApplicationDocumentsDirectory();
-    final imagePath = '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final imagePath =
+        '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
     await imageFile.copy(imagePath);
 
@@ -68,7 +71,8 @@ class _ProfilePageState extends State<ProfilePage> {
           tglLahir: currentUser!.tglLahir,
           profilePhoto: imagePath);
 
-      editUser(editDataUser);
+      // editUser(editDataUser);
+      UserClient.update(editDataUser);
       getUserData();
     });
   }
@@ -91,7 +95,8 @@ class _ProfilePageState extends State<ProfilePage> {
           tglLahir: currentUser!.tglLahir,
           profilePhoto: imagePath);
 
-      editUser(editDataUser);
+      // editUser(editDataUser);
+      UserClient.update(editDataUser);
       getUserData();
     });
   }
