@@ -1,11 +1,12 @@
 import 'dart:math';
+import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 import 'package:tugas_besar_hospital_pbp/constant.dart';
 
@@ -361,7 +362,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           final Periksa newPeriksa = Periksa(
                                               namaPasien:
                                                   namaPasienController.text,
@@ -375,10 +376,17 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                                   tanggalPeriksaController.text,
                                               gambarDokter:
                                                   formData['gambar_dokter'],
-                                              ruangan: formData['ruangan']);
-                                          addDaftarPeriksa(newPeriksa);
+                                              ruangan: formData['ruangan'],
+                                              statusCheckin: 0);
+
+                                          // addDaftarPeriksa(newPeriksa);
+                                          await DaftarPeriksaClient.addPeriksa(
+                                              newPeriksa);
+
+                                          // ignore: use_build_context_synchronously
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);
+                                              // ignore: use_build_context_synchronously
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(

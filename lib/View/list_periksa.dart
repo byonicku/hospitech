@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/View/edit_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/tambah_periksa.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_helper.dart';
+import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_helper.dart';
 import 'package:tugas_besar_hospital_pbp/qr_scanner/scan_qr_page.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:uuid/uuid.dart';
@@ -22,9 +23,9 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
   String id = const Uuid().v1();
 
   void refresh() async {
-    final dataPeriksa = await SQLHelper.getDaftarPeriksa();
+    final dataPeriksa = await DaftarPeriksaClient.fetchAll();
     setState(() {
-      listPeriksaRaw = dataPeriksa;
+      listPeriksaRaw = dataPeriksa.map((periksa) => periksa.toJson()).toList();
     });
   }
 
@@ -161,7 +162,8 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                   // Menghapus Data Yang di pilih
                   final idHapus = listPeriksaRaw[index]['id_periksa'];
 
-                  deleteDaftarPeriksa(idHapus);
+                  // deleteDaftarPeriksa(idHapus);
+                  DaftarPeriksaClient.destroy(idHapus);
 
                   Navigator.pop(context);
 

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
+import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
+import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class LoginView extends StatefulWidget {
@@ -126,25 +128,14 @@ class _LoginViewState extends State<LoginView> {
                           //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
                           //* dari halaman register atau belum
 
-                          bool isUsernameRegistered =
-                              await checkUsername(usernameController.text);
-                          bool isRegistered = await checkLogin(
-                              usernameController.text, passwordController.text);
-                          if (!isUsernameRegistered) {
-                            scaffoldMessenger.showSnackBar(
-                              const SnackBar(
-                                duration: Duration(seconds: 2),
-                                content:
-                                    Text('Anda belum terdaftar sebagai user!'),
-                              ),
-                            );
-                          } else if (isRegistered) {
+                          try {
+                            User loggedIn = await UserClient.login(
+                                usernameController.text,
+                                passwordController.text);
+
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
-
-                            final data = await getID(usernameController.text,
-                                passwordController.text);
-                            prefs.setInt('id', data.first['id']);
+                            prefs.setString('id', loggedIn.id!.toString());
 
                             navPush(MaterialPageRoute(
                                 builder: (_) => const HomeView(
@@ -156,14 +147,60 @@ class _LoginViewState extends State<LoginView> {
                                 content: Text('Berhasil Melakukan Login'),
                               ),
                             );
-                          } else {
-                            scaffoldMessenger.showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Username atau password yang Anda masukkan salah'),
-                              ),
-                            );
+                          } catch (e) {
+                            // print(e.toString());
+
+                            if (e.toString().contains("User Tidak Ditemukan")) {
+                              scaffoldMessenger.showSnackBar(
+                                const SnackBar(
+                                  duration: Duration(seconds: 2),
+                                  content: Text(
+                                      'Anda belum terdaftar sebagai user!'),
+                                ),
+                              );
+                            } else {
+                              scaffoldMessenger.showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Username atau password yang Anda masukkan salah'),
+                                ),
+                              );
+                            }
                           }
+
+                          // bool isUsernameRegistered =
+                          //     await checkUsername(usernameController.text);
+                          // bool isRegistered = await checkLogin(
+                          //     usernameController.text, passwordController.text);
+                          // if (!isUsernameRegistered) {
+                          //   scaffoldMessenger.showSnackBar(
+                          //     const SnackBar(
+                          //       duration: Duration(seconds: 2),
+                          //       content:
+                          //           Text('Anda belum terdaftar sebagai user!'),
+                          //     ),
+                          //   );
+                          // } else if (isRegistered) {
+                          //   SharedPreferences prefs =
+                          //       await SharedPreferences.getInstance();
+
+                          //   final data = await getID(usernameController.text,
+                          //       passwordController.text);
+                          //   prefs.setInt('id', data.first['id']);
+
+                          //   navPush(MaterialPageRoute(
+                          //       builder: (_) => const HomeView(
+                          //             selectedIndex: 0,
+                          //           )));
+                          //   scaffoldMessenger.showSnackBar(
+                          //     const SnackBar(
+                          //       duration: Duration(seconds: 2),
+                          //       content: Text('Berhasil Melakukan Login'),
+                          //     ),
+                          //   );
+                          // } else {
+
+                          // }
                         }
                       }, // onPressed end curly bracket
 
