@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/constant.dart';
@@ -14,6 +15,7 @@ class EditPeriksaView extends StatefulWidget {
       {super.key,
       required this.id,
       required this.namaPasien,
+      required this.price,
       required this.dokterSpesialis,
       required this.jenisPerawatan,
       required this.tanggalPeriksa,
@@ -24,7 +26,7 @@ class EditPeriksaView extends StatefulWidget {
       jenisPerawatan,
       tanggalPeriksa,
       gambarDokter;
-  final int? id;
+  final int? id, price;
 
   @override
   State<EditPeriksaView> createState() => _EditPeriksaViewState();
@@ -339,6 +341,8 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                   : tanggalPeriksaController.text;
                           formData['gambar_dokter'] = listGambarProfilDokter
                               .elementAt(Random().nextInt(3));
+                          formData['ruangan'] =
+                              listRuangan.elementAt(Random().nextInt(2));
 
                           // kalo ada masalah kemungkinan ini
                           // ignore: use_build_context_synchronously
@@ -366,9 +370,14 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                                       tanggalPeriksaController
                                                           .text,
                                                   price: formData['price'],
+                                                  ruangan: formData['ruangan'],
+                                                  statusCheckin: 0,
                                                   gambarDokter: formData[
                                                       'gambar_dokter']);
-                                          editPeriksa(updatedPeriksa);
+
+                                          DaftarPeriksaClient.update(
+                                              updatedPeriksa);
+
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);
                                           Navigator.pushReplacement(

@@ -15,6 +15,7 @@ class TambahPeriksa extends StatefulWidget {
     super.key,
     required this.id,
     required this.namaPasien,
+    required this.price,
     required this.dokterSpesialis,
     required this.jenisPerawatan,
     required this.tanggalPeriksa,
@@ -29,7 +30,7 @@ class TambahPeriksa extends StatefulWidget {
       gambarDokter,
       ruangan;
 
-  final int? id;
+  final int? id, price;
 
   @override
   State<TambahPeriksa> createState() => _TambahPeriksaState();
@@ -386,7 +387,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                           // ignore: use_build_context_synchronously
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);
-                                              // ignore: use_build_context_synchronously
+                                          // ignore: use_build_context_synchronously
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
