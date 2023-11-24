@@ -15,6 +15,7 @@ Future<void> addDaftarPeriksa(Periksa periksa) async {
       periksa.jenisPerawatan!,
       periksa.tanggalPeriksa!,
       periksa.gambarDokter!,
+      periksa.price!,
       periksa.ruangan!);
 }
 
@@ -40,6 +41,7 @@ Future<void> editPeriksa(Periksa dataPeriksa) async {
       dataPeriksa.tanggalPeriksa!,
       dataPeriksa.gambarDokter!,
       dataPeriksa.ruangan!,
+      dataPeriksa.price!,
       dataPeriksa.statusCheckin!);
 }
 
@@ -89,4 +91,8 @@ Future<void> updateUserByID(int? id, User? user) async {
   };
 
   await SQLHelper.updateUserByID(id, data);
+}
+
+Future<Periksa> getPeriksaByID(int? id) async {
+  return await SQLHelper.getPeriksaByID(id);
 }

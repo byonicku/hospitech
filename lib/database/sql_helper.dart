@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
+import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 
 // creating database ========================================================================================
 class SQLHelper {
@@ -26,6 +27,7 @@ class SQLHelper {
         tanggal_periksa TEXT,
         gambar_dokter TEXT,
         ruangan TEXT,
+        price INTEGER,
         status_checkin INTEGER
       )
     """);
@@ -67,6 +69,7 @@ class SQLHelper {
       String jenisPerawatan,
       String tanggalPeriksa,
       String gambarDokter,
+      int price,
       String ruangan) async {
     final db = await SQLHelper.db();
     final data = {
@@ -76,6 +79,7 @@ class SQLHelper {
       'tanggal_periksa': tanggalPeriksa,
       'gambar_dokter': gambarDokter,
       'ruangan': ruangan,
+      'price': price,
       'status_checkin': 0
     };
 
@@ -125,6 +129,7 @@ class SQLHelper {
       String tanggalPeriksa,
       String gambarDokter,
       String ruangan,
+      int price,
       int status) async {
     final db = await SQLHelper.db();
     final updatedData = {
@@ -134,6 +139,7 @@ class SQLHelper {
       'tanggal_periksa': tanggalPeriksa,
       'gambar_dokter': gambarDokter,
       'ruangan': ruangan,
+      'price': price,
       'status_checkin': status
     };
 
@@ -231,5 +237,37 @@ class SQLHelper {
   static Future<void> updateUserByID(int? id, Map<String, dynamic> user) async {
     final db = await SQLHelper.db();
     await db.update('user', user, where: 'id = ?', whereArgs: [id.toString()]);
+  }
+
+  static Future<Periksa> getPeriksaByID(int? id) async {
+    final db = await SQLHelper.db();
+    final dataPeriksa =
+        await db.query('daftar_periksa', where: 'id_periksa = ?', whereArgs: [
+      id.toString()
+    ], columns: [
+      'id_periksa',
+      'nama_pasien',
+      'dokter_spesialis',
+      'jenis_perawatan',
+      'tanggal_periksa',
+      'gambar_dokter',
+      'ruangan',
+      'price',
+      'status_checkin'
+    ]);
+
+    List<Map<String, dynamic>> periksaData = dataPeriksa;
+
+    Periksa data = Periksa(
+        id: periksaData.first['id_periksa'],
+        namaPasien: periksaData.first['nama_pasien'],
+        dokterSpesialis: periksaData.first['dokter_spesialis'],
+        jenisPerawatan: periksaData.first['jenis_perawatan'],
+        tanggalPeriksa: periksaData.first['tanggal_periksa'],
+        gambarDokter: periksaData.first['gambar_dokter'],
+        ruangan: periksaData.first['ruangan'],
+        price: periksaData.first['price'],
+        statusCheckin: periksaData.first['status_checkin']);
+    return data;
   }
 }

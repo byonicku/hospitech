@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 class Periksa {
-  final int? id, statusCheckin;
+  final int? id, statusCheckin, price;
   String? namaPasien,
       dokterSpesialis,
       jenisPerawatan,
       tanggalPeriksa,
       gambarDokter,
       ruangan;
-
   Periksa(
       {this.id,
       this.namaPasien,
