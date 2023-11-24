@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
-import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
-import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -200,6 +197,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           try {
                             await UserClient.updatePassword(
                                 usernameController.text,
+                                passwordController.text,
                                 newPasswordController.text);
 
                             navPush(MaterialPageRoute(
@@ -212,36 +210,12 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                               ),
                             );
                           } catch (e) {
-                            // print(e.toString());
-
-                            if (e
-                                .toString()
-                                .contains("Username Tidak Ditemukan")) {
-                              scaffoldMessenger.showSnackBar(
-                                const SnackBar(
-                                  duration: Duration(seconds: 2),
-                                  content: Text(
-                                      'Anda belum terdaftar sebagai user!'),
-                                ),
-                              );
-                            } else {
-                              scaffoldMessenger.showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'Username atau password yang Anda masukkan salah'),
-                                ),
-                              );
-                            }
-
-
                             scaffoldMessenger.showSnackBar(
                               SnackBar(
                                 duration: Duration(seconds: 2),
-                                content: Text(
-                                    e.toString()),
+                                content: Text(e.toString()),
                               ),
                             );
-
                           }
 
                           // bool isUsernameRegistered =
