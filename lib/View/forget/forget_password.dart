@@ -198,9 +198,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           //* dari halaman register atau belum
 
                           try {
-                            // User updatePassword = await UserClient.updatePassword(
-                            //     usernameController.text,
-                            //     passwordController.text);
+                            await UserClient.updatePassword(
+                                usernameController.text,
+                                newPasswordController.text);
 
                             navPush(MaterialPageRoute(
                                 builder: (_) => const LoginView()));
@@ -232,6 +232,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                 ),
                               );
                             }
+
+
+                            scaffoldMessenger.showSnackBar(
+                              SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text(
+                                    e.toString()),
+                              ),
+                            );
+
                           }
 
                           // bool isUsernameRegistered =
