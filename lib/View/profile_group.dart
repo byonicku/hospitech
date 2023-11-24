@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 SingleChildScrollView namePage(
   String url,
@@ -10,41 +11,44 @@ SingleChildScrollView namePage(
 ) {
   return SingleChildScrollView(
     child: Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.only(top: 1.0.h, left: 8.0.w, right: 8.0.w),
       child: SizedBox(
         child: Column(
           children: [
             Image(
               image: NetworkImage(url),
-              width: 200,
-              height: 200,
+              width: 50.w,
+              height: 50.h,
             ),
             Text(name,
                 textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-            Text(tagline),
-            Text(npm),
-            const Align(
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold)),
+            Text(tagline,
+                textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp)),
+            Text(npm, style: TextStyle(fontSize: 14.sp)),
+            Align(
               alignment: Alignment.centerLeft,
               child: Text("About Me:",
                   textAlign: TextAlign.justify,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  style:
+                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
             ),
-            Text(aboutMe),
-            const Padding(
-              padding: EdgeInsets.only(top: 8.0),
+            Text(aboutMe,
+                textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp)),
+            Padding(
+              padding: EdgeInsets.only(top: 1.0.h),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Contact:",
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontSize: 18.sp, fontWeight: FontWeight.bold)),
               ),
             ),
             Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   contact,
+                  style: TextStyle(fontSize: 14.sp),
                 )),
           ],
         ),
@@ -65,10 +69,11 @@ class ProfileView extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: null,
-          title: const Text(
+          title: Text(
             "Developers",
             style: TextStyle(
               fontWeight: FontWeight.bold,
+              fontSize: 16.sp,
             ),
           ),
           notificationPredicate: (ScrollNotification notification) {
@@ -76,27 +81,32 @@ class ProfileView extends StatelessWidget {
           },
           scrolledUnderElevation: 4.0,
           shadowColor: Theme.of(context).shadowColor,
-          bottom: const TabBar(
+          bottom: TabBar(
             tabs: <Widget>[
               Tab(
-                icon: Icon(Icons.person),
+                icon: Icon(Icons.person, size: 16.sp),
                 text: "Nico",
+                height: 5.h,
               ),
               Tab(
-                icon: Icon(Icons.person),
+                icon: Icon(Icons.person, size: 16.sp),
                 text: "Fredo",
+                height: 5.h,
               ),
               Tab(
-                icon: Icon(Icons.person),
+                icon: Icon(Icons.person, size: 16.sp),
                 text: "Berly",
+                height: 5.h,
               ),
               Tab(
-                icon: Icon(Icons.person),
+                icon: Icon(Icons.person, size: 16.sp),
                 text: "Hendry",
+                height: 5.h,
               ),
               Tab(
-                icon: Icon(Icons.person),
+                icon: Icon(Icons.person, size: 16.sp),
                 text: "Anri",
+                height: 5.h,
               ),
             ],
           ),

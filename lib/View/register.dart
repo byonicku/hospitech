@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
@@ -63,13 +64,13 @@ class _RegisterViewState extends State<RegisterView> {
                       hintTxt: "Username",
                       labelTxt: "Username",
                       iconData: Icons.person),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                        width: 360,
+                        width: 100.w,
                         child: TextFormField(
                           validator: (email) {
                             if (email!.isEmpty) {
@@ -89,13 +90,13 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
                         )),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         validator: (password) {
                           if (password!.isEmpty) {
@@ -130,8 +131,8 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   inputForm((noTelp) {
                     if (noTelp == null || noTelp.isEmpty) {
@@ -147,14 +148,14 @@ class _RegisterViewState extends State<RegisterView> {
                       labelTxt: "No Telepon",
                       iconData: Icons.phone_android,
                       textInputType: TextInputType.number),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //Date Picker
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         autofocus: false,
                         controller: dateController,
@@ -199,16 +200,16 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //radio button
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 6.0.h,
                     ),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: FormBuilderRadioGroup(
                         decoration: const InputDecoration(labelText: 'Gender'),
                         name: "gender",
@@ -228,9 +229,10 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   //check box
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                       child: SizedBox(
-                        width: 360,
+                        width: 100.w,
+                        height: 10.h,
                         child: FormBuilderCheckbox(
                           name: 'accept_terms',
                           onChanged: (value) {
@@ -250,22 +252,24 @@ class _RegisterViewState extends State<RegisterView> {
                                   text: 'I have read and agree to the ',
                                   style: TextStyle(
                                       color:
-                                          isDark ? Colors.white : Colors.black),
+                                          isDark ? Colors.white : Colors.black,
+                                      fontSize: 14.sp),
                                 ),
                                 TextSpan(
                                   text: 'Terms and Conditions',
                                   style: TextStyle(
                                       color: isDark
                                           ? Colors.indigo[300]
-                                          : Colors.blue),
+                                          : Colors.blue,
+                                      fontSize: 14.sp),
                                 ),
                               ],
                             ),
                           ),
                         ),
                       )),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   ElevatedButton(
                       onPressed: () async {
@@ -360,16 +364,17 @@ class _RegisterViewState extends State<RegisterView> {
                         }
                       }, // onPressed end curly bracket
 
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 10.0),
+                            horizontal: 3.0.h, vertical: 2.0.w),
                         child: Text(
                           'Register',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style:
+                              TextStyle(fontSize: 16.sp, color: Colors.white),
                         ),
                       )),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                 ],
               ),

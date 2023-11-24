@@ -6,6 +6,7 @@ import 'package:tugas_besar_hospital_pbp/View/profile_page.dart';
 import 'dart:io';
 import 'dart:math';
 import 'package:shake/shake.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key, required this.selectedIndex});
@@ -66,11 +67,14 @@ class _HomeViewState extends State<HomeView> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Daily Tip'),
-          content: Text(selectedTip),
+          title: Text('Daily Tip', style: TextStyle(fontSize: 14.sp)),
+          content: Text(
+            selectedTip,
+            style: TextStyle(fontSize: 14.sp),
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close'),
+              child: Text('Close', style: TextStyle(fontSize: 14.sp)),
               onPressed: () {
                 Navigator.of(context).pop();
                 setState(() {
@@ -90,10 +94,11 @@ class _HomeViewState extends State<HomeView> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: null,
-          title: const Text(
+          title: Text(
             "Kategori Dokter Spesialis",
             style: TextStyle(
               fontWeight: FontWeight.bold,
+              fontSize: 16.sp,
             ),
           ),
         ),
@@ -117,7 +122,11 @@ class _HomeViewState extends State<HomeView> {
         ));
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          selectedFontSize: 16.sp,
+          unselectedFontSize: 14.sp,
           items: const [
             BottomNavigationBarItem(
                 icon: Icon(

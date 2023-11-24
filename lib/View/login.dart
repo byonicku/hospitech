@@ -5,6 +5,7 @@ import 'package:tugas_besar_hospital_pbp/View/register.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -30,23 +31,23 @@ class _LoginViewState extends State<LoginView> {
           key: _formKey,
           child: SingleChildScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: const EdgeInsets.symmetric(vertical: 100),
+            padding: EdgeInsets.symmetric(vertical: 10.h),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "Welcome to Hospital PBP!",
                   style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Image(
-                  image: AssetImage(
+                Image(
+                  image: const AssetImage(
                     'assets/images/logo.png',
                   ),
-                  width: 200,
-                  height: 200,
+                  width: 40.w,
+                  height: 40.h,
                 ),
                 //username
                 inputLogin((username) {
@@ -59,46 +60,52 @@ class _LoginViewState extends State<LoginView> {
                     hintTxt: "Username",
                     iconData: Icons.person),
                 //* Password
-                const SizedBox(
-                  height: 8,
+                SizedBox(
+                  height: 2.h,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: TextFormField(
-                    validator: (value) =>
-                        value!.isEmpty ? "Tolong isikan password Anda" : null,
-                    controller: passwordController,
-                    obscureText: _isObscured,
-                    autofocus: false,
-                    onChanged: (s) {
-                      setState(() {
-                        passwordController.text = s;
-                      });
-                    },
-                    decoration: InputDecoration(
-                        hintText: "Password",
-                        border: const OutlineInputBorder(),
-                        icon: const Icon(Icons.password),
-                        suffixIcon: GestureDetector(
-                            onTap: () => setState(() {
-                                  _isObscured = !_isObscured;
-                                }),
-                            child: Icon(
-                              _isObscured
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ))),
+                  padding: EdgeInsets.symmetric(horizontal: 4.0.h),
+                  child: SizedBox(
+                    width: 100.w,
+                    child: TextFormField(
+                      validator: (value) =>
+                          value!.isEmpty ? "Tolong isikan password Anda" : null,
+                      controller: passwordController,
+                      obscureText: _isObscured,
+                      autofocus: false,
+                      onChanged: (s) {
+                        setState(() {
+                          passwordController.text = s;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          hintText: "Password",
+                          border: const OutlineInputBorder(),
+                          icon: const Icon(Icons.password),
+                          suffixIcon: GestureDetector(
+                              onTap: () => setState(() {
+                                    _isObscured = !_isObscured;
+                                  }),
+                              child: Icon(
+                                _isObscured
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ))),
+                    ),
                   ),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 24),
+                    padding: EdgeInsets.only(right: 5.w),
                     child: TextButton(
                         onPressed: () {
                           pushRegister(context);
                         },
-                        child: const Text('Belum punya akun ?')),
+                        child: Text(
+                          'Belum punya akun ?',
+                          style: TextStyle(fontSize: 13.sp),
+                        )),
                   ),
                 ),
                 //* Baris yang berisi tombol login dan tombol mengarah ke halaman register
@@ -160,12 +167,13 @@ class _LoginViewState extends State<LoginView> {
                         }
                       }, // onPressed end curly bracket
 
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 10.0),
+                            horizontal: 3.0.h, vertical: 2.0.w),
                         child: Text(
                           'Login',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style:
+                              TextStyle(fontSize: 16.sp, color: Colors.white),
                         ),
                       ),
                     ),
