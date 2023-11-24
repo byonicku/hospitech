@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/View/forget/forget_password.dart';
+import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
@@ -10,19 +10,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class ForgotPasswordView extends StatefulWidget {
+  const ForgotPasswordView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   final _formKey = GlobalKey<FormState>();
   bool isDark = darkNotifier.value;
   bool _isObscured = true;
+  bool _isObscuredNew = true;
+  bool _isObscureConfirm = true;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmNewPasswordController = TextEditingController();
 
   DateTime backButtonPressTime = DateTime.now();
 
@@ -39,30 +43,23 @@ class _LoginViewState extends State<LoginView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Welcome to Hospital PBP!",
+                  "Reset Password",
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Image(
-                  image: const AssetImage(
-                    'assets/images/logo.png',
-                  ),
-                  width: 40.w,
-                  height: 40.h,
-                ),
                 //username
                 inputLogin((username) {
                   if (username!.isEmpty) {
-                    return "Tolong isikan username Anda";
+                    return "Masukkan username Anda";
                   }
                   return null;
                 },
                     controller: usernameController,
                     hintTxt: "Username",
                     iconData: Icons.person),
-                //* Password
+                //* Password lama
                 SizedBox(
                   height: 2.h,
                 ),
@@ -72,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
                     width: 100.w,
                     child: TextFormField(
                       validator: (value) =>
-                          value!.isEmpty ? "Tolong isikan password Anda" : null,
+                          value!.isEmpty ? "Masukkan password Anda" : null,
                       controller: passwordController,
                       obscureText: _isObscured,
                       autofocus: false,
@@ -82,7 +79,7 @@ class _LoginViewState extends State<LoginView> {
                         });
                       },
                       decoration: InputDecoration(
-                          hintText: "Password",
+                          hintText: "Password lama",
                           border: const OutlineInputBorder(),
                           icon: const Icon(Icons.password),
                           suffixIcon: GestureDetector(
@@ -97,48 +94,96 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 5.w),
-                        child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          const ForgotPasswordView()));
-                            },
-                            child: Text(
-                              'Forgot Password?',
-                              style: TextStyle(fontSize: 13.sp),
-                            )),
-                      ),
+                //password baru
+                SizedBox(
+                  height: 2.h,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0.h),
+                  child: SizedBox(
+                    width: 100.w,
+                    child: TextFormField(
+                      validator: (value) =>
+                          value!.isEmpty ? "Masukkan password Anda" : null,
+                      controller: newPasswordController,
+                      obscureText: _isObscuredNew,
+                      autofocus: false,
+                      onChanged: (s) {
+                        setState(() {
+                          newPasswordController.text = s;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          hintText: "Password baru",
+                          border: const OutlineInputBorder(),
+                          icon: const Icon(Icons.password),
+                          suffixIcon: GestureDetector(
+                              onTap: () => setState(() {
+                                    _isObscuredNew = !_isObscuredNew;
+                                  }),
+                              child: Icon(
+                                _isObscuredNew
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ))),
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 5.w),
-                        child: TextButton(
-                            onPressed: () {
-                              pushRegister(context);
-                            },
-                            child: Text(
-                              'Belum punya akun ?',
-                              style: TextStyle(fontSize: 13.sp),
-                            )),
-                      ),
+                  ),
+                ),
+                //konfrimasi password
+                SizedBox(
+                  height: 2.h,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0.h),
+                  child: SizedBox(
+                    width: 100.w,
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Masukkan password Anda";
+                        }
+
+                        if (value != newPasswordController.text) {
+                          return "Password Konfirmasi Tidak Sama!";
+                        }
+
+                        return null;
+                      },
+                      controller: confirmNewPasswordController,
+                      obscureText: _isObscureConfirm,
+                      autofocus: false,
+                      onChanged: (s) {
+                        setState(() {
+                          confirmNewPasswordController.text = s;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          hintText: "Konfrimasi Password",
+                          border: const OutlineInputBorder(),
+                          icon: const Icon(Icons.password),
+                          suffixIcon: GestureDetector(
+                              onTap: () => setState(() {
+                                    _isObscureConfirm = !_isObscureConfirm;
+                                  }),
+                              child: Icon(
+                                _isObscureConfirm
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ))),
                     ),
-                  ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 5.w),
+                  ),
                 ),
                 //* Baris yang berisi tombol login dan tombol mengarah ke halaman register
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    //* tombol login
+                    //* tombol update
                     ElevatedButton(
                       //* Fungsi yang dijalankan saat tombol ditekan.
                       onPressed: () async {
@@ -153,28 +198,25 @@ class _LoginViewState extends State<LoginView> {
                           //* dari halaman register atau belum
 
                           try {
-                            User loggedIn = await UserClient.login(
-                                usernameController.text,
-                                passwordController.text);
-
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            prefs.setString('id', loggedIn.id!.toString());
+                            // User updatePassword = await UserClient.updatePassword(
+                            //     usernameController.text,
+                            //     passwordController.text);
 
                             navPush(MaterialPageRoute(
-                                builder: (_) => const HomeView(
-                                      selectedIndex: 0,
-                                    )));
+                                builder: (_) => const LoginView()));
                             scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 duration: Duration(seconds: 2),
-                                content: Text('Berhasil Melakukan Login'),
+                                content:
+                                    Text('Berhasil Melakukan Reset Password'),
                               ),
                             );
                           } catch (e) {
                             // print(e.toString());
 
-                            if (e.toString().contains("User Tidak Ditemukan")) {
+                            if (e
+                                .toString()
+                                .contains("Username Tidak Ditemukan")) {
                               scaffoldMessenger.showSnackBar(
                                 const SnackBar(
                                   duration: Duration(seconds: 2),
@@ -232,7 +274,7 @@ class _LoginViewState extends State<LoginView> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 3.0.h, vertical: 2.0.w),
                         child: Text(
-                          'Login',
+                          'Ubah Password',
                           style:
                               TextStyle(fontSize: 16.sp, color: Colors.white),
                         ),
@@ -244,14 +286,6 @@ class _LoginViewState extends State<LoginView> {
             ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          isDark = !isDark;
-          darkNotifier.value = isDark;
-        },
-        tooltip: "Ganti Tema",
-        child: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
       ),
     );
   }
