@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 
 import 'dart:convert';
@@ -91,10 +89,15 @@ class UserClient {
     }
   }
 
-  static Future<Response> updatePassword(
-      String username, String password) async {
+  static Future<User> updatePassword(
+      String username, String password, String newPassword) async {
     try {
-      var response = await post(Uri.http(url, endpoint));
+      var response = await post(Uri.http(url, '$endpoint/login'),
+          headers: {"Content-Type": "application/json"},
+          body: json.encode({
+            "username": username,
+            "password": password,
+          }));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
@@ -104,7 +107,11 @@ class UserClient {
         throw Exception("Username Tidak Boleh Diganti");
       }
 
-      userFound.password = password;
+      if (userFound.password != password) {
+        throw Exception("Password Lama Salah");
+      }
+
+      userFound.password = newPassword;
 
       var response2 = await put(
         Uri.http(url, '$endpoint/${userFound.id}'),
@@ -114,7 +121,7 @@ class UserClient {
 
       if (response2.statusCode != 200) throw Exception(response2.body);
 
-      return response2;
+      return userFound;
     } catch (e) {
       return Future.error(e.toString());
     }
