@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:tugas_besar_hospital_pbp/view/home.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/qr_scanner/scanner_error_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:geolocator/geolocator.dart';
@@ -221,7 +222,7 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
         statusCheckin: 1,
       );
 
-      editPeriksa(updatedPeriksa);
+      DaftarPeriksaClient.update(updatedPeriksa);
 
       returnHome();
 
