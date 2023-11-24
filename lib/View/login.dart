@@ -98,12 +98,12 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
-                        padding: EdgeInsets.only(right: 5.w),
+                        padding: EdgeInsets.only(left: 6.w),
                         child: TextButton(
                             onPressed: () {
                               Navigator.push(
@@ -121,7 +121,7 @@ class _LoginViewState extends State<LoginView> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
-                        padding: EdgeInsets.only(right: 5.w),
+                        padding: EdgeInsets.only(left: 8.w),
                         child: TextButton(
                             onPressed: () {
                               pushRegister(context);
