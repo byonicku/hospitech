@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 Padding inputForm(Function(String?) validasi,
     {required TextEditingController controller,
@@ -8,9 +9,9 @@ Padding inputForm(Function(String?) validasi,
     TextInputType? textInputType,
     bool password = false}) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
     child: SizedBox(
-        width: 360,
+        width: 100.w,
         child: TextFormField(
           validator: (value) => validasi(value),
           autofocus: false,
@@ -32,15 +33,18 @@ Padding inputLogin(Function(String?) validasi,
     required IconData iconData,
     bool password = false}) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-    child: TextFormField(
-      validator: (value) => validasi(value),
-      autofocus: false,
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hintTxt,
-        border: const OutlineInputBorder(),
-        icon: Icon(iconData),
+    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
+    child: SizedBox(
+      width: 100.w,
+      child: TextFormField(
+        validator: (value) => validasi(value),
+        autofocus: false,
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: hintTxt,
+          border: const OutlineInputBorder(),
+          icon: Icon(iconData),
+        ),
       ),
     ),
   );

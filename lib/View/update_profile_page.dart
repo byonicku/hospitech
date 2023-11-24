@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
@@ -32,18 +34,36 @@ class _ProfilePageState extends State<UpdateProfilePage> {
   bool _isObscured = true;
   bool isDark = darkNotifier.value;
 
+  // @override
+  // void initState() async {
+  //   super.initState();
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   User dataUser = await UserClient.show(prefs.getString('id')!);
+
+  //   setState(() {
+  //     usernameController.text = dataUser.username!;
+  //     emailController.text = dataUser.email!;
+  //     passwordController.text = dataUser.password!;
+  //     notelpController.text = dataUser.noTelp!;
+  //     dateController.text = dataUser.tglLahir!;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title: Text(
+          'Edit Profile',
+          style: TextStyle(fontSize: 16.sp),
+        ),
       ),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.symmetric(vertical: 10.h),
               child: Column(
                 children: [
                   inputForm((username) {
@@ -59,13 +79,13 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       hintTxt: "Username",
                       labelTxt: "Username",
                       iconData: Icons.person),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                        width: 360,
+                        width: 100.w,
                         child: TextFormField(
                           validator: (email) {
                             if (email!.isEmpty) {
@@ -85,13 +105,13 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                           ),
                         )),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         validator: (password) {
                           if (password!.isEmpty) {
@@ -126,8 +146,8 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   inputForm((noTelp) {
                     if (noTelp == null || noTelp.isEmpty) {
@@ -143,14 +163,14 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       labelTxt: "No Telepon",
                       iconData: Icons.phone_android,
                       textInputType: TextInputType.number),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //Date Picker
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         autofocus: false,
                         controller: dateController,
@@ -195,16 +215,16 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //radio button
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 6.0.h,
                     ),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: FormBuilderRadioGroup(
                         decoration: const InputDecoration(labelText: 'Gender'),
                         name: "gender",
@@ -222,13 +242,17 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 2.h,
+                  ),
                   ElevatedButton(
                     onPressed: () async {
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
-                      final data = await getUserByID(prefs.getInt('id'));
+                      // final data = await getUserByID(prefs.getInt('id'));
+                      final data =
+                          await UserClient.show(prefs.getString('id')!);
 
                       if (_formKey.currentState!.validate()) {
                         Map<String, dynamic> formData = {};
@@ -239,18 +263,18 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                         formData['tglLahir'] = dateController.text;
                         formData['gender'] = gender;
 
-                        bool isEmailRegistered =
-                            await checkEmail(emailController.text);
+                        // bool isEmailRegistered =
+                        //     await checkEmail(emailController.text);
 
-                        if (isEmailRegistered) {
-                          scaffoldMessenger.showSnackBar(
-                            const SnackBar(
-                              duration: Duration(seconds: 2),
-                              content: Text('Email sudah terdaftar!'),
-                            ),
-                          );
-                          return;
-                        }
+                        // if (isEmailRegistered) {
+                        //   scaffoldMessenger.showSnackBar(
+                        //     const SnackBar(
+                        //       duration: Duration(seconds: 2),
+                        //       content: Text('Email sudah terdaftar!'),
+                        //     ),
+                        //   );
+                        //   return;
+                        // }
 
                         // kalo UPDATE masalah kemungkinan ini
                         // ignore: use_build_context_synchronously
@@ -263,7 +287,7 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                                 'Apakah data update Anda sudah benar?'),
                             actions: [
                               TextButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   User user = User(
                                       id: data.id,
                                       email: emailController.text,
@@ -272,25 +296,39 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                                       password: passwordController.text,
                                       tglLahir: dateController.text,
                                       username: usernameController.text);
-                                  updateUserByID(data.id, user);
+                                  try {
+                                    await UserClient.update(user);
 
-                                  Navigator.of(context)
-                                      .popUntil((route) => route.isFirst);
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (_) => const HomeView(
-                                        selectedIndex: 1,
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (_) => const HomeView(
+                                          selectedIndex: 1,
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
 
-                                  scaffoldMessenger.showSnackBar(
-                                    const SnackBar(
-                                      duration: Duration(seconds: 2),
-                                      content:
-                                          Text('Berhasil Melakukan Update'),
-                                    ),
-                                  );
+                                    scaffoldMessenger.showSnackBar(
+                                      const SnackBar(
+                                        duration: Duration(seconds: 2),
+                                        content:
+                                            Text('Berhasil Melakukan Update'),
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    print(e.toString());
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context).pop();
+                                    scaffoldMessenger.showSnackBar(
+                                      const SnackBar(
+                                        duration: Duration(seconds: 2),
+                                        content: Text('Email sudah terdaftar!'),
+                                      ),
+                                    );
+                                  }
                                 },
                                 child: Text('Sudah',
                                     style: TextStyle(
@@ -321,16 +359,18 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                         );
                       }
                     },
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 15.0, vertical: 10.0),
+                          horizontal: 3.0.h, vertical: 2.0.w),
                       child: Text(
                         'Update',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style: TextStyle(fontSize: 16.sp, color: Colors.white),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16.0),
+                  SizedBox(
+                    height: 2.h,
+                  ),
                 ],
               ),
             ),
