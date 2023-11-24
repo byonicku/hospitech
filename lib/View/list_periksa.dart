@@ -42,7 +42,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
         elevation: 1,
         child: InkWell(
           onTap: () {
-            createPdf(listPeriksaRaw[index]['id_periksa'], id, context);
+            createPdf(listPeriksaRaw[index]['id_daftar_periksa'], id, context);
             setState(() {
               const uuid = Uuid();
               id = uuid.v1();
@@ -124,8 +124,9 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
           context,
           MaterialPageRoute(
             builder: (_) => EditPeriksaView(
-              id: listPeriksaRaw[index]['id_periksa'],
+              id: listPeriksaRaw[index]['id_daftar_periksa'],
               namaPasien: listPeriksaRaw[index]['nama_pasien'],
+              price: listPeriksaRaw[index]['price'],
               dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
               jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
               tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
@@ -160,10 +161,11 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
               TextButton(
                 onPressed: () {
                   // Menghapus Data Yang di pilih
-                  final idHapus = listPeriksaRaw[index]['id_periksa'];
+                  final int idHapus =
+                      listPeriksaRaw[index]['id_daftar_periksa'];
 
                   // deleteDaftarPeriksa(idHapus);
-                  DaftarPeriksaClient.destroy(idHapus);
+                  DaftarPeriksaClient.destroy(idHapus.toString());
 
                   Navigator.pop(context);
 
@@ -228,7 +230,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
             context,
             MaterialPageRoute(
               builder: (_) => BarcodeScannerPageView(
-                id: listPeriksaRaw[index]['id_periksa'],
+                id: listPeriksaRaw[index]['id_daftar_periksa'],
                 namaPasien: listPeriksaRaw[index]['nama_pasien'],
                 dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
                 jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
@@ -293,6 +295,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
               builder: (_) => const TambahPeriksa(
                 id: null,
                 namaPasien: null,
+                price: null,
                 dokterSpesialis: null,
                 jenisPerawatan: null,
                 tanggalPeriksa: null,
