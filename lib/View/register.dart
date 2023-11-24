@@ -3,10 +3,11 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:intl/intl.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/View/login.dart';
 
 class RegisterView extends StatefulWidget {
@@ -284,18 +285,18 @@ class _RegisterViewState extends State<RegisterView> {
                           formData['tglLahir'] = dateController.text;
                           formData['gender'] = gender;
 
-                          bool isEmailRegistered =
-                              await checkEmail(emailController.text);
+                          // bool isEmailRegistered =
+                          //     await checkEmail(emailController.text);
 
-                          if (isEmailRegistered) {
-                            scaffoldMessenger.showSnackBar(
-                              const SnackBar(
-                                duration: Duration(seconds: 2),
-                                content: Text('Email sudah terdaftar!'),
-                              ),
-                            );
-                            return;
-                          }
+                          // if (isEmailRegistered) {
+                          //   scaffoldMessenger.showSnackBar(
+                          //     const SnackBar(
+                          //       duration: Duration(seconds: 2),
+                          //       content: Text('Email sudah terdaftar!'),
+                          //     ),
+                          //   );
+                          //   return;
+                          // }
 
                           // kalo register masalah kemungkinan ini
                           // ignore: use_build_context_synchronously
@@ -309,30 +310,55 @@ class _RegisterViewState extends State<RegisterView> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
-                                        onPressed: () {
-                                          addUser(User(
-                                              id: null,
-                                              username: usernameController.text,
-                                              email: emailController.text,
-                                              jenisKelamin: gender,
-                                              noTelp: notelpController.text,
-                                              password: passwordController.text,
-                                              tglLahir: dateController.text));
-                                          Navigator.of(context).pop();
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const LoginView()),
-                                          );
+                                        onPressed: () async {
+                                          // addUser(User(
+                                          //     id: null,
+                                          //     username: usernameController.text,
+                                          //     email: emailController.text,
+                                          //     jenisKelamin: gender,
+                                          //     noTelp: notelpController.text,
+                                          //     password: passwordController.text,
+                                          //     tglLahir: dateController.text));
+                                          try {
+                                            await UserClient.register(User(
+                                                id: null,
+                                                username:
+                                                    usernameController.text,
+                                                email: emailController.text,
+                                                jenisKelamin: gender,
+                                                noTelp: notelpController.text,
+                                                password:
+                                                    passwordController.text,
+                                                tglLahir: dateController.text));
 
-                                          scaffoldMessenger.showSnackBar(
-                                            const SnackBar(
-                                              duration: Duration(seconds: 2),
-                                              content: Text(
-                                                  'Berhasil Melakukan Registrasi'),
-                                            ),
-                                          );
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.of(context).pop();
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      const LoginView()),
+                                            );
+
+                                            scaffoldMessenger.showSnackBar(
+                                              const SnackBar(
+                                                duration: Duration(seconds: 2),
+                                                content: Text(
+                                                    'Berhasil Melakukan Registrasi'),
+                                              ),
+                                            );
+                                          } catch (e) {
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.of(context).pop();
+                                            scaffoldMessenger.showSnackBar(
+                                              const SnackBar(
+                                                duration: Duration(seconds: 2),
+                                                content: Text(
+                                                    'Email sudah terdaftar!'),
+                                              ),
+                                            );
+                                          }
                                         },
                                         child: Text('Sudah',
                                             style: TextStyle(

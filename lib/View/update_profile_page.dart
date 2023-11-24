@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
@@ -32,6 +33,21 @@ class _ProfilePageState extends State<UpdateProfilePage> {
   bool? isChecked = false;
   bool _isObscured = true;
   bool isDark = darkNotifier.value;
+
+  // @override
+  // void initState() async {
+  //   super.initState();
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   User dataUser = await UserClient.show(prefs.getString('id')!);
+
+  //   setState(() {
+  //     usernameController.text = dataUser.username!;
+  //     emailController.text = dataUser.email!;
+  //     passwordController.text = dataUser.password!;
+  //     notelpController.text = dataUser.noTelp!;
+  //     dateController.text = dataUser.tglLahir!;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +250,9 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
-                      final data = await getUserByID(prefs.getInt('id'));
+                      // final data = await getUserByID(prefs.getInt('id'));
+                      final data =
+                          await UserClient.show(prefs.getString('id')!);
 
                       if (_formKey.currentState!.validate()) {
                         Map<String, dynamic> formData = {};
@@ -245,18 +263,18 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                         formData['tglLahir'] = dateController.text;
                         formData['gender'] = gender;
 
-                        bool isEmailRegistered =
-                            await checkEmail(emailController.text);
+                        // bool isEmailRegistered =
+                        //     await checkEmail(emailController.text);
 
-                        if (isEmailRegistered) {
-                          scaffoldMessenger.showSnackBar(
-                            const SnackBar(
-                              duration: Duration(seconds: 2),
-                              content: Text('Email sudah terdaftar!'),
-                            ),
-                          );
-                          return;
-                        }
+                        // if (isEmailRegistered) {
+                        //   scaffoldMessenger.showSnackBar(
+                        //     const SnackBar(
+                        //       duration: Duration(seconds: 2),
+                        //       content: Text('Email sudah terdaftar!'),
+                        //     ),
+                        //   );
+                        //   return;
+                        // }
 
                         // kalo UPDATE masalah kemungkinan ini
                         // ignore: use_build_context_synchronously
@@ -269,7 +287,7 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                                 'Apakah data update Anda sudah benar?'),
                             actions: [
                               TextButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   User user = User(
                                       id: data.id,
                                       email: emailController.text,
@@ -278,25 +296,39 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                                       password: passwordController.text,
                                       tglLahir: dateController.text,
                                       username: usernameController.text);
-                                  updateUserByID(data.id, user);
+                                  try {
+                                    await UserClient.update(user);
 
-                                  Navigator.of(context)
-                                      .popUntil((route) => route.isFirst);
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (_) => const HomeView(
-                                        selectedIndex: 1,
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (_) => const HomeView(
+                                          selectedIndex: 1,
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
 
-                                  scaffoldMessenger.showSnackBar(
-                                    const SnackBar(
-                                      duration: Duration(seconds: 2),
-                                      content:
-                                          Text('Berhasil Melakukan Update'),
-                                    ),
-                                  );
+                                    scaffoldMessenger.showSnackBar(
+                                      const SnackBar(
+                                        duration: Duration(seconds: 2),
+                                        content:
+                                            Text('Berhasil Melakukan Update'),
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    print(e.toString());
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context).pop();
+                                    scaffoldMessenger.showSnackBar(
+                                      const SnackBar(
+                                        duration: Duration(seconds: 2),
+                                        content: Text('Email sudah terdaftar!'),
+                                      ),
+                                    );
+                                  }
                                 },
                                 child: Text('Sudah',
                                     style: TextStyle(
