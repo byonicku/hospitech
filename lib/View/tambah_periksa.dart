@@ -1,39 +1,21 @@
 import 'dart:math';
+import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
-
-List<String> listGambarProfilDokter = [
-  'assets/images/doctorProfilePictures/profileDoctor1.jpg',
-  'assets/images/doctorProfilePictures/profileDoctor2.jpg',
-  'assets/images/doctorProfilePictures/profileDoctor3.jpg',
-  'assets/images/doctorProfilePictures/profileDoctor4.jpg',
-];
-
-List<String> listJenisPerawatan = ['Rawat Jalan', 'Rawat Inap'];
-
-List<String> listDokterSpesialis = [
-  'Spesialis Jantung',
-  'Spesialis Organ Dalam',
-  'Spesialis Paru - paru',
-  'Spesialis Ortopedi'
-];
-
-List<String> listRuangan = [
-  'Ruang 1',
-  'Ruang 2',
-  'Ruang 3',
-];
+import 'package:tugas_besar_hospital_pbp/constant.dart';
 
 class TambahPeriksa extends StatefulWidget {
   const TambahPeriksa({
     super.key,
     required this.id,
     required this.namaPasien,
+    required this.price,
     required this.dokterSpesialis,
     required this.jenisPerawatan,
     required this.tanggalPeriksa,
@@ -48,7 +30,7 @@ class TambahPeriksa extends StatefulWidget {
       gambarDokter,
       ruangan;
 
-  final int? id;
+  final int? id, price;
 
   @override
   State<TambahPeriksa> createState() => _TambahPeriksaState();
@@ -63,6 +45,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
 
   String? selectedJenisPerawatan;
   String? selectedDokterSpesialis;
+  double? selectedHargaPerawatan;
   bool isPickedPerawatan = false;
   bool isPickedDokter = false;
 
@@ -78,20 +61,21 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 32,
+                  SizedBox(
+                    height: 2.h,
                   ),
-                  const Text(
+                  Text(
                     "Daftar Periksa",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(
-                    height: 32,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                        width: 360,
+                        width: 100.w,
                         child: TextFormField(
                           validator: (namaPasien) {
                             if (namaPasien!.isEmpty) {
@@ -111,14 +95,14 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           ),
                         )),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //Date Picker
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         autofocus: false,
                         controller: tanggalPeriksaController,
@@ -159,12 +143,12 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.only(right: 32.0, left: 72.0),
+                    padding: EdgeInsets.only(left: 7.2.h, right: 4.0.h),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton2<String>(
                         isExpanded: true,
@@ -235,19 +219,19 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                             thumbVisibility: MaterialStateProperty.all(true),
                           ),
                         ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.only(left: 14, right: 14),
+                        menuItemStyleData: MenuItemStyleData(
+                          height: 4.h,
+                          padding: EdgeInsets.only(left: 1.h, right: 1.h),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.only(right: 32.0, left: 72.0),
+                    padding: EdgeInsets.only(left: 7.2.h, right: 4.0.h),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton2<String>(
                         isExpanded: true,
@@ -289,7 +273,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         },
                         buttonStyleData: ButtonStyleData(
                           height: 50,
-                          padding: const EdgeInsets.only(left: 14, right: 14),
+                          padding: EdgeInsets.only(left: 1.h, right: 1.h),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Colors.grey.shade700,
@@ -318,9 +302,9 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                             thumbVisibility: MaterialStateProperty.all(true),
                           ),
                         ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.only(left: 14, right: 14),
+                        menuItemStyleData: MenuItemStyleData(
+                          height: 4.h,
+                          padding: EdgeInsets.only(left: 1.h, right: 1.h),
                         ),
                       ),
                     ),
@@ -357,6 +341,8 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           formData['nama_pasien'] = namaPasienController.text;
                           formData['dokter_spesialis'] =
                               selectedDokterSpesialis;
+                          formData['harga_perawatan'] =
+                              listHargaPerawatan[selectedDokterSpesialis];
                           formData['jenis_perawatan'] = selectedJenisPerawatan;
                           formData['tanggal_periksa'] =
                               tanggalPeriksaController.text;
@@ -377,22 +363,31 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           final Periksa newPeriksa = Periksa(
                                               namaPasien:
                                                   namaPasienController.text,
                                               dokterSpesialis:
                                                   selectedDokterSpesialis,
+                                              price: listHargaPerawatan[
+                                                  selectedDokterSpesialis],
                                               jenisPerawatan:
                                                   selectedJenisPerawatan,
                                               tanggalPeriksa:
                                                   tanggalPeriksaController.text,
                                               gambarDokter:
                                                   formData['gambar_dokter'],
-                                              ruangan: formData['ruangan']);
-                                          addDaftarPeriksa(newPeriksa);
+                                              ruangan: formData['ruangan'],
+                                              statusCheckin: 0);
+
+                                          // addDaftarPeriksa(newPeriksa);
+                                          await DaftarPeriksaClient.addPeriksa(
+                                              newPeriksa);
+
+                                          // ignore: use_build_context_synchronously
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);
+                                          // ignore: use_build_context_synchronously
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(

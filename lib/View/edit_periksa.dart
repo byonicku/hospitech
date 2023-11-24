@@ -2,32 +2,20 @@ import 'dart:math';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
-
-List<String> listGambarProfilDokter = [
-  'assets/images/doctorProfilePictures/profileDoctor1.jpg',
-  'assets/images/doctorProfilePictures/profileDoctor2.jpg',
-  'assets/images/doctorProfilePictures/profileDoctor3.jpg',
-  'assets/images/doctorProfilePictures/profileDoctor4.jpg',
-];
-
-List<String> listJenisPerawatan = ['Rawat Jalan', 'Rawat Inap'];
-
-List<String> listDokterSpesialis = [
-  'Spesialis Jantung',
-  'Spesialis Organ Dalam',
-  'Spesialis Paru - paru',
-  'Spesialis Ortopedi'
-];
+import 'package:tugas_besar_hospital_pbp/constant.dart';
 
 class EditPeriksaView extends StatefulWidget {
   const EditPeriksaView(
       {super.key,
       required this.id,
       required this.namaPasien,
+      required this.price,
       required this.dokterSpesialis,
       required this.jenisPerawatan,
       required this.tanggalPeriksa,
@@ -38,7 +26,7 @@ class EditPeriksaView extends StatefulWidget {
       jenisPerawatan,
       tanggalPeriksa,
       gambarDokter;
-  final int? id;
+  final int? id, price;
 
   @override
   State<EditPeriksaView> createState() => _EditPeriksaViewState();
@@ -91,9 +79,11 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     height: 32,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 6.0.h,
+                    ),
                     child: SizedBox(
-                        width: 360,
+                        width: 100.w,
                         child: TextFormField(
                           validator: (namaPasien) {
                             if (namaPasien!.isEmpty) {
@@ -113,14 +103,16 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           ),
                         )),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //Date Picker
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 6.0.h,
+                    ),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         autofocus: false,
                         controller: tanggalPeriksaController,
@@ -339,6 +331,8 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                   : namaPasienController.text;
                           formData['dokter_spesialis'] =
                               dokterSpesialisSelected;
+                          formData['price'] =
+                              listHargaPerawatan[dokterSpesialisSelected!];
                           formData['jenis_perawatan'] = jenisPerawatanSelected;
                           formData['tanggal_periksa'] =
                               tanggalPeriksaController.text ==
@@ -347,6 +341,8 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                   : tanggalPeriksaController.text;
                           formData['gambar_dokter'] = listGambarProfilDokter
                               .elementAt(Random().nextInt(3));
+                          formData['ruangan'] =
+                              listRuangan.elementAt(Random().nextInt(2));
 
                           // kalo ada masalah kemungkinan ini
                           // ignore: use_build_context_synchronously
@@ -373,9 +369,15 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                                   tanggalPeriksa:
                                                       tanggalPeriksaController
                                                           .text,
+                                                  price: formData['price'],
+                                                  ruangan: formData['ruangan'],
+                                                  statusCheckin: 0,
                                                   gambarDokter: formData[
                                                       'gambar_dokter']);
-                                          editPeriksa(updatedPeriksa);
+
+                                          DaftarPeriksaClient.update(
+                                              updatedPeriksa);
+
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);
                                           Navigator.pushReplacement(

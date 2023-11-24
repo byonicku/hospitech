@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:intl/intl.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/View/login.dart';
 
 class RegisterView extends StatefulWidget {
@@ -63,13 +65,13 @@ class _RegisterViewState extends State<RegisterView> {
                       hintTxt: "Username",
                       labelTxt: "Username",
                       iconData: Icons.person),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                        width: 360,
+                        width: 100.w,
                         child: TextFormField(
                           validator: (email) {
                             if (email!.isEmpty) {
@@ -89,13 +91,13 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
                         )),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         validator: (password) {
                           if (password!.isEmpty) {
@@ -130,8 +132,8 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   inputForm((noTelp) {
                     if (noTelp == null || noTelp.isEmpty) {
@@ -147,14 +149,14 @@ class _RegisterViewState extends State<RegisterView> {
                       labelTxt: "No Telepon",
                       iconData: Icons.phone_android,
                       textInputType: TextInputType.number),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //Date Picker
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: TextFormField(
                         autofocus: false,
                         controller: dateController,
@@ -199,16 +201,16 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   //radio button
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 6.0.h,
                     ),
                     child: SizedBox(
-                      width: 360,
+                      width: 100.w,
                       child: FormBuilderRadioGroup(
                         decoration: const InputDecoration(labelText: 'Gender'),
                         name: "gender",
@@ -228,9 +230,10 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   //check box
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      padding: EdgeInsets.symmetric(horizontal: 4.0.h),
                       child: SizedBox(
-                        width: 360,
+                        width: 100.w,
+                        height: 10.h,
                         child: FormBuilderCheckbox(
                           name: 'accept_terms',
                           onChanged: (value) {
@@ -250,22 +253,24 @@ class _RegisterViewState extends State<RegisterView> {
                                   text: 'I have read and agree to the ',
                                   style: TextStyle(
                                       color:
-                                          isDark ? Colors.white : Colors.black),
+                                          isDark ? Colors.white : Colors.black,
+                                      fontSize: 14.sp),
                                 ),
                                 TextSpan(
                                   text: 'Terms and Conditions',
                                   style: TextStyle(
                                       color: isDark
                                           ? Colors.indigo[300]
-                                          : Colors.blue),
+                                          : Colors.blue,
+                                      fontSize: 14.sp),
                                 ),
                               ],
                             ),
                           ),
                         ),
                       )),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                   ElevatedButton(
                       onPressed: () async {
@@ -280,18 +285,18 @@ class _RegisterViewState extends State<RegisterView> {
                           formData['tglLahir'] = dateController.text;
                           formData['gender'] = gender;
 
-                          bool isEmailRegistered =
-                              await checkEmail(emailController.text);
+                          // bool isEmailRegistered =
+                          //     await checkEmail(emailController.text);
 
-                          if (isEmailRegistered) {
-                            scaffoldMessenger.showSnackBar(
-                              const SnackBar(
-                                duration: Duration(seconds: 2),
-                                content: Text('Email sudah terdaftar!'),
-                              ),
-                            );
-                            return;
-                          }
+                          // if (isEmailRegistered) {
+                          //   scaffoldMessenger.showSnackBar(
+                          //     const SnackBar(
+                          //       duration: Duration(seconds: 2),
+                          //       content: Text('Email sudah terdaftar!'),
+                          //     ),
+                          //   );
+                          //   return;
+                          // }
 
                           // kalo register masalah kemungkinan ini
                           // ignore: use_build_context_synchronously
@@ -305,30 +310,56 @@ class _RegisterViewState extends State<RegisterView> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
-                                        onPressed: () {
-                                          addUser(User(
-                                              id: null,
-                                              username: usernameController.text,
-                                              email: emailController.text,
-                                              jenisKelamin: gender,
-                                              noTelp: notelpController.text,
-                                              password: passwordController.text,
-                                              tglLahir: dateController.text));
-                                          Navigator.of(context).pop();
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const LoginView()),
-                                          );
+                                        onPressed: () async {
+                                          // addUser(User(
+                                          //     id: null,
+                                          //     username: usernameController.text,
+                                          //     email: emailController.text,
+                                          //     jenisKelamin: gender,
+                                          //     noTelp: notelpController.text,
+                                          //     password: passwordController.text,
+                                          //     tglLahir: dateController.text));
+                                          try {
+                                            await UserClient.register(User(
+                                                id: null,
+                                                username:
+                                                    usernameController.text,
+                                                email: emailController.text,
+                                                jenisKelamin: gender,
+                                                noTelp: notelpController.text,
+                                                password:
+                                                    passwordController.text,
+                                                tglLahir: dateController.text));
 
-                                          scaffoldMessenger.showSnackBar(
-                                            const SnackBar(
-                                              duration: Duration(seconds: 2),
-                                              content: Text(
-                                                  'Berhasil Melakukan Registrasi'),
-                                            ),
-                                          );
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.of(context).pop();
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      const LoginView()),
+                                            );
+
+                                            scaffoldMessenger.showSnackBar(
+                                              const SnackBar(
+                                                duration: Duration(seconds: 2),
+                                                content: Text(
+                                                    'Berhasil Melakukan Registrasi'),
+                                              ),
+                                            );
+                                          } catch (e) {
+                                            print(e.toString());
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.of(context).pop();
+                                            scaffoldMessenger.showSnackBar(
+                                              const SnackBar(
+                                                duration: Duration(seconds: 2),
+                                                content: Text(
+                                                    'Email sudah terdaftar!'),
+                                              ),
+                                            );
+                                          }
                                         },
                                         child: Text('Sudah',
                                             style: TextStyle(
@@ -360,16 +391,17 @@ class _RegisterViewState extends State<RegisterView> {
                         }
                       }, // onPressed end curly bracket
 
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 10.0),
+                            horizontal: 3.0.h, vertical: 2.0.w),
                         child: Text(
                           'Register',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style:
+                              TextStyle(fontSize: 16.sp, color: Colors.white),
                         ),
                       )),
-                  const SizedBox(
-                    height: 12,
+                  SizedBox(
+                    height: 2.h,
                   ),
                 ],
               ),

@@ -21,6 +21,12 @@ dependencies:
   image_picker: ^0.8.6
   shake: ^2.2.0
   path_provider: ^2.0.15
+  http: ^1.1.0
+  pdf: ^3.6.4
+  printing: ^5.9.0
+  uuid: ^3.0.6
+  barcode_widget: ^2.0.4
+  responsive_sizer: ^3.2.0
 
 dev_dependencies:
   flutter_test:

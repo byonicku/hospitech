@@ -32,3 +32,13 @@ Aplikasi Android menggunakan framework flutter, berfokus untuk membuat aplikasi 
 > - QR Scanner masuk ruang - Nico
 > - Shake for Daily Tips - Hendryanto
 > - Geolocator untuk masuk ruang - Andre, Berly
+> ## UGD Library
+> - PDF & Printing - Nico, Fredo
+> - intl (numberformat) - Hendryanto
+> - uuid, barcode - berly, andre
+> ## UGD API 1, 2
+> - Login - fredo
+> - Register - fredo
+> - tampil profil - fredo
+> - forget pass - andre, hendryanto, fredo
+> - crud - nico, fredo
