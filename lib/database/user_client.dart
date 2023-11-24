@@ -89,39 +89,22 @@ class UserClient {
     }
   }
 
-  static Future<User> updatePassword(
+  static Future<Response> updatePassword(
       String username, String password, String newPassword) async {
     try {
-      var response = await post(Uri.http(url, '$endpoint/login'),
+      var response = await post(Uri.http(url, '$endpoint/updatePass'),
           headers: {"Content-Type": "application/json"},
           body: json.encode({
             "username": username,
-            "password": password,
+            "passwordLama": password,
+            "passwordBaru": newPassword,
           }));
 
-      if (response.statusCode != 200) throw Exception(response.body);
-
-      User userFound = User.fromJson(jsonDecode(response.body)["data"]);
-
-      if (userFound.username != username) {
-        throw Exception("Username Tidak Boleh Diganti");
+      if (response.statusCode != 200) {
+        throw Exception(json.decode(response.body)["message"]);
       }
 
-      if (userFound.password != password) {
-        throw Exception("Password Lama Salah");
-      }
-
-      userFound.password = newPassword;
-
-      var response2 = await put(
-        Uri.http(url, '$endpoint/${userFound.id}'),
-        headers: {"Content-Type": "application/json"},
-        body: userFound.toRawJson(),
-      );
-
-      if (response2.statusCode != 200) throw Exception(response2.body);
-
-      return userFound;
+      return response;
     } catch (e) {
       return Future.error(e.toString());
     }

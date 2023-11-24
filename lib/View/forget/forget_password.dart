@@ -46,6 +46,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                SizedBox(
+                  height: 5.0.h,
+                ),
                 //username
                 inputLogin((username) {
                   if (username!.isEmpty) {
@@ -66,7 +69,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     width: 100.w,
                     child: TextFormField(
                       validator: (value) =>
-                          value!.isEmpty ? "Masukkan password Anda" : null,
+                          value!.isEmpty ? "Masukkan password lama Anda" : null,
                       controller: passwordController,
                       obscureText: _isObscured,
                       autofocus: false,
@@ -101,7 +104,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     width: 100.w,
                     child: TextFormField(
                       validator: (value) =>
-                          value!.isEmpty ? "Masukkan password Anda" : null,
+                          value!.isEmpty ? "Masukkan password baru Anda" : null,
                       controller: newPasswordController,
                       obscureText: _isObscuredNew,
                       autofocus: false,
@@ -178,8 +181,12 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 ),
                 //* Baris yang berisi tombol login dan tombol mengarah ke halaman register
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // ignore: prefer_const_constructors
+                    SizedBox(
+                      height: 9.0.h,
+                    ),
                     //* tombol update
                     ElevatedButton(
                       //* Fungsi yang dijalankan saat tombol ditekan.
@@ -206,51 +213,18 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                               const SnackBar(
                                 duration: Duration(seconds: 2),
                                 content:
-                                    Text('Berhasil Melakukan Reset Password'),
+                                    Text('Berhasil Melakukan Update Password'),
                               ),
                             );
                           } catch (e) {
                             scaffoldMessenger.showSnackBar(
                               SnackBar(
+                                // ignore: prefer_const_constructors
                                 duration: Duration(seconds: 2),
-                                content: Text(e.toString()),
+                                content: Text(e.toString().split(': ')[1]),
                               ),
                             );
                           }
-
-                          // bool isUsernameRegistered =
-                          //     await checkUsername(usernameController.text);
-                          // bool isRegistered = await checkLogin(
-                          //     usernameController.text, passwordController.text);
-                          // if (!isUsernameRegistered) {
-                          //   scaffoldMessenger.showSnackBar(
-                          //     const SnackBar(
-                          //       duration: Duration(seconds: 2),
-                          //       content:
-                          //           Text('Anda belum terdaftar sebagai user!'),
-                          //     ),
-                          //   );
-                          // } else if (isRegistered) {
-                          //   SharedPreferences prefs =
-                          //       await SharedPreferences.getInstance();
-
-                          //   final data = await getID(usernameController.text,
-                          //       passwordController.text);
-                          //   prefs.setInt('id', data.first['id']);
-
-                          //   navPush(MaterialPageRoute(
-                          //       builder: (_) => const HomeView(
-                          //             selectedIndex: 0,
-                          //           )));
-                          //   scaffoldMessenger.showSnackBar(
-                          //     const SnackBar(
-                          //       duration: Duration(seconds: 2),
-                          //       content: Text('Berhasil Melakukan Login'),
-                          //     ),
-                          //   );
-                          // } else {
-
-                          // }
                         }
                       }, // onPressed end curly bracket
 
