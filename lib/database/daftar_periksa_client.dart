@@ -8,15 +8,17 @@ class DaftarPeriksaClient {
   static const String endpoint = '/api/daftar_periksa';
 
   // mengambil semua data Periksa
-  static Future<List<Periksa>> fetchAll() async {
+  static Future<List<Periksa>> fetchAll(String id) async {
     try {
       var response = await get(Uri.http(url, endpoint));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 
       Iterable list = json.decode(response.body)["data"];
+      List<Periksa> listPeriksa = list.map((e) => Periksa.fromJson(e)).toList();
 
-      return list.map((e) => Periksa.fromJson(e)).toList();
+      listPeriksa.removeWhere((periksa) => periksa.idUser != int.parse(id));
+      return listPeriksa;
     } catch (e) {
       return Future.error(e.toString());
     }
@@ -36,12 +38,14 @@ class DaftarPeriksaClient {
   }
 
   // add data Periksa
-  static Future<Response> addPeriksa(Periksa periksa) async {
+  static Future<Response> addPeriksa(Periksa periksa, String userID) async {
     try {
       var response = await post(
         Uri.http(url, endpoint),
         headers: {"Content-Type": "application/json"},
-        body: periksa.toRawJson(),
+        body: json.encode(
+          periksa.toJson()..addAll({"id_user": userID}),
+        ),
       );
 
       if (response.statusCode != 200) throw Exception(response.body);
@@ -53,12 +57,32 @@ class DaftarPeriksaClient {
   }
 
   // update data Periksa
-  static Future<Response> update(Periksa periksa) async {
+  static Future<Response> update(Periksa periksa, String userID) async {
+    try {
+      var response = await put(Uri.http(url, '$endpoint/${periksa.id}'),
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(
+            periksa.toJson()..addAll({"id_user": userID}),
+          ));
+
+      if (response.statusCode != 200) throw Exception(response.body);
+
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  static Future<Response> updateStatus(int id) async {
     try {
       var response = await put(
-        Uri.http(url, '$endpoint/${periksa.id}'),
+        Uri.http(url, '$endpoint/updateStatus'),
         headers: {"Content-Type": "application/json"},
-        body: periksa.toRawJson(),
+        body: json.encode(
+          {
+            "id": id,
+          },
+        ),
       );
 
       if (response.statusCode != 200) throw Exception(response.body);

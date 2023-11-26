@@ -33,8 +33,8 @@ class _HomeGridState extends State<HomeGrid> {
         curve: Curves.easeInOut,
         duration: const Duration(milliseconds: 300),
         margin: EdgeInsets.only(left: 2.h, right: 2.h, bottom: 2.5.w),
-        width: !isExpanded ? width * 0.12.w : width * 0.15.w,
-        height: !isExpanded ? width * 0.05.w : width * 0.10.w,
+        width: !isExpanded ? width * 0.30.w : width * 0.30.w,
+        height: !isExpanded ? width * 0.10.w : width * 0.15.w,
         child: !isExpanded
             ? getListOfGridContent()[index]
             : getListOfExpandedGrid()[index],
