@@ -9,6 +9,7 @@ import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditPeriksaView extends StatefulWidget {
   const EditPeriksaView(
@@ -43,6 +44,18 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
   bool changeJenisPerawatan = false;
   bool changeNamaPasien = false;
   String? dokterSpesialisSelected, jenisPerawatanSelected, namaPasienSebelumnya;
+  String? id;
+
+  void getUserID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    id = prefs.getString('id') ?? '';
+  }
+
+  @override
+  void initState() {
+    getUserID();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,18 +78,16 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 32,
+                  SizedBox(
+                    height: 6.h,
                   ),
-                  const Text(
+                  Text(
                     "Edit Daftar Periksa",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  const SizedBox(
-                    height: 32,
+                  SizedBox(
+                    height: 6.h,
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(
@@ -157,7 +168,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     height: 12,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 32.0, left: 72.0),
+                    padding: EdgeInsets.only(right: 6.0.h, left: 12.0.h),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton2<String>(
                         isExpanded: true,
@@ -198,7 +209,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         },
                         buttonStyleData: ButtonStyleData(
                           height: 50,
-                          padding: const EdgeInsets.only(left: 14, right: 14),
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Colors.grey.shade700,
@@ -211,7 +222,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           icon: const Icon(
                             Icons.arrow_forward_ios_outlined,
                           ),
-                          iconSize: 14,
+                          iconSize: 16.sp,
                           iconEnabledColor: Colors.grey.shade700,
                           iconDisabledColor: Colors.grey,
                         ),
@@ -227,9 +238,9 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                             thumbVisibility: MaterialStateProperty.all(true),
                           ),
                         ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.only(left: 14, right: 14),
+                        menuItemStyleData: MenuItemStyleData(
+                          height: 7.h,
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                         ),
                       ),
                     ),
@@ -239,7 +250,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.only(right: 32.0, left: 72.0),
+                    padding: EdgeInsets.only(right: 6.0.h, left: 12.0.h),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton2<String>(
                         isExpanded: true,
@@ -249,7 +260,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                               child: Text(
                                 'Pilih Jenis Perawatan',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.normal,
                                   color: Colors.grey.shade700,
                                 ),
@@ -264,7 +275,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                   child: Text(
                                     item,
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.normal,
                                       color: Colors.grey.shade700,
                                     ),
@@ -280,7 +291,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         },
                         buttonStyleData: ButtonStyleData(
                           height: 50,
-                          padding: const EdgeInsets.only(left: 14, right: 14),
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Colors.grey.shade700,
@@ -309,9 +320,9 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                             thumbVisibility: MaterialStateProperty.all(true),
                           ),
                         ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.only(left: 14, right: 14),
+                        menuItemStyleData: MenuItemStyleData(
+                          height: 7.h,
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                         ),
                       ),
                     ),
@@ -376,7 +387,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                                       'gambar_dokter']);
 
                                           DaftarPeriksaClient.update(
-                                              updatedPeriksa);
+                                              updatedPeriksa, id!);
 
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);

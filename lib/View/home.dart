@@ -98,7 +98,7 @@ class _HomeViewState extends State<HomeView> {
             "Kategori Dokter Spesialis",
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 16.sp,
+              fontSize: 18.sp,
             ),
           ),
         ),

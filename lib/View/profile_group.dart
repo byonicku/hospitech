@@ -17,8 +17,8 @@ SingleChildScrollView namePage(
           children: [
             Image(
               image: NetworkImage(url),
-              width: 50.w,
-              height: 50.h,
+              width: 25.w,
+              height: 25.h,
             ),
             Text(name,
                 textAlign: TextAlign.center,
@@ -73,7 +73,7 @@ class ProfileView extends StatelessWidget {
             "Developers",
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 16.sp,
+              fontSize: 18.sp,
             ),
           ),
           notificationPredicate: (ScrollNotification notification) {
@@ -86,27 +86,27 @@ class ProfileView extends StatelessWidget {
               Tab(
                 icon: Icon(Icons.person, size: 16.sp),
                 text: "Nico",
-                height: 5.h,
+                height: 7.h,
               ),
               Tab(
                 icon: Icon(Icons.person, size: 16.sp),
                 text: "Fredo",
-                height: 5.h,
+                height: 7.h,
               ),
               Tab(
                 icon: Icon(Icons.person, size: 16.sp),
                 text: "Berly",
-                height: 5.h,
+                height: 7.h,
               ),
               Tab(
                 icon: Icon(Icons.person, size: 16.sp),
                 text: "Hendry",
-                height: 5.h,
+                height: 7.h,
               ),
               Tab(
                 icon: Icon(Icons.person, size: 16.sp),
                 text: "Anri",
-                height: 5.h,
+                height: 7.h,
               ),
             ],
           ),

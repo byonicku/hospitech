@@ -109,4 +109,23 @@ class UserClient {
       return Future.error(e.toString());
     }
   }
+
+  static Future<Response> updatePhotoProfil(
+      int? id, String profilePhoto) async {
+    try {
+      var response = await post(Uri.http(url, '$endpoint/updatePfp'),
+          headers: {"Content-Type": "application/json"},
+          body: json.encode({
+            "id": id,
+            "profile_photo": profilePhoto,
+          }));
+      if (response.statusCode != 200) {
+        throw Exception(json.decode(response.body)["message"]);
+      }
+
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
 }

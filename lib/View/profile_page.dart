@@ -23,6 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String? name, email, password, noTelp, tglLahir, jenisKelamin, imgPath;
   Image? _image;
   final picker = ImagePicker();
+  bool _isLoading = true;
 
   void getUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -38,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
       imgPath = currentUser!.profilePhoto;
 
       _image = imgPath == "" ? null : Image.file(File(imgPath!));
+      _isLoading = false;
     });
   }
 
@@ -61,19 +63,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
       File profileImage = File(imgFile!.path);
       String imagePath = await saveImageLocally(profileImage);
-
-      User editDataUser = User(
-          id: currentUser!.id,
-          username: currentUser!.username,
-          email: currentUser!.email,
-          jenisKelamin: currentUser!.jenisKelamin,
-          noTelp: currentUser!.noTelp,
-          password: currentUser!.password,
-          tglLahir: currentUser!.tglLahir,
-          profilePhoto: imagePath);
+      int? id = currentUser!.id;
 
       // editUser(editDataUser);
-      UserClient.update(editDataUser);
+      UserClient.updatePhotoProfil(id, imagePath);
       getUserData();
     });
   }
@@ -119,11 +112,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 Icon(
                   Icons.storage,
                   color: Colors.blue,
-                  size: 14.sp,
+                  size: 18.sp,
                 ),
                 Text(
                   "Gallery",
-                  style: TextStyle(fontSize: 14.sp),
+                  style: TextStyle(fontSize: 18.sp),
                 ),
               ],
             ),
@@ -140,11 +133,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 Icon(
                   Icons.camera,
                   color: Colors.blue,
-                  size: 14.sp,
+                  size: 18.sp,
                 ),
                 Text(
                   "Camera",
-                  style: TextStyle(fontSize: 14.sp),
+                  style: TextStyle(fontSize: 18.sp),
                 ),
               ],
             ),
@@ -168,99 +161,107 @@ class _ProfilePageState extends State<ProfilePage> {
           'Profil',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16.sp,
+            fontSize: 18.sp,
           ),
         ),
         automaticallyImplyLeading: false,
         leading: null,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Center(
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 15.w,
-                  backgroundImage: _image == null
-                      ? const AssetImage('assets/images/profil.png')
-                      : _image!.image,
-                  child: Align(
-                    alignment: const Alignment(0.8, 0.9),
-                    child: InkWell(
-                      onTap: () {
-                        showPickImageOptions();
-                      }, // Trigger image selection
-                      child: Container(
-                        width: 10.w, // Adjust the size as needed
-                        height: 6.h, // Adjust the size as needed
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.blue,
-                        ),
-                        child: const Icon(
-                          Icons.camera_alt,
-                          color: Colors.white,
+      body: !_isLoading
+          ? SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Center(
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 15.w,
+                        backgroundImage: _image == null
+                            ? const AssetImage('assets/images/profil.png')
+                            : _image!.image,
+                        child: Align(
+                          alignment: const Alignment(0.8, 0.9),
+                          child: InkWell(
+                            onTap: () {
+                              showPickImageOptions();
+                            }, // Trigger image selection
+                            child: Container(
+                              width: 10.w, // Adjust the size as needed
+                              height: 6.h, // Adjust the size as needed
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue,
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 3.h),
-                ProfileInfo(label: 'Username', value: name),
-                ProfileInfo(label: 'Email', value: email),
-                ProfileInfo(label: 'No. Telepon', value: noTelp),
-                ProfileInfo(label: 'Tanggal Lahir', value: tglLahir),
-                ProfileInfo(label: 'Jenis Kelamin', value: jenisKelamin),
-                SizedBox(height: 3.h),
-                ElevatedButton(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 3.0.h, vertical: 2.0.w),
-                    child: Text(
-                      'Edit Profile',
-                      style: TextStyle(fontSize: 18.sp, color: Colors.white),
-                    ),
-                  ),
-                  onPressed: () async {
-                    pushUpdate(context);
-                  },
-                ),
-                SizedBox(height: 2.h),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 3.0.h, vertical: 2.0.w),
-                    child: Text(
-                      'Logout',
-                      style: TextStyle(fontSize: 18.sp, color: Colors.white),
-                    ),
-                  ),
-                  onPressed: () async {
-                    final scaffoldMessenger = ScaffoldMessenger.of(context);
-                    pushLogout(context);
-
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.remove('id');
-
-                    scaffoldMessenger.showSnackBar(
-                      const SnackBar(
-                        content: Text('Berhasil Melakukan Logout'),
-                        duration: Duration(seconds: 2),
+                      SizedBox(height: 3.h),
+                      ProfileInfo(label: 'Username', value: name),
+                      ProfileInfo(label: 'Email', value: email),
+                      ProfileInfo(label: 'No. Telepon', value: noTelp),
+                      ProfileInfo(label: 'Tanggal Lahir', value: tglLahir),
+                      ProfileInfo(label: 'Jenis Kelamin', value: jenisKelamin),
+                      SizedBox(height: 3.h),
+                      ElevatedButton(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 3.0.h, vertical: 2.0.w),
+                          child: Text(
+                            'Edit Profile',
+                            style:
+                                TextStyle(fontSize: 18.sp, color: Colors.white),
+                          ),
+                        ),
+                        onPressed: () async {
+                          pushUpdate(context);
+                        },
                       ),
-                    );
-                  },
+                      SizedBox(height: 2.h),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.red),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 3.0.h, vertical: 2.0.w),
+                          child: Text(
+                            'Logout',
+                            style:
+                                TextStyle(fontSize: 18.sp, color: Colors.white),
+                          ),
+                        ),
+                        onPressed: () async {
+                          final scaffoldMessenger =
+                              ScaffoldMessenger.of(context);
+                          pushLogout(context);
+
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.remove('id');
+
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(
+                              content: Text('Berhasil Melakukan Logout'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
+            )
+          : const Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-        ),
-      ),
     );
   }
 

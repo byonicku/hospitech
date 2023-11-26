@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/View/forget/forget_password.dart';
+import 'package:tugas_besar_hospital_pbp/View/forget_password.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
@@ -98,12 +98,12 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
-                        padding: EdgeInsets.only(left: 6.w),
+                        padding: EdgeInsets.only(left: 14.w),
                         child: TextButton(
                             onPressed: () {
                               Navigator.push(
@@ -121,7 +121,7 @@ class _LoginViewState extends State<LoginView> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
-                        padding: EdgeInsets.only(left: 8.w),
+                        padding: EdgeInsets.only(right: 4.w),
                         child: TextButton(
                             onPressed: () {
                               pushRegister(context);

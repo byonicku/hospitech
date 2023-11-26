@@ -20,6 +20,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   bool _isObscured = true;
   bool _isObscuredNew = true;
   bool _isObscureConfirm = true;
+  bool _isLoading = false;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
@@ -68,8 +69,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   child: SizedBox(
                     width: 100.w,
                     child: TextFormField(
-                      validator: (value) =>
-                          value!.isEmpty ? "Masukkan password lama Anda" : null,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Masukan Password Lama Anda";
+                        } else {
+                          return null;
+                        }
+                      },
                       controller: passwordController,
                       obscureText: _isObscured,
                       autofocus: false,
@@ -103,8 +109,15 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   child: SizedBox(
                     width: 100.w,
                     child: TextFormField(
-                      validator: (value) =>
-                          value!.isEmpty ? "Masukkan password baru Anda" : null,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Masukan Password Baru Anda";
+                        } else if (value.length < 5) {
+                          return "Password Baru minimal 5 karakter";
+                        } else {
+                          return null;
+                        }
+                      },
                       controller: newPasswordController,
                       obscureText: _isObscuredNew,
                       autofocus: false,
@@ -140,14 +153,12 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     child: TextFormField(
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Masukkan password Anda";
-                        }
-
-                        if (value != newPasswordController.text) {
+                          return "Masukan Konfirmasi Password Anda";
+                        } else if (value != newPasswordController.text) {
                           return "Password Konfirmasi Tidak Sama!";
+                        } else {
+                          return null;
                         }
-
-                        return null;
                       },
                       controller: confirmNewPasswordController,
                       obscureText: _isObscureConfirm,
@@ -200,6 +211,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         if (_formKey.currentState!.validate()) {
                           //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
                           //* dari halaman register atau belum
+                          setState(() {
+                            _isLoading = true;
+                          });
 
                           try {
                             await UserClient.updatePassword(
@@ -217,6 +231,10 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                               ),
                             );
                           } catch (e) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+
                             scaffoldMessenger.showSnackBar(
                               SnackBar(
                                 // ignore: prefer_const_constructors
@@ -231,11 +249,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 3.0.h, vertical: 2.0.w),
-                        child: Text(
-                          'Ubah Password',
-                          style:
-                              TextStyle(fontSize: 16.sp, color: Colors.white),
-                        ),
+                        child: !_isLoading
+                            ? Text(
+                                'Ubah Password',
+                                style: TextStyle(
+                                    fontSize: 16.sp, color: Colors.white),
+                              )
+                            : CircularProgressIndicator(),
                       ),
                     ),
                   ],
