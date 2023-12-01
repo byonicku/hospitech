@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:math';
 import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -90,6 +92,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                     child: SizedBox(
                         width: 100.w,
                         child: TextFormField(
+                          key: Key('Nama Pasien'),
                           validator: (namaPasien) {
                             if (namaPasien!.isEmpty) {
                               return 'Nama Pasien tidak boleh kosong';
@@ -117,6 +120,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                     child: SizedBox(
                       width: 100.w,
                       child: TextFormField(
+                        key: Key('TglPeriksa'),
                         autofocus: false,
                         controller: tanggalPeriksaController,
                         validator: (value) {
@@ -140,6 +144,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           DateTime initialDate =
                               DateTime.now().add(const Duration(days: 1));
                           DateTime? pickedDate = await showDatePicker(
+                              switchToInputEntryModeIcon: Icon(Icons.edit),
                               context: context,
                               initialDate: initialDate,
                               firstDate: initialDate,
@@ -163,6 +168,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                   Padding(
                     padding: EdgeInsets.only(left: 12.0.h, right: 6.0.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Dokter Dropdown'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -182,6 +188,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         ),
                         items: listDokterSpesialis
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
@@ -246,6 +253,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                   Padding(
                     padding: EdgeInsets.only(left: 12.0.h, right: 6.0.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Jenis Perawatan'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -265,6 +273,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         ),
                         items: listJenisPerawatan
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
@@ -326,6 +335,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                     height: 24,
                   ),
                   ElevatedButton(
+                      key: Key('Daftar Periksa'),
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
 
@@ -376,6 +386,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
+                                        key: Key('SudahBtn'),
                                         onPressed: () async {
                                           final Periksa newPeriksa = Periksa(
                                               namaPasien:
@@ -424,6 +435,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                                 fontWeight: FontWeight.bold)),
                                       ),
                                       TextButton(
+                                        key: Key('BelumBtn'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           scaffoldMessenger.showSnackBar(

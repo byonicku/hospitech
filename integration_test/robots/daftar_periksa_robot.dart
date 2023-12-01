@@ -1,0 +1,106 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+class DaftarPeriksaRobot {
+  final WidgetTester tester;
+  DaftarPeriksaRobot(this.tester);
+
+  Future<void> login({String? username, String? password}) async {
+    final usernameFormField = find.byKey(Key('Username'));
+    final passwordFormField = find.byKey(Key('Password'));
+    final loginBtn = find.byKey(Key("LoginBtn"));
+
+    await tester.pumpAndSettle();
+
+    // test input username
+    await tester.ensureVisible(usernameFormField);
+    await tester.enterText(usernameFormField, username!);
+
+    await tester.pumpAndSettle();
+
+    // test input password
+    await tester.ensureVisible(passwordFormField);
+    await tester.enterText(passwordFormField, password!);
+
+    await tester.pumpAndSettle();
+
+    // test press login button
+    await tester.ensureVisible(loginBtn);
+    await tester.tap(loginBtn);
+
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> addPeriksa({String? namaPasien, String? tglPeriksa}) async {
+    final tabListPeriksa = find.byIcon(Icons.app_registration);
+    final namaPasienFormField = find.byKey(Key('Nama Pasien'));
+    final tglPeriksaFormField = find.byKey(Key('TglPeriksa'));
+    final dokterDropdown = find.byKey(Key('Dokter Dropdown'));
+    final jenisPerawatan = find.byKey(Key('Jenis Perawatan'));
+    final daftarPeriksaBtn = find.byKey(Key('Daftar Periksa'));
+    final sudahBtn = find.byKey(Key('SudahBtn'));
+    // final belumBtn = find.byKey(Key('BelumBtn'));
+
+    await tester.pumpAndSettle();
+
+    // click to bottom navigation list periksa
+    await tester.ensureVisible(tabListPeriksa);
+    await tester.tap(tabListPeriksa);
+
+    await tester.pumpAndSettle(Duration(seconds: 2));
+
+    // click icon add untuk tambah periksa
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+
+    // test input nama pasien
+    await tester.ensureVisible(namaPasienFormField);
+    await tester.enterText(namaPasienFormField, namaPasien!);
+
+    await tester.pumpAndSettle();
+
+    // test input tgl periksa
+    await tester.ensureVisible(tglPeriksaFormField);
+    await tester.tap(tglPeriksaFormField);
+
+    await tester.pump();
+
+    await tester.tap(find.byIcon(Icons.edit));
+    await tester.pump();
+    await tester.enterText(find.byType(TextField).last, tglPeriksa!);
+    await tester.pump();
+    await tester.tap(find.text('OK'));
+
+    await tester.pumpAndSettle();
+
+    // test dropdown dokter spesialis
+    await tester.ensureVisible(dokterDropdown);
+    await tester.tap(dokterDropdown);
+    await tester.pump();
+    await tester.tap(find.text('Spesialis Paru - paru'));
+
+    await tester.pumpAndSettle();
+
+    // test dropdown jenis perawatan
+    await tester.ensureVisible(jenisPerawatan);
+    await tester.tap(jenisPerawatan);
+    await tester.pump();
+    await tester.tap(find.byKey(Key('Rawat Jalan')));
+
+    await tester.pumpAndSettle();
+
+    // click daftar periksa
+    await tester.ensureVisible(daftarPeriksaBtn);
+    await tester.tap(daftarPeriksaBtn);
+
+    await tester.pumpAndSettle();
+
+    // click sudah untuk konfirmasi
+    await tester.ensureVisible(sudahBtn);
+    await tester.tap(sudahBtn);
+
+    await tester.pumpAndSettle(Duration(seconds: 4));
+  }
+}
