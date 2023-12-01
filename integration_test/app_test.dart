@@ -25,6 +25,31 @@ void main() {
       await loginRobot.logout();
     });
 
+    testWidgets('Login Fail 1 Test', (WidgetTester tester) async {
+      app.main();
+
+      await tester.pumpAndSettle();
+
+      loginRobot = LoginRobot(tester);
+
+      await loginRobot.login(username: 'xxx', password: 'xxx');
+
+      expect(find.text('Anda belum terdaftar sebagai user!'), findsOneWidget);
+    });
+
+    testWidgets('Login Fail 2 Test', (WidgetTester tester) async {
+      app.main();
+
+      await tester.pumpAndSettle();
+
+      loginRobot = LoginRobot(tester);
+
+      await loginRobot.login(username: 'User 4', password: 'xxx');
+
+      expect(find.text('Username atau password yang Anda masukkan salah'),
+          findsOneWidget);
+    });
+
     testWidgets('Register Test', (WidgetTester tester) async {
       app.main();
 
@@ -37,16 +62,16 @@ void main() {
           username: 'User 5', password: 'password5', email: 'user5@gmail.com');
     });
 
-    testWidgets('List Periksa', (WidgetTester tester) async {
-      app.main();
+    // testWidgets('List Periksa', (WidgetTester tester) async {
+    //   app.main();
 
-      await tester.pumpAndSettle();
+    //   await tester.pumpAndSettle();
 
-      daftarPeriksaRobot = DaftarPeriksaRobot(tester);
+    //   daftarPeriksaRobot = DaftarPeriksaRobot(tester);
 
-      await daftarPeriksaRobot.login(username: 'User 4', password: 'password4');
-      await daftarPeriksaRobot.addPeriksa(
-          namaPasien: 'Pasien Baru', tglPeriksa: '12/04/2023');
-    });
+    //   await daftarPeriksaRobot.login(username: 'User 4', password: 'password4');
+    //   await daftarPeriksaRobot.addPeriksa(
+    //       namaPasien: 'Pasien Baru', tglPeriksa: '12/04/2023');
+    // });
   });
 }

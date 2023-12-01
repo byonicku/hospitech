@@ -43,7 +43,7 @@ class DaftarPeriksaRobot {
     final sudahBtn = find.byKey(Key('SudahBtn'));
     // final belumBtn = find.byKey(Key('BelumBtn'));
 
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(Duration(seconds: 1));
 
     // click to bottom navigation list periksa
     await tester.ensureVisible(tabListPeriksa);
@@ -53,49 +53,49 @@ class DaftarPeriksaRobot {
 
     // click icon add untuk tambah periksa
     await tester.tap(find.byIcon(Icons.add));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(Duration(seconds: 1));
 
     // test input nama pasien
     await tester.ensureVisible(namaPasienFormField);
     await tester.enterText(namaPasienFormField, namaPasien!);
 
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(Duration(seconds: 1));
 
     // test input tgl periksa
     await tester.ensureVisible(tglPeriksaFormField);
     await tester.tap(tglPeriksaFormField);
 
-    await tester.pump();
+    await tester.pump(Duration(seconds: 1));
 
     await tester.tap(find.byIcon(Icons.edit));
-    await tester.pump();
+    await tester.pump(Duration(seconds: 1));
     await tester.enterText(find.byType(TextField).last, tglPeriksa!);
-    await tester.pump();
+    await tester.pump(Duration(seconds: 1));
     await tester.tap(find.text('OK'));
 
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(Duration(seconds: 1));
 
     // test dropdown dokter spesialis
     await tester.ensureVisible(dokterDropdown);
     await tester.tap(dokterDropdown);
-    await tester.pump();
+    await tester.pump(Duration(seconds: 1));
     await tester.tap(find.text('Spesialis Paru - paru'));
 
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(Duration(seconds: 1));
 
     // test dropdown jenis perawatan
     await tester.ensureVisible(jenisPerawatan);
     await tester.tap(jenisPerawatan);
-    await tester.pump();
+    await tester.pump(Duration(seconds: 1));
     await tester.tap(find.byKey(Key('Rawat Jalan')));
 
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(Duration(seconds: 1));
 
     // click daftar periksa
     await tester.ensureVisible(daftarPeriksaBtn);
     await tester.tap(daftarPeriksaBtn);
 
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(Duration(seconds: 1));
 
     // click sudah untuk konfirmasi
     await tester.ensureVisible(sudahBtn);

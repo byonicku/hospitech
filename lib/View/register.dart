@@ -31,6 +31,7 @@ class _RegisterViewState extends State<RegisterView> {
   bool? isChecked = false;
   bool _isObscured = true;
   bool isDark = darkNotifier.value;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -351,6 +352,8 @@ class _RegisterViewState extends State<RegisterView> {
                           formData['tglLahir'] = dateController.text;
                           formData['gender'] = gender;
 
+                          print(formData);
+
                           // bool isEmailRegistered =
                           //     await checkEmail(emailController.text);
 
@@ -368,96 +371,109 @@ class _RegisterViewState extends State<RegisterView> {
                           // ignore: use_build_context_synchronously
                           showDialog(
                               context: context,
-                              builder: (_) => AlertDialog(
-                                    title: const Text('Konfirmasi',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    content: const Text(
-                                        'Apakah data Anda sudah benar?'),
-                                    actions: [
-                                      TextButton(
-                                        // ignore: prefer_const_constructors
-                                        key: Key('SudahBtn'),
-                                        onPressed: () async {
-                                          // addUser(User(
-                                          //     id: null,
-                                          //     username: usernameController.text,
-                                          //     email: emailController.text,
-                                          //     jenisKelamin: gender,
-                                          //     noTelp: notelpController.text,
-                                          //     password: passwordController.text,
-                                          //     tglLahir: dateController.text));
-                                          try {
-                                            await UserClient.register(User(
-                                                id: null,
-                                                username:
-                                                    usernameController.text,
-                                                email: emailController.text,
-                                                jenisKelamin: gender,
-                                                noTelp: notelpController.text,
-                                                password:
-                                                    passwordController.text,
-                                                tglLahir: dateController.text));
+                              builder: (_) => !_isLoading
+                                  ? AlertDialog(
+                                      title: const Text('Konfirmasi',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      content: const Text(
+                                          'Apakah data Anda sudah benar?'),
+                                      actions: [
+                                        TextButton(
+                                          // ignore: prefer_const_constructors
+                                          key: Key('SudahBtn'),
+                                          onPressed: () async {
+                                            // addUser(User(
+                                            //     id: null,
+                                            //     username: usernameController.text,
+                                            //     email: emailController.text,
+                                            //     jenisKelamin: gender,
+                                            //     noTelp: notelpController.text,
+                                            //     password: passwordController.text,
+                                            //     tglLahir: dateController.text));
+                                            setState(() {
+                                              _isLoading = true;
+                                            });
 
-                                            // ignore: use_build_context_synchronously
+                                            try {
+                                              await UserClient.register(User(
+                                                  id: null,
+                                                  username:
+                                                      usernameController.text,
+                                                  email: emailController.text,
+                                                  jenisKelamin: gender,
+                                                  noTelp: notelpController.text,
+                                                  password:
+                                                      passwordController.text,
+                                                  tglLahir:
+                                                      dateController.text));
+
+                                              // ignore: use_build_context_synchronously
+                                              Navigator.of(context).pop();
+                                              // ignore: use_build_context_synchronously
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        const LoginView()),
+                                              );
+
+                                              scaffoldMessenger.showSnackBar(
+                                                const SnackBar(
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                  content: Text(
+                                                      'Berhasil Melakukan Registrasi'),
+                                                ),
+                                              );
+                                            } catch (e) {
+                                              // ignore: use_build_context_synchronously
+                                              Navigator.of(context).pop();
+                                              scaffoldMessenger.showSnackBar(
+                                                const SnackBar(
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                  content: Text(
+                                                      'Email sudah terdaftar!'),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: Text('Sudah',
+                                              style: TextStyle(
+                                                  color: isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                        TextButton(
+                                          // ignore: prefer_const_constructors
+                                          key: Key('BelumBtn'),
+                                          onPressed: () {
                                             Navigator.of(context).pop();
-                                            // ignore: use_build_context_synchronously
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      const LoginView()),
-                                            );
-
                                             scaffoldMessenger.showSnackBar(
                                               const SnackBar(
                                                 duration: Duration(seconds: 2),
                                                 content: Text(
-                                                    'Berhasil Melakukan Registrasi'),
+                                                    'Gagal Melakukan Registrasi'),
                                               ),
                                             );
-                                          } catch (e) {
-                                            // ignore: use_build_context_synchronously
-                                            Navigator.of(context).pop();
-                                            scaffoldMessenger.showSnackBar(
-                                              const SnackBar(
-                                                duration: Duration(seconds: 2),
-                                                content: Text(
-                                                    'Email sudah terdaftar!'),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        child: Text('Sudah',
-                                            style: TextStyle(
-                                                color: isDark
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                      TextButton(
-                                        // ignore: prefer_const_constructors
-                                        key: Key('BelumBtn'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          scaffoldMessenger.showSnackBar(
-                                            const SnackBar(
-                                              duration: Duration(seconds: 2),
-                                              content: Text(
-                                                  'Gagal Melakukan Registrasi'),
-                                            ),
-                                          );
-                                        },
-                                        child: Text('Belum',
-                                            style: TextStyle(
-                                                color: isDark
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    ],
-                                  ));
+                                          },
+                                          child: Text('Belum',
+                                              style: TextStyle(
+                                                  color: isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      ],
+                                    )
+                                  : const Center(
+                                      child: CircularProgressIndicator()));
                         }
+                        setState(() {
+                          _isLoading = false;
+                        });
                       }, // onPressed end curly bracket
 
                       child: Padding(
