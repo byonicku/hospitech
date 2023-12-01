@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
+// import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
@@ -52,19 +52,44 @@ class _RegisterViewState extends State<RegisterView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  inputForm((username) {
-                    if (username == null || username.isEmpty) {
-                      return 'Username tidak boleh kosong';
-                    } else if (username.length < 5) {
-                      return 'Username minimal 5 karakter';
-                    } else {
-                      return null;
-                    }
-                  },
-                      controller: usernameController,
-                      hintTxt: "Username",
-                      labelTxt: "Username",
-                      iconData: Icons.person),
+                  // inputForm((username) {
+                  // if (username == null || username.isEmpty) {
+                  //   return 'Username tidak boleh kosong';
+                  // } else if (username.length < 5) {
+                  //   return 'Username minimal 5 karakter';
+                  // } else {
+                  //   return null;
+                  // }
+                  // },
+                  //     controller: usernameController,
+                  //     hintTxt: "Username",
+                  //     labelTxt: "Username",
+                  //     iconData: Icons.person),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
+                    child: SizedBox(
+                        width: 100.w,
+                        child: TextFormField(
+                          // ignore: prefer_const_constructors
+                          key: Key('Username'),
+                          validator: (username) {
+                            if (username == null || username.isEmpty) {
+                              return 'Username tidak boleh kosong';
+                            } else if (username.length < 5) {
+                              return 'Username minimal 5 karakter';
+                            } else {
+                              return null;
+                            }
+                          },
+                          controller: usernameController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Username",
+                            labelText: "Username",
+                            icon: Icon(Icons.person),
+                          ),
+                        )),
+                  ),
                   SizedBox(
                     height: 2.h,
                   ),
@@ -73,6 +98,8 @@ class _RegisterViewState extends State<RegisterView> {
                     child: SizedBox(
                         width: 100.w,
                         child: TextFormField(
+                          // ignore: prefer_const_constructors
+                          key: Key('Email'),
                           validator: (email) {
                             if (email!.isEmpty) {
                               return 'Email tidak boleh kosong';
@@ -99,6 +126,8 @@ class _RegisterViewState extends State<RegisterView> {
                     child: SizedBox(
                       width: 100.w,
                       child: TextFormField(
+                        // ignore: prefer_const_constructors
+                        key: Key('Password'),
                         validator: (password) {
                           if (password!.isEmpty) {
                             return "Password tidak boleh kosong";
@@ -135,20 +164,47 @@ class _RegisterViewState extends State<RegisterView> {
                   SizedBox(
                     height: 2.h,
                   ),
-                  inputForm((noTelp) {
-                    if (noTelp == null || noTelp.isEmpty) {
-                      return 'No telepon tidak boleh kosong';
-                    } else if (noTelp.length < 10) {
-                      return 'No telepon minimal 10 karakter';
-                    } else {
-                      return null;
-                    }
-                  },
-                      controller: notelpController,
-                      hintTxt: "No Telepon",
-                      labelTxt: "No Telepon",
-                      iconData: Icons.phone_android,
-                      textInputType: TextInputType.number),
+                  // inputForm((noTelp) {
+                  // if (noTelp == null || noTelp.isEmpty) {
+                  //   return 'No telepon tidak boleh kosong';
+                  // } else if (noTelp.length < 10) {
+                  //   return 'No telepon minimal 10 karakter';
+                  // } else {
+                  //   return null;
+                  // }
+                  // },
+                  //     controller: notelpController,
+                  //     hintTxt: "No Telepon",
+                  //     labelTxt: "No Telepon",
+                  //     iconData: Icons.phone_android,
+                  //     textInputType: TextInputType.number),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
+                    child: SizedBox(
+                        width: 100.w,
+                        child: TextFormField(
+                          // ignore: prefer_const_constructors
+                          key: Key('No Telepon'),
+                          validator: (noTelp) {
+                            if (noTelp == null || noTelp.isEmpty) {
+                              return 'No telepon tidak boleh kosong';
+                            } else if (noTelp.length < 10) {
+                              return 'No telepon minimal 10 karakter';
+                            } else {
+                              return null;
+                            }
+                          },
+                          keyboardType: TextInputType.number,
+                          controller: notelpController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "No Telepon",
+                            labelText: "No Telepon",
+                            icon: Icon(Icons.phone_android),
+                          ),
+                        )),
+                  ),
                   SizedBox(
                     height: 2.h,
                   ),
@@ -158,6 +214,8 @@ class _RegisterViewState extends State<RegisterView> {
                     child: SizedBox(
                       width: 100.w,
                       child: TextFormField(
+                        // ignore: prefer_const_constructors
+                        key: Key('TglLahir'),
                         autofocus: false,
                         controller: dateController,
                         validator: (value) {
@@ -186,6 +244,8 @@ class _RegisterViewState extends State<RegisterView> {
                         onTap: () async {
                           //ketika di tekan maka akan muncul date picker
                           DateTime? pickedDate = await showDatePicker(
+                              // ignore: prefer_const_constructors
+                              switchToInputEntryModeIcon: Icon(Icons.edit),
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(1900),
@@ -212,6 +272,8 @@ class _RegisterViewState extends State<RegisterView> {
                     child: SizedBox(
                       width: 100.w,
                       child: FormBuilderRadioGroup(
+                        // ignore: prefer_const_constructors
+                        key: Key('Gender'),
                         decoration: const InputDecoration(labelText: 'Gender'),
                         name: "gender",
                         validator: FormBuilderValidators.required(
@@ -235,6 +297,8 @@ class _RegisterViewState extends State<RegisterView> {
                         width: 100.w,
                         height: 10.h,
                         child: FormBuilderCheckbox(
+                          // ignore: prefer_const_constructors
+                          key: Key('AcceptTerms'),
                           name: 'accept_terms',
                           onChanged: (value) {
                             setState(() {
@@ -273,6 +337,8 @@ class _RegisterViewState extends State<RegisterView> {
                     height: 2.h,
                   ),
                   ElevatedButton(
+                      // ignore: prefer_const_constructors
+                      key: Key('RegisterBtn'),
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
 
@@ -310,6 +376,8 @@ class _RegisterViewState extends State<RegisterView> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
+                                        // ignore: prefer_const_constructors
+                                        key: Key('SudahBtn'),
                                         onPressed: () async {
                                           // addUser(User(
                                           //     id: null,
@@ -349,7 +417,6 @@ class _RegisterViewState extends State<RegisterView> {
                                               ),
                                             );
                                           } catch (e) {
-                                            print(e.toString());
                                             // ignore: use_build_context_synchronously
                                             Navigator.of(context).pop();
                                             scaffoldMessenger.showSnackBar(
@@ -369,6 +436,8 @@ class _RegisterViewState extends State<RegisterView> {
                                                 fontWeight: FontWeight.bold)),
                                       ),
                                       TextButton(
+                                        // ignore: prefer_const_constructors
+                                        key: Key('BelumBtn'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           scaffoldMessenger.showSnackBar(

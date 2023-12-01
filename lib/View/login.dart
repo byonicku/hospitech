@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/View/forget_password.dart';
-import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
+// import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
@@ -53,15 +52,41 @@ class _LoginViewState extends State<LoginView> {
                   height: 40.h,
                 ),
                 //username
-                inputLogin((username) {
-                  if (username!.isEmpty) {
-                    return "Tolong isikan username Anda";
-                  }
-                  return null;
-                },
-                    controller: usernameController,
-                    hintTxt: "Username",
-                    iconData: Icons.person),
+                // inputLogin(
+                //   (username) {
+                //     if (username!.isEmpty) {
+                //       return "Tolong isikan username Anda";
+                //     }
+                //     return null;
+                //   },
+                //   controller: usernameController,
+                //   hintTxt: "Username",
+                //   iconData: Icons.person,
+                // ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0.h),
+                  child: SizedBox(
+                    width: 100.w,
+                    child: TextFormField(
+                      // ignore: prefer_const_constructors
+                      key: Key('Username'),
+                      validator: (username) {
+                        if (username!.isEmpty) {
+                          return "Tolong isikan username Anda";
+                        }
+                        return null;
+                      },
+                      autofocus: false,
+                      controller: usernameController,
+                      decoration: const InputDecoration(
+                        hintText: "Username",
+                        border: OutlineInputBorder(),
+                        icon: Icon(Icons.person),
+                      ),
+                    ),
+                  ),
+                ),
+                
                 //* Password
                 SizedBox(
                   height: 2.h,
@@ -71,6 +96,8 @@ class _LoginViewState extends State<LoginView> {
                   child: SizedBox(
                     width: 100.w,
                     child: TextFormField(
+                      // ignore: prefer_const_constructors
+                      key: Key("Password"),
                       validator: (value) =>
                           value!.isEmpty ? "Tolong isikan password Anda" : null,
                       controller: passwordController,
@@ -97,42 +124,21 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 14.w),
-                        child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          const ForgotPasswordView()));
-                            },
-                            child: Text(
-                              'Forgot Password?',
-                              style: TextStyle(fontSize: 13.sp),
-                            )),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 4.w),
-                        child: TextButton(
-                            onPressed: () {
-                              pushRegister(context);
-                            },
-                            child: Text(
-                              'Belum punya akun ?',
-                              style: TextStyle(fontSize: 13.sp),
-                            )),
-                      ),
-                    ),
-                  ],
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 5.w),
+                    child: TextButton(
+                        // ignore: prefer_const_constructors
+                        key: Key('RegisterBtn'),
+                        onPressed: () {
+                          pushRegister(context);
+                        },
+                        child: Text(
+                          'Belum punya akun ?',
+                          style: TextStyle(fontSize: 13.sp),
+                        )),
+                  ),
                 ),
                 //* Baris yang berisi tombol login dan tombol mengarah ke halaman register
                 Row(
@@ -140,6 +146,8 @@ class _LoginViewState extends State<LoginView> {
                   children: [
                     //* tombol login
                     ElevatedButton(
+                      // ignore: prefer_const_constructors
+                      key: Key('LoginBtn'),
                       //* Fungsi yang dijalankan saat tombol ditekan.
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
