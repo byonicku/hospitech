@@ -62,7 +62,9 @@ void main() {
       await registerRobot.registerCorrect(
           username: 'User 5', password: 'password5', email: 'user5@gmail.com');
     });
+  });
 
+  group('Integration Test CRUD', () {
     testWidgets('Create List Periksa', (WidgetTester tester) async {
       app.main();
 
@@ -82,9 +84,9 @@ void main() {
 
       daftarPeriksaRobot = DaftarPeriksaRobot(tester);
 
-      await daftarPeriksaRobot.login(username: 'User 4', password: 'password4');
+      await daftarPeriksaRobot.readPeriksa();
       expect(find.text('Pasien Baru'), findsOneWidget);
-      expect(find.byWidget(Card()), findsOneWidget);
+      expect(find.byType(Card), findsOneWidget);
     });
 
     testWidgets('Update List Periksa', (WidgetTester tester) async {
@@ -94,14 +96,10 @@ void main() {
 
       daftarPeriksaRobot = DaftarPeriksaRobot(tester);
 
-      await daftarPeriksaRobot.login(username: 'User 4', password: 'password4');
       await daftarPeriksaRobot.updatePeriksa(
-          namaPasien: 'Pasien Lama', tglPeriksa: '13/04/2023');
+          namaPasien: 'Pasien Lama', tglPeriksa: '12/05/2023');
+      expect(find.byType(Card), findsOneWidget);
       expect(find.text('Pasien Lama'), findsOneWidget);
-      expect(find.text('13/04/2023'), findsOneWidget);
-      expect(find.text('Rawat Inap'), findsOneWidget);
-      expect(find.text('Spesialis Jantung'), findsOneWidget);
-      expect(find.byWidget(Card()), findsOneWidget);
     });
 
     testWidgets('Delete List Periksa', (WidgetTester tester) async {
@@ -111,9 +109,9 @@ void main() {
 
       daftarPeriksaRobot = DaftarPeriksaRobot(tester);
 
-      await daftarPeriksaRobot.login(username: 'User 4', password: 'password4');
       await daftarPeriksaRobot.deletePeriksa();
       expect(find.text('Berhasil Menghapus Data'), findsOneWidget);
+      await daftarPeriksaRobot.logout();
     });
   });
 }

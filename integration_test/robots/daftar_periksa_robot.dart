@@ -111,12 +111,13 @@ class DaftarPeriksaRobot {
     // click to bottom navigation list periksa
     await tester.ensureVisible(tabListPeriksa);
     await tester.tap(tabListPeriksa);
+
+    await tester.pumpAndSettle(Duration(seconds: 2));
   }
 
   Future<void> deletePeriksa() async {
     final tabListPeriksa = find.byIcon(Icons.app_registration);
     final deleteBtn = find.byKey(Key('DeleteBtn'));
-    final sudahBtn = find.byKey(Key('SudahBtn'));
 
     await tester.pumpAndSettle(Duration(seconds: 1));
 
@@ -133,8 +134,8 @@ class DaftarPeriksaRobot {
     await tester.pumpAndSettle(Duration(seconds: 1));
 
     // click sudah untuk konfirmasi
-    await tester.ensureVisible(sudahBtn);
-    await tester.tap(sudahBtn);
+    await tester.ensureVisible(find.text('Ya'));
+    await tester.tap(find.text('Ya'));
 
     await tester.pumpAndSettle(Duration(seconds: 4));
   }
@@ -145,7 +146,8 @@ class DaftarPeriksaRobot {
     final tglPeriksaFormField = find.byKey(Key('TglPeriksa'));
     final dokterDropdown = find.byKey(Key('Dokter Dropdown'));
     final jenisPerawatan = find.byKey(Key('Jenis Perawatan'));
-    final daftarPeriksaBtn = find.byKey(Key('Daftar Periksa'));
+    final daftarPeriksaBtn = find.byKey(Key('Edit Periksa'));
+    final sudahBtn = find.byKey(Key('SudahBtn'));
     final editBtn = find.byKey(Key('EditBtn'));
     // final belumBtn = find.byKey(Key('BelumBtn'));
 
@@ -165,6 +167,7 @@ class DaftarPeriksaRobot {
 
     // test input nama pasien
     await tester.ensureVisible(namaPasienFormField);
+    await tester.enterText(namaPasienFormField, '');
     await tester.enterText(namaPasienFormField, namaPasien!);
 
     await tester.pumpAndSettle(Duration(seconds: 1));
@@ -177,6 +180,7 @@ class DaftarPeriksaRobot {
 
     await tester.tap(find.byIcon(Icons.edit));
     await tester.pump(Duration(seconds: 1));
+    await tester.enterText(find.byType(TextField).last, '');
     await tester.enterText(find.byType(TextField).last, tglPeriksa!);
     await tester.pump(Duration(seconds: 1));
     await tester.tap(find.text('OK'));
@@ -205,10 +209,25 @@ class DaftarPeriksaRobot {
 
     await tester.pumpAndSettle(Duration(seconds: 1));
 
-    // click ya untuk konfirmasi
-    await tester.ensureVisible(find.text('Ya'));
-    await tester.tap(find.text('Ya'));
+    // click sudah untuk konfirmasi
+    await tester.ensureVisible(sudahBtn);
+    await tester.tap(sudahBtn);
 
     await tester.pumpAndSettle(Duration(seconds: 4));
+  }
+
+  Future<void> logout() async {
+    final profileTab = find.byIcon(Icons.person).first;
+
+    await tester.pumpAndSettle(Duration(seconds: 2));
+
+    await tester.tap(profileTab);
+    await tester.pumpAndSettle(Duration(seconds: 2));
+
+    await tester.scrollUntilVisible(find.text('Logout'), 0.1,
+        duration: Duration(seconds: 1));
+
+    await tester.tap(find.text('Logout'));
+    await tester.pumpAndSettle(Duration(seconds: 2));
   }
 }

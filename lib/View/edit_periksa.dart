@@ -96,6 +96,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     child: SizedBox(
                         width: 100.w,
                         child: TextFormField(
+                          key: Key('Nama Pasien'),
                           validator: (namaPasien) {
                             if (namaPasien!.isEmpty) {
                               return 'Nama Pasien tidak boleh kosong';
@@ -125,6 +126,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     child: SizedBox(
                       width: 100.w,
                       child: TextFormField(
+                        key: Key('TglPeriksa'),
                         autofocus: false,
                         controller: tanggalPeriksaController,
                         validator: (value) {
@@ -148,6 +150,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           DateTime initialDate =
                               DateTime.now().add(const Duration(days: 1));
                           DateTime? pickedDate = await showDatePicker(
+                              switchToInputEntryModeIcon: Icon(Icons.edit),
                               context: context,
                               initialDate: initialDate,
                               firstDate: initialDate,
@@ -170,6 +173,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                   Padding(
                     padding: EdgeInsets.only(right: 6.0.h, left: 12.0.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Dokter Dropdown'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -189,6 +193,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         ),
                         items: listDokterSpesialis
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
@@ -252,6 +257,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                   Padding(
                     padding: EdgeInsets.only(right: 6.0.h, left: 12.0.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Jenis Perawatan'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -271,6 +277,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         ),
                         items: listJenisPerawatan
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
@@ -331,6 +338,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     height: 12,
                   ),
                   ElevatedButton(
+                      key: Key('Edit Periksa'),
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
 
@@ -367,6 +375,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
+                                        key: Key('SudahBtn'),
                                         onPressed: () {
                                           final Periksa updatedPeriksa =
                                               Periksa(
@@ -414,6 +423,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                                 fontWeight: FontWeight.bold)),
                                       ),
                                       TextButton(
+                                        key: Key('BelumBtn'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           scaffoldMessenger.showSnackBar(
