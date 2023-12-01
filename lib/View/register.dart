@@ -352,8 +352,6 @@ class _RegisterViewState extends State<RegisterView> {
                           formData['tglLahir'] = dateController.text;
                           formData['gender'] = gender;
 
-                          print(formData);
-
                           // bool isEmailRegistered =
                           //     await checkEmail(emailController.text);
 

@@ -125,6 +125,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
 
   Widget buildEditButton(Map<String, dynamic> periksa, int index) {
     return ElevatedButton(
+      key: Key('EditBtn'),
       onPressed: () {
         Navigator.push(
           context,
@@ -155,6 +156,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     final namaPasienHapus = listPeriksaRaw[index]['nama_pasien'];
 
     return ElevatedButton(
+      key: Key('DeleteBtn'),
       onPressed: () {
         showDialog(
           context: context,

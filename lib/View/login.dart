@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/View/forget_password.dart';
-import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
