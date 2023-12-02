@@ -4,7 +4,10 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 class DaftarPeriksaClient {
-  static const String url = '10.0.2.2:8000';
+  // Local
+  // static const String url = '10.0.2.2:8000';
+  // Hostingan
+  static const String url = '20.70.51.64:8000';
   static const String endpoint = '/api/daftar_periksa';
 
   // mengambil semua data Periksa
