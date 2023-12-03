@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:tugas_besar_hospital_pbp/view/home.dart';
-import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/qr_scanner/scanner_error_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -74,8 +73,10 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
 
   @override
   void initState() {
-    getPos();
     super.initState();
+    Future.delayed(const Duration(seconds: 1), () {
+      getPos();
+    });
   }
 
   void getPos() async {
@@ -98,61 +99,53 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
   }
 
   Widget cameraView() {
-    return Builder(
-      builder: (context) {
-        return Stack(
-          children: [
-            MobileScanner(
-              controller: MobileScannerController(
-                torchEnabled: false,
-                facing: CameraFacing.back,
-              ),
-              fit: BoxFit.fitHeight,
-              onDetect: (capture) => {
-                getPos(),
-                setBarcodeCapture(capture),
-              },
-              errorBuilder: (context, error, child) {
-                return ScannerErrorWidget(error: error);
-              },
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Expanded(
-                    child: Card(
-                      color: Colors.white,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Center(
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width - 120,
-                              height: 100,
-                              child: FittedBox(
-                                child: Text(
-                                  "Scan QR Code Ruangan Anda",
-                                  overflow: TextOverflow.fade,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium
-                                      ?.copyWith(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
+    return Stack(
+      children: [
+        MobileScanner(
+          startDelay: true,
+          controller: MobileScannerController(
+            detectionSpeed: DetectionSpeed.noDuplicates,
+            torchEnabled: false,
+            facing: CameraFacing.back,
+          ),
+          fit: BoxFit.fitHeight,
+          onDetect: (capture) {
+            getPos();
+            setBarcodeCapture(capture);
+          },
+          errorBuilder: (context, error, child) {
+            return ScannerErrorWidget(error: error);
+          },
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Card(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 120,
+                    height: 100,
+                    child: FittedBox(
+                      child: Text(
+                        "Scan QR Code Ruangan Anda",
+                        overflow: TextOverflow.fade,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(color: Colors.black),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 
@@ -211,18 +204,7 @@ class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView>
         return;
       }
 
-      final Periksa updatedPeriksa = Periksa(
-        id: widget.id,
-        namaPasien: widget.namaPasien,
-        dokterSpesialis: widget.dokterSpesialis,
-        jenisPerawatan: widget.jenisPerawatan,
-        tanggalPeriksa: widget.tanggalPeriksa,
-        gambarDokter: widget.gambarDokter,
-        ruangan: widget.ruang,
-        statusCheckin: 1,
-      );
-
-      DaftarPeriksaClient.update(updatedPeriksa);
+      DaftarPeriksaClient.updateStatus(widget.id);
 
       returnHome();
 

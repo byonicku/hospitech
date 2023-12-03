@@ -1,16 +1,22 @@
+import 'dart:async';
+
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart';
 
 class UserClient {
-  static const String url = '10.0.2.2:8000';
+  // Local
+  // static const String url = '10.0.2.2:8000';
+  // Hostingan
+  static const String url = '20.70.51.64:8000';
   static const String endpoint = '/api/user';
 
   // mengambil semua data user (kayaknya ga perlu soalnya ngapain kan get all user di aplikasi wkwk)
   static Future<List<User>> fetchAll() async {
     try {
-      var response = await get(Uri.http(url, endpoint));
+      var response = await get(Uri.http(url, endpoint))
+          .timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 
@@ -42,7 +48,7 @@ class UserClient {
         Uri.http(url, endpoint),
         headers: {"Content-Type": "application/json"},
         body: user.toRawJson(),
-      );
+      ).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
@@ -60,7 +66,7 @@ class UserClient {
           body: json.encode({
             "username": username,
             "password": password,
-          }));
+          })).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
@@ -79,7 +85,7 @@ class UserClient {
         Uri.http(url, '$endpoint/${user.id}'),
         headers: {"Content-Type": "application/json"},
         body: user.toRawJson(),
-      );
+      ).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
@@ -98,8 +104,27 @@ class UserClient {
             "username": username,
             "passwordLama": password,
             "passwordBaru": newPassword,
-          }));
+          })).timeout(const Duration(seconds: 5));
 
+      if (response.statusCode != 200) {
+        throw Exception(json.decode(response.body)["message"]);
+      }
+
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  static Future<Response> updatePhotoProfil(
+      int? id, String profilePhoto) async {
+    try {
+      var response = await post(Uri.http(url, '$endpoint/updatePfp'),
+          headers: {"Content-Type": "application/json"},
+          body: json.encode({
+            "id": id,
+            "profile_photo": profilePhoto,
+          })).timeout(const Duration(seconds: 5));
       if (response.statusCode != 200) {
         throw Exception(json.decode(response.body)["message"]);
       }

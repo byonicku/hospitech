@@ -4,28 +4,34 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 class DaftarPeriksaClient {
-  static const String url = '10.0.2.2:8000';
+  // Local
+  // static const String url = '10.0.2.2:8000';
+  // Hostingan
+  static const String url = '20.70.51.64:8000';
   static const String endpoint = '/api/daftar_periksa';
 
   // mengambil semua data Periksa
-  static Future<List<Periksa>> fetchAll() async {
+  static Future<List<Periksa>> fetchAll(String id) async {
     try {
       var response = await get(Uri.http(url, endpoint));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 
       Iterable list = json.decode(response.body)["data"];
+      List<Periksa> listPeriksa = list.map((e) => Periksa.fromJson(e)).toList();
 
-      return list.map((e) => Periksa.fromJson(e)).toList();
+      listPeriksa.removeWhere((periksa) => periksa.idUser != int.parse(id));
+      return listPeriksa;
     } catch (e) {
       return Future.error(e.toString());
     }
   }
 
-  // show Periksa berdasarkan ID (ini gatau perlu apa engga)
+  // show Periksa berdasarkan ID
   static Future<Periksa> show(String id) async {
     try {
-      var response = await get(Uri.http(url, '$endpoint/$id'));
+      var response = await get(Uri.http(url, '$endpoint/$id'))
+          .timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 
@@ -36,13 +42,15 @@ class DaftarPeriksaClient {
   }
 
   // add data Periksa
-  static Future<Response> addPeriksa(Periksa periksa) async {
+  static Future<Response> addPeriksa(Periksa periksa, String userID) async {
     try {
       var response = await post(
         Uri.http(url, endpoint),
         headers: {"Content-Type": "application/json"},
-        body: periksa.toRawJson(),
-      );
+        body: json.encode(
+          periksa.toJson()..addAll({"id_user": userID}),
+        ),
+      ).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
@@ -53,13 +61,33 @@ class DaftarPeriksaClient {
   }
 
   // update data Periksa
-  static Future<Response> update(Periksa periksa) async {
+  static Future<Response> update(Periksa periksa, String userID) async {
+    try {
+      var response = await put(Uri.http(url, '$endpoint/${periksa.id}'),
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(
+            periksa.toJson()..addAll({"id_user": userID}),
+          )).timeout(const Duration(seconds: 5));
+
+      if (response.statusCode != 200) throw Exception(response.body);
+
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  static Future<Response> updateStatus(int id) async {
     try {
       var response = await put(
-        Uri.http(url, '$endpoint/${periksa.id}'),
+        Uri.http(url, '$endpoint/updateStatus'),
         headers: {"Content-Type": "application/json"},
-        body: periksa.toRawJson(),
-      );
+        body: json.encode(
+          {
+            "id": id,
+          },
+        ),
+      ).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
@@ -72,7 +100,8 @@ class DaftarPeriksaClient {
   // hapus data Periksa
   static Future<Response> destroy(String id) async {
     try {
-      var response = await delete(Uri.http(url, '$endpoint/$id'));
+      var response = await delete(Uri.http(url, '$endpoint/$id'))
+          .timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
+import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/View/register.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
@@ -20,16 +23,44 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   bool _isObscured = true;
   bool _isObscuredNew = true;
   bool _isObscureConfirm = true;
+  bool _isLoading = false;
+
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmNewPasswordController = TextEditingController();
 
-  DateTime backButtonPressTime = DateTime.now();
+  bool isLogged = false;
+
+  void refresh() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? id = prefs.getString('id') ?? '';
+    if (id != '') {
+      User dataUser = await UserClient.show(id);
+      setState(() {
+        usernameController.text = dataUser.username!;
+        isLogged = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Reset Password',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -39,25 +70,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Reset Password",
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 5.0.h,
-                ),
                 //username
-                inputLogin((username) {
+                inputForm((username) {
                   if (username!.isEmpty) {
                     return "Masukkan username Anda";
                   }
                   return null;
                 },
                     controller: usernameController,
-                    hintTxt: "Username",
+                    labelTxt: "Username",
+                    read: isLogged,
                     iconData: Icons.person),
                 //* Password lama
                 SizedBox(
@@ -68,8 +90,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   child: SizedBox(
                     width: 100.w,
                     child: TextFormField(
-                      validator: (value) =>
-                          value!.isEmpty ? "Masukkan password lama Anda" : null,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Masukan Password Lama Anda";
+                        } else {
+                          return null;
+                        }
+                      },
                       controller: passwordController,
                       obscureText: _isObscured,
                       autofocus: false,
@@ -79,9 +106,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         });
                       },
                       decoration: InputDecoration(
-                          hintText: "Password lama",
-                          border: const OutlineInputBorder(),
-                          icon: const Icon(Icons.password),
+                          hintText: "Password Lama",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          prefixIcon: const Icon(Icons.password),
                           suffixIcon: GestureDetector(
                               onTap: () => setState(() {
                                     _isObscured = !_isObscured;
@@ -103,8 +132,15 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   child: SizedBox(
                     width: 100.w,
                     child: TextFormField(
-                      validator: (value) =>
-                          value!.isEmpty ? "Masukkan password baru Anda" : null,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Masukan Password Baru Anda";
+                        } else if (value.length < 5) {
+                          return "Password Baru minimal 5 karakter";
+                        } else {
+                          return null;
+                        }
+                      },
                       controller: newPasswordController,
                       obscureText: _isObscuredNew,
                       autofocus: false,
@@ -114,9 +150,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         });
                       },
                       decoration: InputDecoration(
-                          hintText: "Password baru",
-                          border: const OutlineInputBorder(),
-                          icon: const Icon(Icons.password),
+                          hintText: "Password Baru",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          prefixIcon: const Icon(Icons.password),
                           suffixIcon: GestureDetector(
                               onTap: () => setState(() {
                                     _isObscuredNew = !_isObscuredNew;
@@ -140,14 +178,12 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     child: TextFormField(
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Masukkan password Anda";
-                        }
-
-                        if (value != newPasswordController.text) {
+                          return "Masukan Konfirmasi Password Anda";
+                        } else if (value != newPasswordController.text) {
                           return "Password Konfirmasi Tidak Sama!";
+                        } else {
+                          return null;
                         }
-
-                        return null;
                       },
                       controller: confirmNewPasswordController,
                       obscureText: _isObscureConfirm,
@@ -158,9 +194,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         });
                       },
                       decoration: InputDecoration(
-                          hintText: "Konfrimasi Password",
-                          border: const OutlineInputBorder(),
-                          icon: const Icon(Icons.password),
+                          hintText: "Konfirmasi Password",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          prefixIcon: const Icon(Icons.password),
                           suffixIcon: GestureDetector(
                               onTap: () => setState(() {
                                     _isObscureConfirm = !_isObscureConfirm;
@@ -180,6 +218,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   ),
                 ),
                 //* Baris yang berisi tombol login dan tombol mengarah ke halaman register
+                SizedBox(
+                  height: 2.h,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -189,17 +230,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     ),
                     //* tombol update
                     ElevatedButton(
-                      //* Fungsi yang dijalankan saat tombol ditekan.
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
-                        void navPush(MaterialPageRoute route) {
-                          Navigator.pushReplacement(context, route);
-                        }
 
-                        //* Cek statenya sudah valid atau belum valid
                         if (_formKey.currentState!.validate()) {
-                          //* jika sudah valid, cek username dan password yang diinputkan pada form telah sesuai dengan data yang dibawah
-                          //* dari halaman register atau belum
+                          setState(() {
+                            _isLoading = true;
+                          });
 
                           try {
                             await UserClient.updatePassword(
@@ -207,8 +244,30 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                 passwordController.text,
                                 newPasswordController.text);
 
-                            navPush(MaterialPageRoute(
-                                builder: (_) => const LoginView()));
+                            if (isLogged) {
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => const HomeView(
+                                    selectedIndex: 1,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginView(),
+                                ),
+                              );
+                            }
+
                             scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 duration: Duration(seconds: 2),
@@ -217,6 +276,10 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                               ),
                             );
                           } catch (e) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+
                             scaffoldMessenger.showSnackBar(
                               SnackBar(
                                 // ignore: prefer_const_constructors
@@ -231,11 +294,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 3.0.h, vertical: 2.0.w),
-                        child: Text(
-                          'Ubah Password',
-                          style:
-                              TextStyle(fontSize: 16.sp, color: Colors.white),
-                        ),
+                        child: !_isLoading
+                            ? Text(
+                                'Ubah Password',
+                                style: TextStyle(
+                                    fontSize: 16.sp, color: Colors.white),
+                              )
+                            : CircularProgressIndicator(),
                       ),
                     ),
                   ],
