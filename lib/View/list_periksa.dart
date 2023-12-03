@@ -23,12 +23,22 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
   bool isDark = darkNotifier.value;
   String id = const Uuid().v1();
   bool _isLoading = true;
+  String status = 'Tidak ada data periksa';
 
   void refresh() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? id = prefs.getString('id') ?? '';
 
-    final dataPeriksa = await DaftarPeriksaClient.fetchAll(id);
+    final dataPeriksa = await DaftarPeriksaClient.fetchAll(id).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        setState(() {
+          _isLoading = false;
+          status = 'Tidak ada koneksi internet';
+        });
+        return [];
+      },
+    );
     setState(() {
       listPeriksaRaw = dataPeriksa.map((periksa) => periksa.toJson()).toList();
       _isLoading = false;
@@ -296,8 +306,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                   separatorBuilder: (context, index) => SizedBox(height: 2.h),
                 )
               : Center(
-                  child: Text("Daftar Periksa Kosong",
-                      style: TextStyle(fontSize: 14.sp)),
+                  child: Text(status, style: TextStyle(fontSize: 14.sp)),
                 ))
           : Center(child: CircularProgressIndicator()),
       floatingActionButton: FloatingActionButton(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tugas_besar_hospital_pbp/View/forget_password.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
@@ -8,8 +9,6 @@ import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/component/form_component.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:intl/intl.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   const UpdateProfilePage({
@@ -28,26 +27,34 @@ class _ProfilePageState extends State<UpdateProfilePage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController notelpController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  String? profilePhoto;
   String? gender;
 
   bool? isChecked = false;
-  bool _isObscured = true;
   bool isDark = darkNotifier.value;
+  bool isLoading = true;
 
-  // @override
-  // void initState() async {
-  //   super.initState();
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   User dataUser = await UserClient.show(prefs.getString('id')!);
+  void refresh() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    User dataUser = await UserClient.show(prefs.getString('id')!);
 
-  //   setState(() {
-  //     usernameController.text = dataUser.username!;
-  //     emailController.text = dataUser.email!;
-  //     passwordController.text = dataUser.password!;
-  //     notelpController.text = dataUser.noTelp!;
-  //     dateController.text = dataUser.tglLahir!;
-  //   });
-  // }
+    setState(() {
+      usernameController.text = dataUser.username!;
+      emailController.text = dataUser.email!;
+      passwordController.text = dataUser.password!;
+      notelpController.text = dataUser.noTelp!;
+      dateController.text = dataUser.tglLahir!;
+      gender = dataUser.jenisKelamin!;
+      profilePhoto = dataUser.profilePhoto!;
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +62,7 @@ class _ProfilePageState extends State<UpdateProfilePage> {
       appBar: AppBar(
         title: Text(
           'Edit Profile',
-          style: TextStyle(fontSize: 16.sp),
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
         ),
       ),
       body: SafeArea(
@@ -76,76 +83,25 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                     }
                   },
                       controller: usernameController,
-                      hintTxt: "Username",
+                      read: true,
                       labelTxt: "Username",
                       iconData: Icons.person),
                   SizedBox(
                     height: 2.h,
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
-                    child: SizedBox(
-                        width: 100.w,
-                        child: TextFormField(
-                          validator: (email) {
-                            if (email!.isEmpty) {
-                              return 'Email tidak boleh kosong';
-                            } else if (!email.contains('@')) {
-                              return 'Email tidak valid';
-                            } else {
-                              return null;
-                            }
-                          },
-                          controller: emailController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "Email",
-                            labelText: "Email",
-                            icon: Icon(Icons.email),
-                          ),
-                        )),
-                  ),
-                  SizedBox(
-                    height: 2.h,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
-                    child: SizedBox(
-                      width: 100.w,
-                      child: TextFormField(
-                        validator: (password) {
-                          if (password!.isEmpty) {
-                            return "Tolong isikan password Anda";
-                          } else if (password.length < 5) {
-                            return "Password minimal 5 karakter";
-                          } else {
-                            return null;
-                          }
-                        },
-                        controller: passwordController,
-                        obscureText: _isObscured,
-                        onChanged: (s) {
-                          setState(() {
-                            passwordController.text = s;
-                          });
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Password",
-                            labelText: "Password",
-                            border: const OutlineInputBorder(),
-                            icon: const Icon(Icons.password),
-                            suffixIcon: GestureDetector(
-                                onTap: () => setState(() {
-                                      _isObscured = !_isObscured;
-                                    }),
-                                child: Icon(
-                                  _isObscured
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ))),
-                      ),
-                    ),
-                  ),
+                  inputForm((email) {
+                    if (email!.isEmpty) {
+                      return 'Email tidak boleh kosong';
+                    } else if (!email.contains('@')) {
+                      return 'Email tidak valid';
+                    } else {
+                      return null;
+                    }
+                  },
+                      controller: emailController,
+                      read: false,
+                      labelTxt: "Email",
+                      iconData: Icons.email),
                   SizedBox(
                     height: 2.h,
                   ),
@@ -159,8 +115,8 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                     }
                   },
                       controller: notelpController,
-                      hintTxt: "No Telepon",
-                      labelTxt: "No Telepon",
+                      read: false,
+                      labelTxt: "Nomor Telepon",
                       iconData: Icons.phone_android,
                       textInputType: TextInputType.number),
                   SizedBox(
@@ -191,9 +147,10 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                           }
                         },
                         decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            icon: Icon(Icons.calendar_today),
-                            hintText: "Tanggal Lahir",
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20))),
+                            prefixIcon: Icon(Icons.calendar_today),
                             labelText: "Tanggal Lahir"),
                         readOnly: true, //ketika true maka user gabisa edit
                         showCursor: false,
@@ -215,35 +172,23 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 2.h,
-                  ),
-                  //radio button
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 6.0.h,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 6.w),
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        const ForgotPasswordView()));
+                          },
+                          child: Text(
+                            'Reset Password',
+                            style: TextStyle(fontSize: 16.sp),
+                          )),
                     ),
-                    child: SizedBox(
-                      width: 100.w,
-                      child: FormBuilderRadioGroup(
-                        decoration: const InputDecoration(labelText: 'Gender'),
-                        name: "gender",
-                        validator: FormBuilderValidators.required(
-                            errorText: "Jenis kelamin tidak boleh kosong"),
-                        options: [
-                          "Laki-Laki",
-                          "Perempuan",
-                        ]
-                            .map((e) => FormBuilderFieldOption(value: e))
-                            .toList(growable: false),
-                        onChanged: (value) => setState(() {
-                          gender = value;
-                        }),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 2.h,
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -262,19 +207,6 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                         formData['noTelp'] = notelpController.text;
                         formData['tglLahir'] = dateController.text;
                         formData['gender'] = gender;
-
-                        // bool isEmailRegistered =
-                        //     await checkEmail(emailController.text);
-
-                        // if (isEmailRegistered) {
-                        //   scaffoldMessenger.showSnackBar(
-                        //     const SnackBar(
-                        //       duration: Duration(seconds: 2),
-                        //       content: Text('Email sudah terdaftar!'),
-                        //     ),
-                        //   );
-                        //   return;
-                        // }
 
                         // kalo UPDATE masalah kemungkinan ini
                         // ignore: use_build_context_synchronously
@@ -295,7 +227,8 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                                       noTelp: notelpController.text,
                                       password: passwordController.text,
                                       tglLahir: dateController.text,
-                                      username: usernameController.text);
+                                      username: usernameController.text,
+                                      profilePhoto: profilePhoto);
                                   try {
                                     await UserClient.update(user);
 
@@ -319,15 +252,28 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                                       ),
                                     );
                                   } catch (e) {
-                                    print(e.toString());
+                                    // print(e.toString());
                                     // ignore: use_build_context_synchronously
-                                    Navigator.of(context).pop();
-                                    scaffoldMessenger.showSnackBar(
-                                      const SnackBar(
-                                        duration: Duration(seconds: 2),
-                                        content: Text('Email sudah terdaftar!'),
-                                      ),
-                                    );
+                                    if (e
+                                        .toString()
+                                        .contains('TimeoutException')) {
+                                      scaffoldMessenger.showSnackBar(
+                                        const SnackBar(
+                                          duration: Duration(seconds: 2),
+                                          content:
+                                              Text('Koneksi ke server gagal!'),
+                                        ),
+                                      );
+                                    } else {
+                                      Navigator.of(context).pop();
+                                      scaffoldMessenger.showSnackBar(
+                                        const SnackBar(
+                                          duration: Duration(seconds: 2),
+                                          content:
+                                              Text('Email sudah terdaftar!'),
+                                        ),
+                                      );
+                                    }
                                   }
                                 },
                                 child: Text('Sudah',

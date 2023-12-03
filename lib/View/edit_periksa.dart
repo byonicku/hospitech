@@ -377,43 +377,61 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                       TextButton(
                                         key: Key('SudahBtn'),
                                         onPressed: () {
-                                          final Periksa updatedPeriksa =
-                                              Periksa(
-                                                  id: widget.id,
-                                                  namaPasien:
-                                                      namaPasienController.text,
-                                                  dokterSpesialis: formData[
-                                                      'dokter_spesialis'],
-                                                  jenisPerawatan: formData[
-                                                      'jenis_perawatan'],
-                                                  tanggalPeriksa:
-                                                      tanggalPeriksaController
-                                                          .text,
-                                                  price: formData['price'],
-                                                  ruangan: formData['ruangan'],
-                                                  statusCheckin: 0,
-                                                  gambarDokter: formData[
-                                                      'gambar_dokter']);
+                                          try {
+                                            final Periksa updatedPeriksa =
+                                                Periksa(
+                                                    id: widget.id,
+                                                    namaPasien:
+                                                        namaPasienController
+                                                            .text,
+                                                    dokterSpesialis: formData[
+                                                        'dokter_spesialis'],
+                                                    jenisPerawatan: formData[
+                                                        'jenis_perawatan'],
+                                                    tanggalPeriksa:
+                                                        tanggalPeriksaController
+                                                            .text,
+                                                    price: formData['price'],
+                                                    ruangan:
+                                                        formData['ruangan'],
+                                                    statusCheckin: 0,
+                                                    gambarDokter: formData[
+                                                        'gambar_dokter']);
 
-                                          DaftarPeriksaClient.update(
-                                              updatedPeriksa, id!);
+                                            DaftarPeriksaClient.update(
+                                                updatedPeriksa, id!);
 
-                                          Navigator.of(context).popUntil(
-                                              (route) => route.isFirst);
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) => const HomeView(
-                                                    selectedIndex: 2)),
-                                          );
+                                            Navigator.of(context).popUntil(
+                                                (route) => route.isFirst);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      const HomeView(
+                                                          selectedIndex: 2)),
+                                            );
 
-                                          scaffoldMessenger.showSnackBar(
-                                            const SnackBar(
-                                              duration: Duration(seconds: 2),
-                                              content: Text(
-                                                  'Berhasil Melakukan Update Data Periksa'),
-                                            ),
-                                          );
+                                            scaffoldMessenger.showSnackBar(
+                                              const SnackBar(
+                                                duration: Duration(seconds: 2),
+                                                content: Text(
+                                                    'Berhasil Melakukan Update Data Periksa'),
+                                              ),
+                                            );
+                                          } on Exception catch (e) {
+                                            if (e
+                                                .toString()
+                                                .contains('TimeoutException')) {
+                                              scaffoldMessenger.showSnackBar(
+                                                const SnackBar(
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                  content: Text(
+                                                      'Koneksi ke server gagal!'),
+                                                ),
+                                              );
+                                            }
+                                          }
                                         },
                                         child: Text('Sudah',
                                             style: TextStyle(

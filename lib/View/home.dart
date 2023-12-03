@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:shake/shake.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:tugas_besar_hospital_pbp/main.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key, required this.selectedIndex});
@@ -19,6 +20,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
+  bool isDark = darkNotifier.value;
 
   final List<String> dailyTips = [
     'Drink plenty of water',

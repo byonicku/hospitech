@@ -7,7 +7,7 @@ import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:tugas_besar_hospital_pbp/invoice/preview_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:tugas_besar_hospital_pbp/invoice/get_price.dart';
 
 Future<void> createPdf(
@@ -22,7 +22,9 @@ Future<void> createPdf(
     );
   }
 
-  Periksa userPeriksa = await getPeriksaByID(idPeriksa);
+  Periksa userPeriksa = await DaftarPeriksaClient.show(idPeriksa.toString());
+
+  print(userPeriksa);
 
   final doc = pw.Document();
   final now = DateTime.now();
