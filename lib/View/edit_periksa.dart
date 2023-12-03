@@ -69,23 +69,25 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: isDark ? Colors.grey[900] : Colors.grey[200],
+        title: Text(
+          'Edit Daftar Periksa',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: Container(
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: 6.h,
-                  ),
-                  Text(
-                    "Edit Daftar Periksa",
-                    style:
-                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-                  ),
                   SizedBox(
                     height: 6.h,
                   ),
@@ -106,12 +108,13 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           },
                           controller: namaPasienController,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "Nama Pasien",
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20))),
                             labelText: "Nama Pasien",
                             hintStyle: TextStyle(fontSize: 14),
                             labelStyle: TextStyle(fontSize: 14),
-                            icon: Icon(Icons.person),
+                            prefixIcon: Icon(Icons.person),
                           ),
                         )),
                   ),
@@ -136,9 +139,10 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           return null;
                         },
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          icon: Icon(Icons.calendar_today),
-                          hintText: "Tanggal Periksa",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          prefixIcon: Icon(Icons.calendar_today),
                           labelText: "Tanggal Periksa",
                           hintStyle: TextStyle(fontSize: 14),
                           labelStyle: TextStyle(fontSize: 14),
@@ -171,7 +175,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     height: 12,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 6.0.h, left: 12.0.h),
+                    padding: EdgeInsets.symmetric(horizontal: 6.0.h),
                     child: DropdownButtonHideUnderline(
                       key: Key('Dokter Dropdown'),
                       child: DropdownButton2<String>(
@@ -216,6 +220,10 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           height: 50,
                           padding: EdgeInsets.only(left: 2.h, right: 2.h),
                           decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(color: Colors.grey.withOpacity(0)),
+                            ],
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: Colors.grey.shade700,
                             ),
@@ -234,9 +242,10 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         dropdownStyleData: DropdownStyleData(
                           maxHeight: 200,
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
                             color: isDark ? Colors.grey.shade900 : Colors.white,
                           ),
-                          offset: const Offset(0, 0),
+                          offset: const Offset(0, -3),
                           scrollbarTheme: ScrollbarThemeData(
                             radius: const Radius.circular(40),
                             thickness: MaterialStateProperty.all(6),
@@ -255,7 +264,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                   ),
 
                   Padding(
-                    padding: EdgeInsets.only(right: 6.0.h, left: 12.0.h),
+                    padding: EdgeInsets.symmetric(horizontal: 6.0.h),
                     child: DropdownButtonHideUnderline(
                       key: Key('Jenis Perawatan'),
                       child: DropdownButton2<String>(
@@ -300,6 +309,10 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           height: 50,
                           padding: EdgeInsets.only(left: 2.h, right: 2.h),
                           decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(color: Colors.grey.withOpacity(0)),
+                            ],
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: Colors.grey.shade700,
                             ),
@@ -311,16 +324,17 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           icon: const Icon(
                             Icons.arrow_forward_ios_outlined,
                           ),
-                          iconSize: 14,
+                          iconSize: 16.sp,
                           iconEnabledColor: Colors.grey.shade700,
                           iconDisabledColor: Colors.grey,
                         ),
                         dropdownStyleData: DropdownStyleData(
                           maxHeight: 200,
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
                             color: isDark ? Colors.grey.shade900 : Colors.white,
                           ),
-                          offset: const Offset(0, 0),
+                          offset: const Offset(0, -3),
                           scrollbarTheme: ScrollbarThemeData(
                             radius: const Radius.circular(40),
                             thickness: MaterialStateProperty.all(6),
