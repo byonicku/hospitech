@@ -96,6 +96,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     child: SizedBox(
                         width: 100.w,
                         child: TextFormField(
+                          key: Key('Nama Pasien'),
                           validator: (namaPasien) {
                             if (namaPasien!.isEmpty) {
                               return 'Nama Pasien tidak boleh kosong';
@@ -125,6 +126,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     child: SizedBox(
                       width: 100.w,
                       child: TextFormField(
+                        key: Key('TglPeriksa'),
                         autofocus: false,
                         controller: tanggalPeriksaController,
                         validator: (value) {
@@ -148,6 +150,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           DateTime initialDate =
                               DateTime.now().add(const Duration(days: 1));
                           DateTime? pickedDate = await showDatePicker(
+                              switchToInputEntryModeIcon: Icon(Icons.edit),
                               context: context,
                               initialDate: initialDate,
                               firstDate: initialDate,
@@ -170,6 +173,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                   Padding(
                     padding: EdgeInsets.only(right: 6.0.h, left: 12.0.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Dokter Dropdown'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -189,6 +193,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         ),
                         items: listDokterSpesialis
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
@@ -252,6 +257,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                   Padding(
                     padding: EdgeInsets.only(right: 6.0.h, left: 12.0.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Jenis Perawatan'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -271,6 +277,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         ),
                         items: listJenisPerawatan
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
@@ -331,6 +338,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     height: 12,
                   ),
                   ElevatedButton(
+                      key: Key('Edit Periksa'),
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
 
@@ -367,44 +375,63 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
+                                        key: Key('SudahBtn'),
                                         onPressed: () {
-                                          final Periksa updatedPeriksa =
-                                              Periksa(
-                                                  id: widget.id,
-                                                  namaPasien:
-                                                      namaPasienController.text,
-                                                  dokterSpesialis: formData[
-                                                      'dokter_spesialis'],
-                                                  jenisPerawatan: formData[
-                                                      'jenis_perawatan'],
-                                                  tanggalPeriksa:
-                                                      tanggalPeriksaController
-                                                          .text,
-                                                  price: formData['price'],
-                                                  ruangan: formData['ruangan'],
-                                                  statusCheckin: 0,
-                                                  gambarDokter: formData[
-                                                      'gambar_dokter']);
+                                          try {
+                                            final Periksa updatedPeriksa =
+                                                Periksa(
+                                                    id: widget.id,
+                                                    namaPasien:
+                                                        namaPasienController
+                                                            .text,
+                                                    dokterSpesialis: formData[
+                                                        'dokter_spesialis'],
+                                                    jenisPerawatan: formData[
+                                                        'jenis_perawatan'],
+                                                    tanggalPeriksa:
+                                                        tanggalPeriksaController
+                                                            .text,
+                                                    price: formData['price'],
+                                                    ruangan:
+                                                        formData['ruangan'],
+                                                    statusCheckin: 0,
+                                                    gambarDokter: formData[
+                                                        'gambar_dokter']);
 
-                                          DaftarPeriksaClient.update(
-                                              updatedPeriksa, id!);
+                                            DaftarPeriksaClient.update(
+                                                updatedPeriksa, id!);
 
-                                          Navigator.of(context).popUntil(
-                                              (route) => route.isFirst);
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) => const HomeView(
-                                                    selectedIndex: 2)),
-                                          );
+                                            Navigator.of(context).popUntil(
+                                                (route) => route.isFirst);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      const HomeView(
+                                                          selectedIndex: 2)),
+                                            );
 
-                                          scaffoldMessenger.showSnackBar(
-                                            const SnackBar(
-                                              duration: Duration(seconds: 2),
-                                              content: Text(
-                                                  'Berhasil Melakukan Update Data Periksa'),
-                                            ),
-                                          );
+                                            scaffoldMessenger.showSnackBar(
+                                              const SnackBar(
+                                                duration: Duration(seconds: 2),
+                                                content: Text(
+                                                    'Berhasil Melakukan Update Data Periksa'),
+                                              ),
+                                            );
+                                          } on Exception catch (e) {
+                                            if (e
+                                                .toString()
+                                                .contains('TimeoutException')) {
+                                              scaffoldMessenger.showSnackBar(
+                                                const SnackBar(
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                  content: Text(
+                                                      'Koneksi ke server gagal!'),
+                                                ),
+                                              );
+                                            }
+                                          }
                                         },
                                         child: Text('Sudah',
                                             style: TextStyle(
@@ -414,6 +441,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                                 fontWeight: FontWeight.bold)),
                                       ),
                                       TextButton(
+                                        key: Key('BelumBtn'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           scaffoldMessenger.showSnackBar(

@@ -28,20 +28,20 @@ class MainApp extends StatelessWidget {
         builder: (BuildContext context, bool isDark, Widget? child) {
           return ResponsiveSizer(builder: (context, orientation, deviceType) {
             Device.orientation == Orientation.portrait
-                ? Container(
+                ? SizedBox(
                     width: 100.w,
                     height: 20.5.h,
                   )
-                : Container(
+                : SizedBox(
                     width: 100.w,
                     height: 12.5.h,
                   );
             Device.orientation == ScreenType.tablet
-                ? Container(
+                ? SizedBox(
                     width: 100.w,
                     height: 20.5.h,
                   )
-                : Container(
+                : SizedBox(
                     width: 100.w,
                     height: 12.5.h,
                   );

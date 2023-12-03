@@ -4,7 +4,10 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 class DaftarPeriksaClient {
-  static const String url = '10.0.2.2:8000';
+  // Local
+  // static const String url = '10.0.2.2:8000';
+  // Hostingan
+  static const String url = '20.70.51.64:8000';
   static const String endpoint = '/api/daftar_periksa';
 
   // mengambil semua data Periksa
@@ -24,10 +27,11 @@ class DaftarPeriksaClient {
     }
   }
 
-  // show Periksa berdasarkan ID (ini gatau perlu apa engga)
+  // show Periksa berdasarkan ID
   static Future<Periksa> show(String id) async {
     try {
-      var response = await get(Uri.http(url, '$endpoint/$id'));
+      var response = await get(Uri.http(url, '$endpoint/$id'))
+          .timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 
@@ -46,7 +50,7 @@ class DaftarPeriksaClient {
         body: json.encode(
           periksa.toJson()..addAll({"id_user": userID}),
         ),
-      );
+      ).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
@@ -63,7 +67,7 @@ class DaftarPeriksaClient {
           headers: {"Content-Type": "application/json"},
           body: json.encode(
             periksa.toJson()..addAll({"id_user": userID}),
-          ));
+          )).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
@@ -83,7 +87,7 @@ class DaftarPeriksaClient {
             "id": id,
           },
         ),
-      );
+      ).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
@@ -96,7 +100,8 @@ class DaftarPeriksaClient {
   // hapus data Periksa
   static Future<Response> destroy(String id) async {
     try {
-      var response = await delete(Uri.http(url, '$endpoint/$id'));
+      var response = await delete(Uri.http(url, '$endpoint/$id'))
+          .timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.body);
 

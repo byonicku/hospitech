@@ -23,12 +23,22 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
   bool isDark = darkNotifier.value;
   String id = const Uuid().v1();
   bool _isLoading = true;
+  String status = 'Tidak ada data periksa';
 
   void refresh() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? id = prefs.getString('id') ?? '';
 
-    final dataPeriksa = await DaftarPeriksaClient.fetchAll(id);
+    final dataPeriksa = await DaftarPeriksaClient.fetchAll(id).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        setState(() {
+          _isLoading = false;
+          status = 'Tidak ada koneksi internet';
+        });
+        return [];
+      },
+    );
     setState(() {
       listPeriksaRaw = dataPeriksa.map((periksa) => periksa.toJson()).toList();
       _isLoading = false;
@@ -125,6 +135,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
 
   Widget buildEditButton(Map<String, dynamic> periksa, int index) {
     return ElevatedButton(
+      key: Key('EditBtn'),
       onPressed: () {
         Navigator.push(
           context,
@@ -155,6 +166,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     final namaPasienHapus = listPeriksaRaw[index]['nama_pasien'];
 
     return ElevatedButton(
+      key: Key('DeleteBtn'),
       onPressed: () {
         showDialog(
           context: context,
@@ -294,8 +306,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                   separatorBuilder: (context, index) => SizedBox(height: 2.h),
                 )
               : Center(
-                  child: Text("Daftar Periksa Kosong",
-                      style: TextStyle(fontSize: 14.sp)),
+                  child: Text(status, style: TextStyle(fontSize: 14.sp)),
                 ))
           : Center(child: CircularProgressIndicator()),
       floatingActionButton: FloatingActionButton(
