@@ -29,6 +29,10 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? id = prefs.getString('id') ?? '';
 
+    setState(() {
+      _isLoading = true;
+    });
+
     final dataPeriksa = await DaftarPeriksaClient.fetchAll(id).timeout(
       const Duration(seconds: 5),
       onTimeout: () {
@@ -39,6 +43,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
         return [];
       },
     );
+
     setState(() {
       listPeriksaRaw = dataPeriksa.map((periksa) => periksa.toJson()).toList();
       _isLoading = false;
@@ -57,11 +62,20 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
       child: Card(
         elevation: 1,
         child: InkWell(
-          onTap: () {
-            createPdf(listPeriksaRaw[index]['id_daftar_periksa'], id, context);
+          onTap: () async {
+            await createPdf(
+                listPeriksaRaw[index]['id_daftar_periksa'], id, context);
+
             setState(() {
               const uuid = Uuid();
               id = uuid.v1();
+              _isLoading = true;
+            });
+
+            Future.delayed(const Duration(seconds: 1), () {
+              setState(() {
+                _isLoading = false;
+              });
             });
           },
           child: Row(
@@ -177,24 +191,31 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                 'Apakah yakin ingin menghapus data pasien $namaPasienHapus?'),
             actions: [
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   // Menghapus Data Yang di pilih
-                  final int idHapus =
-                      listPeriksaRaw[index]['id_daftar_periksa'];
+                  try {
+                    final int idHapus =
+                        listPeriksaRaw[index]['id_daftar_periksa'];
 
-                  // deleteDaftarPeriksa(idHapus);
-                  DaftarPeriksaClient.destroy(idHapus.toString());
+                    await DaftarPeriksaClient.destroy(idHapus.toString());
+                    refresh();
 
-                  Navigator.pop(context);
-
-                  scaffoldMessenger.showSnackBar(
-                    const SnackBar(
-                      duration: Duration(seconds: 2),
-                      content: Text('Berhasil Menghapus Data'),
-                    ),
-                  );
-
-                  refresh();
+                    Navigator.of(context).pop();
+                    scaffoldMessenger.showSnackBar(
+                      const SnackBar(
+                        duration: Duration(seconds: 2),
+                        content: Text('Berhasil Menghapus Data'),
+                      ),
+                    );
+                  } catch (e) {
+                    Navigator.of(context).pop();
+                    scaffoldMessenger.showSnackBar(
+                      const SnackBar(
+                        duration: Duration(seconds: 2),
+                        content: Text('Gagal Menghapus Data'),
+                      ),
+                    );
+                  }
                 },
                 child: Text('Ya',
                     style: TextStyle(

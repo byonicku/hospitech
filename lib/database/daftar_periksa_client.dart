@@ -79,7 +79,7 @@ class DaftarPeriksaClient {
 
   static Future<Response> updateStatus(int id) async {
     try {
-      var response = await put(
+      var response = await post(
         Uri.http(url, '$endpoint/updateStatus'),
         headers: {"Content-Type": "application/json"},
         body: json.encode(
