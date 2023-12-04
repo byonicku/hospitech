@@ -42,6 +42,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         isLogged = true;
         _isLoading = false;
       });
+    } else {
+      setState(() {
+        isLogged = false;
+        _isLoading = false;
+      });
     }
   }
 
