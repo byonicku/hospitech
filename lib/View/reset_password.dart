@@ -115,7 +115,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                 });
                               },
                               decoration: InputDecoration(
-                                  hintText: "Password Lama",
+                                  labelText: "Password Lama",
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(20))),
@@ -159,7 +159,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                 });
                               },
                               decoration: InputDecoration(
-                                  hintText: "Password Baru",
+                                  labelText: "Password Baru",
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(20))),
@@ -204,7 +204,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                 });
                               },
                               decoration: InputDecoration(
-                                  hintText: "Konfirmasi Password",
+                                  labelText: "Konfirmasi Password",
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(20))),
