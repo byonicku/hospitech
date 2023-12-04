@@ -9,6 +9,7 @@ import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:tugas_besar_hospital_pbp/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditPeriksaView extends StatefulWidget {
   const EditPeriksaView(
@@ -43,6 +44,18 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
   bool changeJenisPerawatan = false;
   bool changeNamaPasien = false;
   String? dokterSpesialisSelected, jenisPerawatanSelected, namaPasienSebelumnya;
+  String? id;
+
+  void getUserID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    id = prefs.getString('id') ?? '';
+  }
+
+  @override
+  void initState() {
+    getUserID();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,27 +69,27 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: isDark ? Colors.grey[900] : Colors.grey[200],
+        title: Text(
+          'Edit Daftar Periksa',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: Container(
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  const Text(
-                    "Edit Daftar Periksa",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  const SizedBox(
-                    height: 32,
+                  SizedBox(
+                    height: 6.h,
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(
@@ -85,6 +98,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     child: SizedBox(
                         width: 100.w,
                         child: TextFormField(
+                          key: Key('Nama Pasien'),
                           validator: (namaPasien) {
                             if (namaPasien!.isEmpty) {
                               return 'Nama Pasien tidak boleh kosong';
@@ -94,12 +108,13 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           },
                           controller: namaPasienController,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "Nama Pasien",
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20))),
                             labelText: "Nama Pasien",
                             hintStyle: TextStyle(fontSize: 14),
                             labelStyle: TextStyle(fontSize: 14),
-                            icon: Icon(Icons.person),
+                            prefixIcon: Icon(Icons.person),
                           ),
                         )),
                   ),
@@ -114,6 +129,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     child: SizedBox(
                       width: 100.w,
                       child: TextFormField(
+                        key: Key('TglPeriksa'),
                         autofocus: false,
                         controller: tanggalPeriksaController,
                         validator: (value) {
@@ -123,9 +139,10 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           return null;
                         },
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          icon: Icon(Icons.calendar_today),
-                          hintText: "Tanggal Periksa",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          prefixIcon: Icon(Icons.calendar_today),
                           labelText: "Tanggal Periksa",
                           hintStyle: TextStyle(fontSize: 14),
                           labelStyle: TextStyle(fontSize: 14),
@@ -137,6 +154,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           DateTime initialDate =
                               DateTime.now().add(const Duration(days: 1));
                           DateTime? pickedDate = await showDatePicker(
+                              switchToInputEntryModeIcon: Icon(Icons.edit),
                               context: context,
                               initialDate: initialDate,
                               firstDate: initialDate,
@@ -157,8 +175,9 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     height: 12,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 32.0, left: 72.0),
+                    padding: EdgeInsets.symmetric(horizontal: 6.0.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Dokter Dropdown'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -178,6 +197,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         ),
                         items: listDokterSpesialis
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
@@ -198,8 +218,12 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         },
                         buttonStyleData: ButtonStyleData(
                           height: 50,
-                          padding: const EdgeInsets.only(left: 14, right: 14),
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                           decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(color: Colors.grey.withOpacity(0)),
+                            ],
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: Colors.grey.shade700,
                             ),
@@ -211,25 +235,26 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           icon: const Icon(
                             Icons.arrow_forward_ios_outlined,
                           ),
-                          iconSize: 14,
+                          iconSize: 16.sp,
                           iconEnabledColor: Colors.grey.shade700,
                           iconDisabledColor: Colors.grey,
                         ),
                         dropdownStyleData: DropdownStyleData(
                           maxHeight: 200,
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
                             color: isDark ? Colors.grey.shade900 : Colors.white,
                           ),
-                          offset: const Offset(0, 0),
+                          offset: const Offset(0, -3),
                           scrollbarTheme: ScrollbarThemeData(
                             radius: const Radius.circular(40),
                             thickness: MaterialStateProperty.all(6),
                             thumbVisibility: MaterialStateProperty.all(true),
                           ),
                         ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.only(left: 14, right: 14),
+                        menuItemStyleData: MenuItemStyleData(
+                          height: 7.h,
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                         ),
                       ),
                     ),
@@ -239,8 +264,9 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.only(right: 32.0, left: 72.0),
+                    padding: EdgeInsets.symmetric(horizontal: 6.0.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Jenis Perawatan'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -249,7 +275,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                               child: Text(
                                 'Pilih Jenis Perawatan',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.normal,
                                   color: Colors.grey.shade700,
                                 ),
@@ -260,11 +286,12 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         ),
                         items: listJenisPerawatan
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.normal,
                                       color: Colors.grey.shade700,
                                     ),
@@ -280,8 +307,12 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         },
                         buttonStyleData: ButtonStyleData(
                           height: 50,
-                          padding: const EdgeInsets.only(left: 14, right: 14),
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                           decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(color: Colors.grey.withOpacity(0)),
+                            ],
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: Colors.grey.shade700,
                             ),
@@ -293,25 +324,26 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                           icon: const Icon(
                             Icons.arrow_forward_ios_outlined,
                           ),
-                          iconSize: 14,
+                          iconSize: 16.sp,
                           iconEnabledColor: Colors.grey.shade700,
                           iconDisabledColor: Colors.grey,
                         ),
                         dropdownStyleData: DropdownStyleData(
                           maxHeight: 200,
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
                             color: isDark ? Colors.grey.shade900 : Colors.white,
                           ),
-                          offset: const Offset(0, 0),
+                          offset: const Offset(0, -3),
                           scrollbarTheme: ScrollbarThemeData(
                             radius: const Radius.circular(40),
                             thickness: MaterialStateProperty.all(6),
                             thumbVisibility: MaterialStateProperty.all(true),
                           ),
                         ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.only(left: 14, right: 14),
+                        menuItemStyleData: MenuItemStyleData(
+                          height: 7.h,
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                         ),
                       ),
                     ),
@@ -320,6 +352,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     height: 12,
                   ),
                   ElevatedButton(
+                      key: Key('Edit Periksa'),
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
 
@@ -356,44 +389,63 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
+                                        key: Key('SudahBtn'),
                                         onPressed: () {
-                                          final Periksa updatedPeriksa =
-                                              Periksa(
-                                                  id: widget.id,
-                                                  namaPasien:
-                                                      namaPasienController.text,
-                                                  dokterSpesialis: formData[
-                                                      'dokter_spesialis'],
-                                                  jenisPerawatan: formData[
-                                                      'jenis_perawatan'],
-                                                  tanggalPeriksa:
-                                                      tanggalPeriksaController
-                                                          .text,
-                                                  price: formData['price'],
-                                                  ruangan: formData['ruangan'],
-                                                  statusCheckin: 0,
-                                                  gambarDokter: formData[
-                                                      'gambar_dokter']);
+                                          try {
+                                            final Periksa updatedPeriksa =
+                                                Periksa(
+                                                    id: widget.id,
+                                                    namaPasien:
+                                                        namaPasienController
+                                                            .text,
+                                                    dokterSpesialis: formData[
+                                                        'dokter_spesialis'],
+                                                    jenisPerawatan: formData[
+                                                        'jenis_perawatan'],
+                                                    tanggalPeriksa:
+                                                        tanggalPeriksaController
+                                                            .text,
+                                                    price: formData['price'],
+                                                    ruangan:
+                                                        formData['ruangan'],
+                                                    statusCheckin: 0,
+                                                    gambarDokter: formData[
+                                                        'gambar_dokter']);
 
-                                          DaftarPeriksaClient.update(
-                                              updatedPeriksa);
+                                            DaftarPeriksaClient.update(
+                                                updatedPeriksa, id!);
 
-                                          Navigator.of(context).popUntil(
-                                              (route) => route.isFirst);
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) => const HomeView(
-                                                    selectedIndex: 2)),
-                                          );
+                                            Navigator.of(context).popUntil(
+                                                (route) => route.isFirst);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      const HomeView(
+                                                          selectedIndex: 2)),
+                                            );
 
-                                          scaffoldMessenger.showSnackBar(
-                                            const SnackBar(
-                                              duration: Duration(seconds: 2),
-                                              content: Text(
-                                                  'Berhasil Melakukan Update Data Periksa'),
-                                            ),
-                                          );
+                                            scaffoldMessenger.showSnackBar(
+                                              const SnackBar(
+                                                duration: Duration(seconds: 2),
+                                                content: Text(
+                                                    'Berhasil Melakukan Update Data Periksa'),
+                                              ),
+                                            );
+                                          } on Exception catch (e) {
+                                            if (e
+                                                .toString()
+                                                .contains('TimeoutException')) {
+                                              scaffoldMessenger.showSnackBar(
+                                                const SnackBar(
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                  content: Text(
+                                                      'Koneksi ke server gagal!'),
+                                                ),
+                                              );
+                                            }
+                                          }
                                         },
                                         child: Text('Sudah',
                                             style: TextStyle(
@@ -403,6 +455,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                                 fontWeight: FontWeight.bold)),
                                       ),
                                       TextButton(
+                                        key: Key('BelumBtn'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           scaffoldMessenger.showSnackBar(

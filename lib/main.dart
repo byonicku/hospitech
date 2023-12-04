@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MainApp());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? id = prefs.getString('id') ?? '';
+
+  runApp(MainApp(id: id));
 }
 
 // Event handling untuk dark mode, kalo butuh check sekarang dark mode atau engga
@@ -13,7 +18,8 @@ Future<void> main() async {
 final darkNotifier = ValueNotifier<bool>(false);
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final String? id;
+  const MainApp({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -22,20 +28,20 @@ class MainApp extends StatelessWidget {
         builder: (BuildContext context, bool isDark, Widget? child) {
           return ResponsiveSizer(builder: (context, orientation, deviceType) {
             Device.orientation == Orientation.portrait
-                ? Container(
+                ? SizedBox(
                     width: 100.w,
                     height: 20.5.h,
                   )
-                : Container(
+                : SizedBox(
                     width: 100.w,
                     height: 12.5.h,
                   );
             Device.orientation == ScreenType.tablet
-                ? Container(
+                ? SizedBox(
                     width: 100.w,
                     height: 20.5.h,
                   )
-                : Container(
+                : SizedBox(
                     width: 100.w,
                     height: 12.5.h,
                   );
@@ -98,7 +104,11 @@ class MainApp extends StatelessWidget {
                 useMaterial3: true,
               ),
               // ignore: prefer_const_constructors
-              home: LoginView(), // jangan di const ntah kenapa bikin error :v
+              home: id!.isEmpty
+                  ? LoginView()
+                  : HomeView(
+                      selectedIndex:
+                          0), // jangan di const ntah kenapa bikin error :v
             );
           });
         });

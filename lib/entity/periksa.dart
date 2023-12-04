@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class Periksa {
-  final int? id, statusCheckin, price;
+  final int? id, statusCheckin, price, idUser;
   String? namaPasien,
       dokterSpesialis,
       jenisPerawatan,
@@ -10,6 +10,7 @@ class Periksa {
       ruangan;
   Periksa(
       {this.id,
+      this.idUser,
       this.namaPasien,
       this.dokterSpesialis,
       this.price,
@@ -23,6 +24,7 @@ class Periksa {
   factory Periksa.fromRawJson(String str) => Periksa.fromJson(json.decode(str));
   factory Periksa.fromJson(Map<String, dynamic> json) => Periksa(
         id: json["id_daftar_periksa"],
+        idUser: json["id_user"],
         namaPasien: json["nama_pasien"],
         dokterSpesialis: json["dokter_spesialis"],
         price: json["price"],
@@ -37,6 +39,7 @@ class Periksa {
   String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
         "id_daftar_periksa": id,
+        "id_user": idUser,
         "nama_pasien": namaPasien,
         "dokter_spesialis": dokterSpesialis,
         "price": price,

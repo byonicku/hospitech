@@ -9,6 +9,7 @@ import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:uuid/uuid.dart';
 import 'package:tugas_besar_hospital_pbp/invoice/pdf_view.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListPeriksaView extends StatefulWidget {
   const ListPeriksaView({super.key});
@@ -21,11 +22,31 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
   List<Map<String, dynamic>> listPeriksaRaw = [];
   bool isDark = darkNotifier.value;
   String id = const Uuid().v1();
+  bool _isLoading = true;
+  String status = 'Tidak ada data periksa';
 
   void refresh() async {
-    final dataPeriksa = await DaftarPeriksaClient.fetchAll();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? id = prefs.getString('id') ?? '';
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final dataPeriksa = await DaftarPeriksaClient.fetchAll(id).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        setState(() {
+          _isLoading = false;
+          status = 'Tidak ada koneksi internet';
+        });
+        return [];
+      },
+    );
+
     setState(() {
       listPeriksaRaw = dataPeriksa.map((periksa) => periksa.toJson()).toList();
+      _isLoading = false;
     });
   }
 
@@ -41,11 +62,20 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
       child: Card(
         elevation: 1,
         child: InkWell(
-          onTap: () {
-            createPdf(listPeriksaRaw[index]['id_daftar_periksa'], id, context);
+          onTap: () async {
+            await createPdf(
+                listPeriksaRaw[index]['id_daftar_periksa'], id, context);
+
             setState(() {
               const uuid = Uuid();
               id = uuid.v1();
+              _isLoading = true;
+            });
+
+            Future.delayed(const Duration(seconds: 1), () {
+              setState(() {
+                _isLoading = false;
+              });
             });
           },
           child: Row(
@@ -104,7 +134,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
           Text(periksa['jenis_perawatan'],
               style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
           Text('Tanggal Periksa: ${periksa['tanggal_periksa']}',
-              style: TextStyle(color: Colors.black, fontSize: 14.sp)),
+              style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
           Text('Ruangan: ${periksa['ruangan']}',
               style: TextStyle(fontSize: 14.sp)),
           SizedBox(height: 0.5.h),
@@ -119,6 +149,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
 
   Widget buildEditButton(Map<String, dynamic> periksa, int index) {
     return ElevatedButton(
+      key: Key('EditBtn'),
       onPressed: () {
         Navigator.push(
           context,
@@ -149,6 +180,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     final namaPasienHapus = listPeriksaRaw[index]['nama_pasien'];
 
     return ElevatedButton(
+      key: Key('DeleteBtn'),
       onPressed: () {
         showDialog(
           context: context,
@@ -159,24 +191,31 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                 'Apakah yakin ingin menghapus data pasien $namaPasienHapus?'),
             actions: [
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   // Menghapus Data Yang di pilih
-                  final int idHapus =
-                      listPeriksaRaw[index]['id_daftar_periksa'];
+                  try {
+                    final int idHapus =
+                        listPeriksaRaw[index]['id_daftar_periksa'];
 
-                  // deleteDaftarPeriksa(idHapus);
-                  DaftarPeriksaClient.destroy(idHapus.toString());
+                    await DaftarPeriksaClient.destroy(idHapus.toString());
+                    refresh();
 
-                  Navigator.pop(context);
-
-                  scaffoldMessenger.showSnackBar(
-                    const SnackBar(
-                      duration: Duration(seconds: 2),
-                      content: Text('Berhasil Menghapus Data'),
-                    ),
-                  );
-
-                  refresh();
+                    Navigator.of(context).pop();
+                    scaffoldMessenger.showSnackBar(
+                      const SnackBar(
+                        duration: Duration(seconds: 2),
+                        content: Text('Berhasil Menghapus Data'),
+                      ),
+                    );
+                  } catch (e) {
+                    Navigator.of(context).pop();
+                    scaffoldMessenger.showSnackBar(
+                      const SnackBar(
+                        duration: Duration(seconds: 2),
+                        content: Text('Gagal Menghapus Data'),
+                      ),
+                    );
+                  }
                 },
                 child: Text('Ya',
                     style: TextStyle(
@@ -267,26 +306,30 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Daftar Periksa',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18.sp,
+          ),
         ),
         automaticallyImplyLeading: false,
         leading: null,
       ),
-      body: listPeriksaRaw.isNotEmpty
-          ? ListView.separated(
-              itemCount: listPeriksaRaw.length,
-              itemBuilder: (context, index) {
-                final periksa = listPeriksaRaw[index];
-                return buildPeriksaCard(periksa, index);
-              },
-              separatorBuilder: (context, index) => SizedBox(height: 2.h),
-            )
-          : Center(
-              child: Text("Daftar Periksa Kosong",
-                  style: TextStyle(fontSize: 14.sp)),
-            ),
+      body: !_isLoading
+          ? (listPeriksaRaw.isNotEmpty
+              ? ListView.separated(
+                  itemCount: listPeriksaRaw.length,
+                  itemBuilder: (context, index) {
+                    final periksa = listPeriksaRaw[index];
+                    return buildPeriksaCard(periksa, index);
+                  },
+                  separatorBuilder: (context, index) => SizedBox(height: 2.h),
+                )
+              : Center(
+                  child: Text(status, style: TextStyle(fontSize: 14.sp)),
+                ))
+          : Center(child: CircularProgressIndicator()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
