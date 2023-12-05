@@ -2,17 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:tugas_besar_hospital_pbp/View/edit_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/list_periksa.dart';
-import 'package:tugas_besar_hospital_pbp/View/tambah_periksa.dart';
-import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_helper.dart';
-import 'package:tugas_besar_hospital_pbp/qr_scanner/scan_qr_page.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:uuid/uuid.dart';
-import 'package:tugas_besar_hospital_pbp/invoice/pdf_view.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,7 +25,7 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
   List<Map<String, dynamic>> listPeriksaRaw = [];
   bool isDark = darkNotifier.value;
   String idUUID = const Uuid().v1();
-  bool _isLoading = true;
+  // bool _isLoading = true;
   String status = 'Tidak ada data periksa';
   SharedPreferences? prefs;
   String? id;
