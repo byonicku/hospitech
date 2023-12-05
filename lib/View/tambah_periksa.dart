@@ -403,24 +403,28 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                         key: Key('SudahBtn'),
                                         onPressed: () async {
                                           final Periksa newPeriksa = Periksa(
-                                              namaPasien:
-                                                  namaPasienController.text,
-                                              dokterSpesialis:
-                                                  selectedDokterSpesialis,
-                                              price: listHargaPerawatan[
-                                                  selectedDokterSpesialis],
-                                              jenisPerawatan:
-                                                  selectedJenisPerawatan,
-                                              tanggalPeriksa:
-                                                  tanggalPeriksaController.text,
-                                              gambarDokter:
-                                                  formData['gambar_dokter'],
-                                              ruangan: formData['ruangan'],
-                                              statusCheckin: 0);
+                                            namaPasien:
+                                                namaPasienController.text,
+                                            dokterSpesialis:
+                                                selectedDokterSpesialis,
+                                            price: listHargaPerawatan[
+                                                selectedDokterSpesialis],
+                                            jenisPerawatan:
+                                                selectedJenisPerawatan,
+                                            tanggalPeriksa:
+                                                tanggalPeriksaController.text,
+                                            gambarDokter:
+                                                formData['gambar_dokter'],
+                                            ruangan: formData['ruangan'],
+                                            statusCheckin: 0,
+                                            rating: 0,
+                                          );
 
                                           // addDaftarPeriksa(newPeriksa);
                                           await DaftarPeriksaClient.addPeriksa(
-                                              newPeriksa, id!);
+                                            newPeriksa,
+                                            id!,
+                                          );
 
                                           // ignore: use_build_context_synchronously
                                           Navigator.of(context).popUntil(

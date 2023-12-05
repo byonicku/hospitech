@@ -1,24 +1,26 @@
 import 'dart:convert';
 
 class Periksa {
-  final int? id, statusCheckin, price, idUser;
+  final int? id, statusCheckin, price, idUser, rating;
   String? namaPasien,
       dokterSpesialis,
       jenisPerawatan,
       tanggalPeriksa,
       gambarDokter,
       ruangan;
-  Periksa(
-      {this.id,
-      this.idUser,
-      this.namaPasien,
-      this.dokterSpesialis,
-      this.price,
-      this.jenisPerawatan,
-      this.tanggalPeriksa,
-      this.gambarDokter,
-      this.ruangan,
-      this.statusCheckin});
+  Periksa({
+    this.id,
+    this.idUser,
+    this.namaPasien,
+    this.dokterSpesialis,
+    this.price,
+    this.jenisPerawatan,
+    this.tanggalPeriksa,
+    this.gambarDokter,
+    this.ruangan,
+    this.statusCheckin,
+    this.rating,
+  });
 
   // mengubah JSON data dari API menjadi objek Periksa
   factory Periksa.fromRawJson(String str) => Periksa.fromJson(json.decode(str));
@@ -33,6 +35,7 @@ class Periksa {
         ruangan: json["ruangan"],
         tanggalPeriksa: json["tanggal_periksa"],
         statusCheckin: json["status_checkin"],
+        rating: json["rating"],
       );
 
   // mengubah objek Periksa menjadi data JSON untuk dikirmkan ke API
@@ -48,5 +51,6 @@ class Periksa {
         "ruangan": ruangan,
         "tanggal_periksa": tanggalPeriksa,
         "status_checkin": statusCheckin,
+        "rating": rating,
       };
 }
