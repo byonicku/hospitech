@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/View/detail_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/edit_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/tambah_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
+import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_helper.dart';
 import 'package:tugas_besar_hospital_pbp/qr_scanner/scan_qr_page.dart';
@@ -65,7 +67,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
       child: Card(
         elevation: 1,
         child: InkWell(
-          onTap: () async {
+          onTap: () {
             // await createPdf(
             //     listPeriksaRaw[index]['id_daftar_periksa'], id, context);
 
@@ -80,6 +82,26 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
             //     _isLoading = false;
             //   });
             // });
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailPeriksaView(
+                    selectedPeriksa: Periksa(
+                  id: listPeriksaRaw[index]['id_daftar_periksa'],
+                  namaPasien: listPeriksaRaw[index]['nama_pasien'],
+                  dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
+                  gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
+                  idUser: listPeriksaRaw[index]['id_user'],
+                  jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
+                  price: listPeriksaRaw[index]['price'],
+                  rating: listPeriksaRaw[index]['rating'],
+                  ruangan: listPeriksaRaw[index]['ruangan'],
+                  statusCheckin: listPeriksaRaw[index]['status_checkin'],
+                  tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
+                  ulasan: listPeriksaRaw[index]['ulasan'],
+                )),
+              ),
+            );
           },
           child: Row(
             children: [

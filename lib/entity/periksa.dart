@@ -7,7 +7,8 @@ class Periksa {
       jenisPerawatan,
       tanggalPeriksa,
       gambarDokter,
-      ruangan;
+      ruangan,
+      ulasan;
   Periksa({
     this.id,
     this.idUser,
@@ -20,6 +21,7 @@ class Periksa {
     this.ruangan,
     this.statusCheckin,
     this.rating,
+    this.ulasan,
   });
 
   // mengubah JSON data dari API menjadi objek Periksa
@@ -36,6 +38,7 @@ class Periksa {
         tanggalPeriksa: json["tanggal_periksa"],
         statusCheckin: json["status_checkin"],
         rating: json["rating"],
+        ulasan: json["ulasan"],
       );
 
   // mengubah objek Periksa menjadi data JSON untuk dikirmkan ke API
@@ -52,5 +55,6 @@ class Periksa {
         "tanggal_periksa": tanggalPeriksa,
         "status_checkin": statusCheckin,
         "rating": rating,
+        "ulasan": ulasan,
       };
 }

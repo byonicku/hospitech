@@ -418,6 +418,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                             ruangan: formData['ruangan'],
                                             statusCheckin: 0,
                                             rating: 0,
+                                            ulasan: "-",
                                           );
 
                                           // addDaftarPeriksa(newPeriksa);
