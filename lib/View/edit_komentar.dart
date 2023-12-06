@@ -27,7 +27,7 @@ class _EditKomentarViewState extends State<EditKomentarView> {
   List<Map<String, dynamic>> listPeriksaRaw = [];
   bool isDark = darkNotifier.value;
   String idUUID = const Uuid().v1();
-  // bool _isLoading = true;
+  bool _isLoading = true;
   String status = 'Tidak ada data periksa';
   SharedPreferences? prefs;
   String? id;
@@ -35,9 +35,9 @@ class _EditKomentarViewState extends State<EditKomentarView> {
   TextEditingController komentarController = TextEditingController();
 
   void refresh() async {
-    // setState(() {
-    //   _isLoading = true;
-    // });
+    setState(() {
+      _isLoading = true;
+    });
 
     // final dataPeriksa = await DaftarPeriksaClient.fetchAll(id).timeout(
     //   const Duration(seconds: 5),
@@ -64,6 +64,10 @@ class _EditKomentarViewState extends State<EditKomentarView> {
         inputRating = widget.selectedPeriksa.rating!.toDouble();
       });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -314,21 +318,25 @@ class _EditKomentarViewState extends State<EditKomentarView> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // buildDetailPeriksa(),
-              buildDetailDokter(),
-              // buildRating(),
-              buildKomentar(),
-              SizedBox(
-                height: 2.0.h,
+        child: !_isLoading
+            ? SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // buildDetailPeriksa(),
+                    buildDetailDokter(),
+                    // buildRating(),
+                    buildKomentar(),
+                    SizedBox(
+                      height: 2.0.h,
+                    ),
+                    buildSimpanBatalButton(),
+                  ],
+                ),
+              )
+            : Center(
+                child: CircularProgressIndicator(),
               ),
-              buildSimpanBatalButton(),
-            ],
-          ),
-        ),
       ),
     );
   }

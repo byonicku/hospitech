@@ -12,6 +12,7 @@ import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:uuid/uuid.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tugas_besar_hospital_pbp/invoice/pdf_view.dart';
 
 class DetailPeriksaView extends StatefulWidget {
   final Periksa selectedPeriksa;
@@ -27,17 +28,18 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
   List<Map<String, dynamic>> listPeriksaRaw = [];
   bool isDark = darkNotifier.value;
   String idUUID = const Uuid().v1();
-  // bool _isLoading = true;
+  bool _isLoading = true;
   String status = 'Tidak ada data periksa';
   SharedPreferences? prefs;
   String? id;
+  String barcodeID = '';
   double? inputRating;
   TextEditingController komentarController = TextEditingController();
 
   void refresh() async {
-    // setState(() {
-    //   _isLoading = true;
-    // });
+    setState(() {
+      _isLoading = true;
+    });
 
     // final dataPeriksa = await DaftarPeriksaClient.fetchAll(id).timeout(
     //   const Duration(seconds: 5),
@@ -61,10 +63,12 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
       komentarController.text = widget.selectedPeriksa.ulasan!;
 
       setState(() {
+        _isLoading = false;
         inputRating = widget.selectedPeriksa.rating!.toDouble();
       });
     } else {
       setState(() {
+        _isLoading = false;
         komentarController.text = '';
       });
     }
@@ -76,19 +80,55 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
     super.initState();
   }
 
+  // CETAK PDF BUTTON WIDGET =======================================================================================================================
+  Widget cetakPdfButton(int id) {
+    return ElevatedButton(
+      key: Key('Cetak PDF Btn'),
+      onPressed: () async {
+        await createPdf(id, barcodeID, context);
+
+        setState(() {
+          const uuid = Uuid();
+          barcodeID = uuid.v1();
+          _isLoading = true;
+        });
+
+        Future.delayed(const Duration(seconds: 1), () {
+          setState(() {
+            _isLoading = false;
+          });
+        });
+      },
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.blue),
+      ),
+      child: Text(
+        'Cetak Bukti Periksa',
+        style: TextStyle(color: Colors.white, fontSize: 14.sp),
+      ),
+    );
+  }
+
   // BUILD DETAIL PERIKSA
   Widget buildDetailPeriksa() {
     return Padding(
-      padding: EdgeInsets.only(left: 7.0.w, top: 2.0.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: EdgeInsets.only(left: 7.0.w, top: 2.0.h, right: 7.0.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            'Nama Pasien         : ' + widget.selectedPeriksa.namaPasien!,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Nama Pasien         : ' + widget.selectedPeriksa.namaPasien!,
+              ),
+              Text(
+                'Tanggal Periksa    : ' +
+                    widget.selectedPeriksa.tanggalPeriksa!,
+              ),
+            ],
           ),
-          Text(
-            'Tanggal Periksa    : ' + widget.selectedPeriksa.tanggalPeriksa!,
-          ),
+          cetakPdfButton(widget.selectedPeriksa.id!),
         ],
       ),
     );
@@ -473,26 +513,29 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildDetailPeriksa(),
-              buildDetailDokter(),
-              widget.selectedPeriksa.rating == 0
-                  ? buildRating()
-                  : buildShowRatingOnly(),
-              buildKomentar(),
-              SizedBox(
-                height: 2.0.h,
-              ),
-              widget.selectedPeriksa.rating == 0
-                  ? buildOkeBatalButton()
-                  : buildEditHapusKomentarButton(),
-            ],
-          ),
-        ),
-      ),
+          child: !_isLoading
+              ? SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      buildDetailPeriksa(),
+                      buildDetailDokter(),
+                      widget.selectedPeriksa.rating == 0
+                          ? buildRating()
+                          : buildShowRatingOnly(),
+                      buildKomentar(),
+                      SizedBox(
+                        height: 2.0.h,
+                      ),
+                      widget.selectedPeriksa.rating == 0
+                          ? buildOkeBatalButton()
+                          : buildEditHapusKomentarButton(),
+                    ],
+                  ),
+                )
+              : Center(
+                  child: CircularProgressIndicator(),
+                )),
     );
   }
 }
