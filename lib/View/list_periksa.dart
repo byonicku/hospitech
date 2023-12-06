@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/View/detail_periksa.dart';
-import 'package:tugas_besar_hospital_pbp/View/edit_komentar.dart';
 import 'package:tugas_besar_hospital_pbp/View/edit_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/tambah_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
