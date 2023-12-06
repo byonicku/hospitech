@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:tugas_besar_hospital_pbp/View/list_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
@@ -54,6 +55,14 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
     // });
     prefs = await SharedPreferences.getInstance();
     id = prefs!.getString('id') ?? '';
+
+    if (widget.selectedPeriksa.ulasan != '-') {
+      komentarController.text = widget.selectedPeriksa.ulasan!;
+
+      setState(() {
+        inputRating = widget.selectedPeriksa.rating!.toDouble();
+      });
+    }
   }
 
   @override
@@ -153,7 +162,7 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
             ),
           ),
           RatingBar.builder(
-            initialRating: 0,
+            initialRating: widget.selectedPeriksa.rating!.toDouble(),
             minRating: 1,
             direction: Axis.horizontal,
             itemCount: 5,
@@ -251,8 +260,10 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
         automaticallyImplyLeading: false,
         leading: BackButton(
           color: Colors.black,
-          onPressed: () => Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => ListPeriksaView())),
+          onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomeView(selectedIndex: 2))),
         ),
       ),
       body: SafeArea(
