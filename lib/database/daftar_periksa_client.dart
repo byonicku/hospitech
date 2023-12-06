@@ -97,6 +97,41 @@ class DaftarPeriksaClient {
     }
   }
 
+  // update/simpan rating dan ulasan object periksa tertentu dari list yang dipilih
+  static Future<Response> saveRatingUlasan(Periksa periksaToRating) async {
+    try {
+      var response = await post(
+        Uri.http(url, '$endpoint/updateRatingUlasan'),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode(
+          periksaToRating.toJson(),
+        ),
+      ).timeout(const Duration(seconds: 5));
+
+      if (response.statusCode != 200) throw Exception(response.body);
+
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  // hapus ulasan
+  static Future<Response> hapusUlasan(String idPeriksa) async {
+    try {
+      var response =
+          await put(Uri.http(url, '$endpoint/hapusUlasan/$idPeriksa'));
+
+      if (response.statusCode != 200) throw Exception(response.body);
+
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
   // hapus data Periksa
   static Future<Response> destroy(String id) async {
     try {

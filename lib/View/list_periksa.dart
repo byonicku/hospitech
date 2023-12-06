@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:tugas_besar_hospital_pbp/View/detail_periksa.dart';
+import 'package:tugas_besar_hospital_pbp/View/edit_komentar.dart';
 import 'package:tugas_besar_hospital_pbp/View/edit_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/tambah_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
@@ -82,26 +83,67 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
             //     _isLoading = false;
             //   });
             // });
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DetailPeriksaView(
-                    selectedPeriksa: Periksa(
-                  id: listPeriksaRaw[index]['id_daftar_periksa'],
-                  namaPasien: listPeriksaRaw[index]['nama_pasien'],
-                  dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
-                  gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
-                  idUser: listPeriksaRaw[index]['id_user'],
-                  jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
-                  price: listPeriksaRaw[index]['price'],
-                  rating: listPeriksaRaw[index]['rating'],
-                  ruangan: listPeriksaRaw[index]['ruangan'],
-                  statusCheckin: listPeriksaRaw[index]['status_checkin'],
-                  tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
-                  ulasan: listPeriksaRaw[index]['ulasan'],
-                )),
-              ),
-            );
+
+            listPeriksaRaw[index]['status_checkin'] == 1
+                ? listPeriksaRaw[index]['rating'] == 0
+                    ? Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailPeriksaView(
+                              selectedPeriksa: Periksa(
+                            id: listPeriksaRaw[index]['id_daftar_periksa'],
+                            namaPasien: listPeriksaRaw[index]['nama_pasien'],
+                            dokterSpesialis: listPeriksaRaw[index]
+                                ['dokter_spesialis'],
+                            gambarDokter: listPeriksaRaw[index]
+                                ['gambar_dokter'],
+                            idUser: listPeriksaRaw[index]['id_user'],
+                            jenisPerawatan: listPeriksaRaw[index]
+                                ['jenis_perawatan'],
+                            price: listPeriksaRaw[index]['price'],
+                            rating: listPeriksaRaw[index]['rating'],
+                            ruangan: listPeriksaRaw[index]['ruangan'],
+                            statusCheckin: listPeriksaRaw[index]
+                                ['status_checkin'],
+                            tanggalPeriksa: listPeriksaRaw[index]
+                                ['tanggal_periksa'],
+                            ulasan: listPeriksaRaw[index]['ulasan'],
+                          )),
+                        ),
+                      )
+                    : Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailPeriksaView(
+                            selectedPeriksa: Periksa(
+                                id: listPeriksaRaw[index]['id_daftar_periksa'],
+                                namaPasien: listPeriksaRaw[index]
+                                    ['nama_pasien'],
+                                dokterSpesialis: listPeriksaRaw[index]
+                                    ['dokter_spesialis'],
+                                gambarDokter: listPeriksaRaw[index]
+                                    ['gambar_dokter'],
+                                idUser: listPeriksaRaw[index]['id_user'],
+                                jenisPerawatan: listPeriksaRaw[index]
+                                    ['jenis_perawatan'],
+                                price: listPeriksaRaw[index]['price'],
+                                rating: listPeriksaRaw[index]['rating'],
+                                ruangan: listPeriksaRaw[index]['ruangan'],
+                                statusCheckin: listPeriksaRaw[index]
+                                    ['status_checkin'],
+                                tanggalPeriksa: listPeriksaRaw[index]
+                                    ['tanggal_periksa'],
+                                ulasan: listPeriksaRaw[index]['ulasan']),
+                          ),
+                        ),
+                      )
+                : ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 2),
+                      content:
+                          Text('Anda harus chekin untuk memberikan rating'),
+                    ),
+                  );
           },
           child: Row(
             children: [
@@ -162,24 +204,8 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
               Text(periksa['nama_pasien'],
                   style:
                       TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400)),
-              listPeriksaRaw[index!]['status'] != 1
+              listPeriksaRaw[index!]['status_checkin'] == 1
                   ? Padding(
-                      padding: EdgeInsets.only(right: 3.0.w),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.amber),
-                          minimumSize:
-                              MaterialStateProperty.all(Size(5.w, 4.h)),
-                        ),
-                        child: Text(
-                          'Pending',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    )
-                  : Padding(
                       padding: EdgeInsets.only(right: 3.0.w),
                       child: ElevatedButton(
                         onPressed: () {},
@@ -191,6 +217,22 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                         ),
                         child: Text(
                           'Selesai',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: EdgeInsets.only(right: 3.0.w),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.amber),
+                          minimumSize:
+                              MaterialStateProperty.all(Size(5.w, 4.h)),
+                        ),
+                        child: Text(
+                          'Pending',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),

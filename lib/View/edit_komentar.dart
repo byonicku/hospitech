@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:tugas_besar_hospital_pbp/View/edit_komentar.dart';
+import 'package:tugas_besar_hospital_pbp/View/detail_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
@@ -13,17 +13,17 @@ import 'package:uuid/uuid.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DetailPeriksaView extends StatefulWidget {
+class EditKomentarView extends StatefulWidget {
   final Periksa selectedPeriksa;
 
-  const DetailPeriksaView({Key? key, required this.selectedPeriksa})
+  const EditKomentarView({Key? key, required this.selectedPeriksa})
       : super(key: key);
 
   @override
-  State<DetailPeriksaView> createState() => _DetailPeriksaViewState();
+  State<EditKomentarView> createState() => _EditKomentarViewState();
 }
 
-class _DetailPeriksaViewState extends State<DetailPeriksaView> {
+class _EditKomentarViewState extends State<EditKomentarView> {
   List<Map<String, dynamic>> listPeriksaRaw = [];
   bool isDark = darkNotifier.value;
   String idUUID = const Uuid().v1();
@@ -62,10 +62,6 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
 
       setState(() {
         inputRating = widget.selectedPeriksa.rating!.toDouble();
-      });
-    } else {
-      setState(() {
-        komentarController.text = '';
       });
     }
   }
@@ -186,39 +182,6 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
     );
   }
 
-  // BUILD SHOW ONLY RATING WIDGET
-  Widget buildShowRatingOnly() {
-    return Padding(
-      padding: EdgeInsets.only(left: 7.0.w, top: 2.0.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Rating',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Row(
-            children: [
-              Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              SizedBox(
-                width: 2.0.w,
-              ),
-              Text(
-                '${widget.selectedPeriksa.rating} out of 5',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
   // BUILD KOMENTAR WIDGET
   Widget buildKomentar() {
     return Padding(
@@ -227,9 +190,7 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            widget.selectedPeriksa.rating == 0
-                ? 'Berikan Komentar terhadap dokter ini'
-                : 'Komentar anda terhadap dokter ini',
+            'Berikan Komentar terhadap dokter ini',
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
@@ -240,12 +201,9 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
             child: TextField(
               controller: komentarController,
               maxLines: 8,
-              enabled: widget.selectedPeriksa.rating == 0 ? true : false,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: widget.selectedPeriksa.rating == 0
-                    ? 'Berikan komentar anda disini...'
-                    : 'Tekan Tombol "Edit Komentar" dibawah untuk memberikan komentar...',
+                hintText: 'Berikan komentar anda disini....',
               ),
             ),
           ),
@@ -254,8 +212,8 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
     );
   }
 
-  // BUILD OKE BATAL BUTTON
-  Widget buildOkeBatalButton() {
+  // BUILD SIMPAN BATAL BUTTON
+  Widget buildSimpanBatalButton() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -272,7 +230,7 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
                   jenisPerawatan: widget.selectedPeriksa.jenisPerawatan,
                   namaPasien: widget.selectedPeriksa.namaPasien,
                   price: widget.selectedPeriksa.price,
-                  rating: inputRating!.toInt(),
+                  rating: widget.selectedPeriksa.rating,
                   ruangan: widget.selectedPeriksa.ruangan,
                   statusCheckin: widget.selectedPeriksa.statusCheckin,
                   tanggalPeriksa: widget.selectedPeriksa.tanggalPeriksa,
@@ -284,15 +242,6 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => HomeView(selectedIndex: 2),
-                ),
-              );
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  duration: Duration(seconds: 2),
-                  content: Text(
-                    'Berhasil Memberikan Rating dan Komentar',
-                  ),
                 ),
               );
             } catch (e) {
@@ -323,7 +272,9 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => HomeView(selectedIndex: 2)),
+                builder: (context) =>
+                    DetailPeriksaView(selectedPeriksa: widget.selectedPeriksa),
+              ),
             );
           },
           style: ButtonStyle(
@@ -339,125 +290,12 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
     );
   }
 
-  // BUILD EDIT HAPUS KOMENTAR BUTTON WIDGET
-  Widget buildEditHapusKomentarButton() {
-    return Padding(
-      padding: EdgeInsets.only(left: 7.0.w),
-      child: Row(
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              // EDIT KOMENTAR
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditKomentarView(
-                    selectedPeriksa: Periksa(
-                      id: widget.selectedPeriksa.id,
-                      dokterSpesialis: widget.selectedPeriksa.dokterSpesialis,
-                      gambarDokter: widget.selectedPeriksa.gambarDokter,
-                      idUser: widget.selectedPeriksa.idUser,
-                      jenisPerawatan: widget.selectedPeriksa.jenisPerawatan,
-                      namaPasien: widget.selectedPeriksa.namaPasien,
-                      price: widget.selectedPeriksa.price,
-                      rating: widget.selectedPeriksa.rating,
-                      ruangan: widget.selectedPeriksa.ruangan,
-                      statusCheckin: widget.selectedPeriksa.statusCheckin,
-                      tanggalPeriksa: widget.selectedPeriksa.tanggalPeriksa,
-                      ulasan: widget.selectedPeriksa.ulasan,
-                    ),
-                  ),
-                ),
-              );
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.amber),
-              minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
-            ),
-            child: Text(
-              'Edit Komentar',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          SizedBox(
-            width: 2.0.w,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              widget.selectedPeriksa.ulasan != '-'
-                  ? showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: Text(
-                          'Konfirmasi',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        content: Text('Yakin ingin menghapus komentar?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              DaftarPeriksaClient.hapusUlasan(
-                                widget.selectedPeriksa.id.toString(),
-                              );
-
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      HomeView(selectedIndex: 2),
-                                ),
-                              );
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Berhasil Menghapus Komentar'),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Ya',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              'Tidak',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        duration: Duration(seconds: 2),
-                        content: Text('Komentar sudah kosong'),
-                      ),
-                    );
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.red),
-              minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
-            ),
-            child: Text(
-              'Hapus Komentar',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Detail Periksa',
+          'Edit Komentar',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18.sp,
@@ -468,7 +306,10 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
           color: Colors.black,
           onPressed: () => Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomeView(selectedIndex: 2)),
+            MaterialPageRoute(
+              builder: (context) =>
+                  DetailPeriksaView(selectedPeriksa: widget.selectedPeriksa),
+            ),
           ),
         ),
       ),
@@ -477,18 +318,14 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildDetailPeriksa(),
+              // buildDetailPeriksa(),
               buildDetailDokter(),
-              widget.selectedPeriksa.rating == 0
-                  ? buildRating()
-                  : buildShowRatingOnly(),
+              // buildRating(),
               buildKomentar(),
               SizedBox(
                 height: 2.0.h,
               ),
-              widget.selectedPeriksa.rating == 0
-                  ? buildOkeBatalButton()
-                  : buildEditHapusKomentarButton(),
+              buildSimpanBatalButton(),
             ],
           ),
         ),
