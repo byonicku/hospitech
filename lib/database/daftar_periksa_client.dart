@@ -5,9 +5,9 @@ import 'package:http/http.dart';
 
 class DaftarPeriksaClient {
   // Local
-  // static const String url = '10.0.2.2:8000';
+  static const String url = '10.0.2.2:8000';
   // Hostingan
-  static const String url = '20.70.51.64:8000';
+  // static const String url = '20.70.51.64:8000';
   static const String endpoint = '/api/daftar_periksa';
 
   // mengambil semua data Periksa
@@ -88,6 +88,41 @@ class DaftarPeriksaClient {
           },
         ),
       ).timeout(const Duration(seconds: 5));
+
+      if (response.statusCode != 200) throw Exception(response.body);
+
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  // update/simpan rating dan ulasan object periksa tertentu dari list yang dipilih
+  static Future<Response> saveRatingUlasan(Periksa periksaToRating) async {
+    try {
+      var response = await post(
+        Uri.http(url, '$endpoint/updateRatingUlasan'),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode(
+          periksaToRating.toJson(),
+        ),
+      ).timeout(const Duration(seconds: 5));
+
+      if (response.statusCode != 200) throw Exception(response.body);
+
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  // hapus ulasan
+  static Future<Response> hapusUlasan(String idPeriksa) async {
+    try {
+      var response =
+          await put(Uri.http(url, '$endpoint/hapusUlasan/$idPeriksa'));
 
       if (response.statusCode != 200) throw Exception(response.body);
 
