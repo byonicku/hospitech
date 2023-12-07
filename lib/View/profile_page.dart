@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,12 +26,15 @@ class _ProfilePageState extends State<ProfilePage> {
   Image? _image;
   final picker = ImagePicker();
   bool _isLoading = true;
+  bool _isLoadingPic = true;
   static const String endpoint = '/storage/user/';
 
   void getUserData() async {
+    _isLoading = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // currentUser = await getUserByID(prefs.getInt('id'));
     currentUser = await UserClient.show(prefs.getString('id')!);
+
     setState(() {
       name = currentUser!.username;
       email = currentUser!.email;
@@ -40,14 +44,35 @@ class _ProfilePageState extends State<ProfilePage> {
       jenisKelamin = currentUser!.jenisKelamin;
       imgPath = currentUser!.profilePhoto;
 
-      _image = imgPath == ""
-          ? const Image(
-              image: AssetImage('assets/images/profil.png'),
-            )
-          : Image.network('http://$url$endpoint${imgPath!}');
-
+      imageLoader();
       _isLoading = false;
     });
+  }
+
+  void imageLoader() async {
+    _image = imgPath == ""
+        ? const Image(
+            image: AssetImage('assets/images/profil.png'),
+          )
+        : Image.network('http://$url$endpoint${imgPath!}');
+
+    final ImageStream stream = _image!.image.resolve(ImageConfiguration.empty);
+    final Completer<void> completer = Completer<void>();
+    stream.addListener(
+      ImageStreamListener(
+        (ImageInfo info, bool syncCall) {
+          completer.complete();
+        },
+      ),
+    );
+
+    await completer.future;
+
+    if (mounted) {
+      setState(() {
+        _isLoadingPic = false;
+      });
+    }
   }
 
   Future<String> convertToBase64(File imageFile) async {
@@ -69,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       // editUser(editDataUser);
       UserClient.updatePhotoProfil(id, imagePath);
-      getUserData();
+      imageLoader();
     });
   }
 
@@ -93,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       // editUser(editDataUser);
       UserClient.update(editDataUser);
-      getUserData();
+      imageLoader();
     });
   }
 
@@ -179,15 +204,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: <Widget>[
                       CircleAvatar(
                         radius: 15.w,
-                        backgroundImage: _image == null
-                            ? const AssetImage('assets/images/profil.png')
-                            : _image!.image,
+                        backgroundImage: !_isLoadingPic
+                            ? _image == null
+                                ? const AssetImage('assets/images/profil.png')
+                                : _image!.image
+                            : const AssetImage('assets/images/profil.png'),
                         child: Align(
                           alignment: const Alignment(0.8, 0.9),
                           child: InkWell(
                             onTap: () {
                               showPickImageOptions();
                             }, // Trigger image selection
+                            onTapCancel: () => getUserData(),
                             child: Container(
                               width: 10.w, // Adjust the size as needed
                               height: 6.h, // Adjust the size as needed
