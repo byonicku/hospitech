@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -6,10 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:tugas_besar_hospital_pbp/View/update_profile_page.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
-// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:tugas_besar_hospital_pbp/database/constant.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -24,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Image? _image;
   final picker = ImagePicker();
   bool _isLoading = true;
+  static const String endpoint = '/storage/user/';
 
   void getUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -38,31 +40,31 @@ class _ProfilePageState extends State<ProfilePage> {
       jenisKelamin = currentUser!.jenisKelamin;
       imgPath = currentUser!.profilePhoto;
 
-      _image = imgPath == "" ? null : Image.file(File(imgPath!));
+      _image = imgPath == ""
+          ? const Image(
+              image: AssetImage('assets/images/profil.png'),
+            )
+          : Image.network('http://$url$endpoint${imgPath!}');
+
       _isLoading = false;
     });
   }
 
-  Future<String> saveImageLocally(File imageFile) async {
-    final appDirectory = await getApplicationDocumentsDirectory();
-    final imagePath =
-        '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
-
-    await imageFile.copy(imagePath);
-
-    return imagePath;
+  Future<String> convertToBase64(File imageFile) async {
+    Uint8List imgBytes = await imageFile.readAsBytes();
+    return base64.encode(imgBytes);
   }
 
   // fungsi ambil gambar profil dari galeri
   Future getImageFromGallery() async {
     picker
-        .pickImage(source: ImageSource.gallery, imageQuality: 50)
+        .pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    )
         .then((imgFile) async {
-      // Uint8List? imgBytes = await imgFile!.readAsBytes();
-      // String decodedToBase64 = Utility.toBase64String(imgBytes);
-
       File profileImage = File(imgFile!.path);
-      String imagePath = await saveImageLocally(profileImage);
+      String imagePath = await convertToBase64(profileImage);
       int? id = currentUser!.id;
 
       // editUser(editDataUser);
@@ -77,7 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
         .pickImage(source: ImageSource.camera, imageQuality: 50)
         .then((imgCapture) async {
       File profileImage = File(imgCapture!.path);
-      String imagePath = await saveImageLocally(profileImage);
+      String imagePath = await convertToBase64(profileImage);
 
       User editDataUser = User(
           id: currentUser!.id,

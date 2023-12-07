@@ -24,8 +24,6 @@ Future<void> createPdf(
 
   Periksa userPeriksa = await DaftarPeriksaClient.show(idPeriksa.toString());
 
-  print(userPeriksa);
-
   final doc = pw.Document();
   final now = DateTime.now();
   final formattedDate = DateFormat('yyyy-MM-dd  HH:mm:ss').format(now);
