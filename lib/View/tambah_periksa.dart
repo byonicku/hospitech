@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:math';
 import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -9,12 +11,14 @@ import 'package:tugas_besar_hospital_pbp/View/home.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 import 'package:tugas_besar_hospital_pbp/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TambahPeriksa extends StatefulWidget {
   const TambahPeriksa({
     super.key,
     required this.id,
     required this.namaPasien,
+    required this.price,
     required this.dokterSpesialis,
     required this.jenisPerawatan,
     required this.tanggalPeriksa,
@@ -29,7 +33,7 @@ class TambahPeriksa extends StatefulWidget {
       gambarDokter,
       ruangan;
 
-  final int? id;
+  final int? id, price;
 
   @override
   State<TambahPeriksa> createState() => _TambahPeriksaState();
@@ -41,6 +45,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
   TextEditingController namaPasienController = TextEditingController();
   TextEditingController tanggalPeriksaController = TextEditingController();
   bool isDark = darkNotifier.value;
+  String? id;
 
   String? selectedJenisPerawatan;
   String? selectedDokterSpesialis;
@@ -48,34 +53,48 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
   bool isPickedPerawatan = false;
   bool isPickedDokter = false;
 
+  void getUserID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    id = prefs.getString('id') ?? '';
+  }
+
+  @override
+  void initState() {
+    getUserID();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: isDark ? Colors.grey[900] : Colors.grey[200],
+        title: Text(
+          'Tambah Daftar Periksa',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: Container(
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    height: 2.h,
-                  ),
-                  Text(
-                    "Daftar Periksa",
-                    style:
-                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 2.h,
+                    height: 6.h,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
+                    padding: EdgeInsets.symmetric(horizontal: 6.0.h),
                     child: SizedBox(
                         width: 100.w,
                         child: TextFormField(
+                          key: Key('Nama Pasien'),
                           validator: (namaPasien) {
                             if (namaPasien!.isEmpty) {
                               return 'Nama Pasien tidak boleh kosong';
@@ -85,12 +104,13 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           },
                           controller: namaPasienController,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "Nama Pasien",
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20))),
                             labelText: "Nama Pasien",
                             hintStyle: TextStyle(fontSize: 14),
                             labelStyle: TextStyle(fontSize: 14),
-                            icon: Icon(Icons.person),
+                            prefixIcon: Icon(Icons.person),
                           ),
                         )),
                   ),
@@ -99,10 +119,11 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                   ),
                   //Date Picker
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0.h),
+                    padding: EdgeInsets.symmetric(horizontal: 6.0.h),
                     child: SizedBox(
                       width: 100.w,
                       child: TextFormField(
+                        key: Key('TglPeriksa'),
                         autofocus: false,
                         controller: tanggalPeriksaController,
                         validator: (value) {
@@ -112,9 +133,10 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           return null;
                         },
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          icon: Icon(Icons.calendar_today),
-                          hintText: "Tanggal Periksa",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          prefixIcon: Icon(Icons.calendar_today),
                           labelText: "Tanggal Periksa",
                           hintStyle: TextStyle(fontSize: 14),
                           labelStyle: TextStyle(fontSize: 14),
@@ -126,6 +148,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           DateTime initialDate =
                               DateTime.now().add(const Duration(days: 1));
                           DateTime? pickedDate = await showDatePicker(
+                              switchToInputEntryModeIcon: Icon(Icons.edit),
                               context: context,
                               initialDate: initialDate,
                               firstDate: initialDate,
@@ -147,8 +170,9 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                   ),
 
                   Padding(
-                    padding: EdgeInsets.only(left: 7.2.h, right: 4.0.h),
+                    padding: EdgeInsets.symmetric(horizontal: 6.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Dokter Dropdown'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -168,6 +192,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         ),
                         items: listDokterSpesialis
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
@@ -189,8 +214,12 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         },
                         buttonStyleData: ButtonStyleData(
                           height: 50,
-                          padding: const EdgeInsets.only(left: 14, right: 14),
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                           decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(color: Colors.grey.withOpacity(0)),
+                            ],
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: Colors.grey.shade700,
                             ),
@@ -202,16 +231,17 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           icon: const Icon(
                             Icons.arrow_forward_ios_outlined,
                           ),
-                          iconSize: 14,
+                          iconSize: 16.sp,
                           iconEnabledColor: Colors.grey.shade700,
                           iconDisabledColor: Colors.grey,
                         ),
                         dropdownStyleData: DropdownStyleData(
                           maxHeight: 200,
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
                             color: isDark ? Colors.grey.shade900 : Colors.white,
                           ),
-                          offset: const Offset(0, 0),
+                          offset: const Offset(0, -3),
                           scrollbarTheme: ScrollbarThemeData(
                             radius: const Radius.circular(40),
                             thickness: MaterialStateProperty.all(6),
@@ -219,8 +249,8 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           ),
                         ),
                         menuItemStyleData: MenuItemStyleData(
-                          height: 4.h,
-                          padding: EdgeInsets.only(left: 1.h, right: 1.h),
+                          height: 7.h,
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                         ),
                       ),
                     ),
@@ -230,8 +260,9 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                   ),
 
                   Padding(
-                    padding: EdgeInsets.only(left: 7.2.h, right: 4.0.h),
+                    padding: EdgeInsets.symmetric(horizontal: 6.0.h),
                     child: DropdownButtonHideUnderline(
+                      key: Key('Jenis Perawatan'),
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Row(
@@ -251,6 +282,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         ),
                         items: listJenisPerawatan
                             .map((String item) => DropdownMenuItem<String>(
+                                  key: Key(item),
                                   value: item,
                                   child: Text(
                                     item,
@@ -272,8 +304,12 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                         },
                         buttonStyleData: ButtonStyleData(
                           height: 50,
-                          padding: EdgeInsets.only(left: 1.h, right: 1.h),
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                           decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(color: Colors.grey.withOpacity(0)),
+                            ],
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: Colors.grey.shade700,
                             ),
@@ -285,16 +321,17 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           icon: const Icon(
                             Icons.arrow_forward_ios_outlined,
                           ),
-                          iconSize: 14,
+                          iconSize: 16.sp,
                           iconEnabledColor: Colors.grey.shade700,
                           iconDisabledColor: Colors.grey,
                         ),
                         dropdownStyleData: DropdownStyleData(
                           maxHeight: 200,
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
                             color: isDark ? Colors.grey.shade900 : Colors.white,
                           ),
-                          offset: const Offset(0, 0),
+                          offset: const Offset(0, -3),
                           scrollbarTheme: ScrollbarThemeData(
                             radius: const Radius.circular(40),
                             thickness: MaterialStateProperty.all(6),
@@ -302,8 +339,8 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           ),
                         ),
                         menuItemStyleData: MenuItemStyleData(
-                          height: 4.h,
-                          padding: EdgeInsets.only(left: 1.h, right: 1.h),
+                          height: 7.h,
+                          padding: EdgeInsets.only(left: 2.h, right: 2.h),
                         ),
                       ),
                     ),
@@ -312,6 +349,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                     height: 24,
                   ),
                   ElevatedButton(
+                      key: Key('Daftar Periksa'),
                       onPressed: () async {
                         final scaffoldMessenger = ScaffoldMessenger.of(context);
 
@@ -362,31 +400,37 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                         'Apakah data Anda sudah benar?'),
                                     actions: [
                                       TextButton(
+                                        key: Key('SudahBtn'),
                                         onPressed: () async {
                                           final Periksa newPeriksa = Periksa(
-                                              namaPasien:
-                                                  namaPasienController.text,
-                                              dokterSpesialis:
-                                                  selectedDokterSpesialis,
-                                              price: listHargaPerawatan[
-                                                  selectedDokterSpesialis],
-                                              jenisPerawatan:
-                                                  selectedJenisPerawatan,
-                                              tanggalPeriksa:
-                                                  tanggalPeriksaController.text,
-                                              gambarDokter:
-                                                  formData['gambar_dokter'],
-                                              ruangan: formData['ruangan'],
-                                              statusCheckin: 0);
+                                            namaPasien:
+                                                namaPasienController.text,
+                                            dokterSpesialis:
+                                                selectedDokterSpesialis,
+                                            price: listHargaPerawatan[
+                                                selectedDokterSpesialis],
+                                            jenisPerawatan:
+                                                selectedJenisPerawatan,
+                                            tanggalPeriksa:
+                                                tanggalPeriksaController.text,
+                                            gambarDokter:
+                                                formData['gambar_dokter'],
+                                            ruangan: formData['ruangan'],
+                                            statusCheckin: 0,
+                                            rating: 0,
+                                            ulasan: "-",
+                                          );
 
                                           // addDaftarPeriksa(newPeriksa);
                                           await DaftarPeriksaClient.addPeriksa(
-                                              newPeriksa);
+                                            newPeriksa,
+                                            id!,
+                                          );
 
                                           // ignore: use_build_context_synchronously
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);
-                                              // ignore: use_build_context_synchronously
+                                          // ignore: use_build_context_synchronously
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
@@ -410,6 +454,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                                 fontWeight: FontWeight.bold)),
                                       ),
                                       TextButton(
+                                        key: Key('BelumBtn'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           scaffoldMessenger.showSnackBar(
