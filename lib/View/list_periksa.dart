@@ -1,13 +1,17 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_hospital_pbp/View/detail_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/edit_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/tambah_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
+import 'package:tugas_besar_hospital_pbp/entity/periksa.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
 // import 'package:tugas_besar_hospital_pbp/database/sql_helper.dart';
 import 'package:tugas_besar_hospital_pbp/qr_scanner/scan_qr_page.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 import 'package:uuid/uuid.dart';
-import 'package:tugas_besar_hospital_pbp/invoice/pdf_view.dart';
+
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,29 +60,92 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     super.initState();
   }
 
+  // MAIN PERIKSA CARD WIDGET =======================================================================================================================
   Widget buildPeriksaCard(Map<String, dynamic> periksa, int index) {
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8),
       child: Card(
         elevation: 1,
         child: InkWell(
-          onTap: () async {
-            await createPdf(
-                listPeriksaRaw[index]['id_daftar_periksa'], id, context);
+          onTap: () {
+            // await createPdf(
+            //     listPeriksaRaw[index]['id_daftar_periksa'], id, context);
 
-            setState(() {
-              const uuid = Uuid();
-              id = uuid.v1();
-              _isLoading = true;
-            });
+            // setState(() {
+            //   const uuid = Uuid();
+            //   id = uuid.v1();
+            //   _isLoading = true;
+            // });
 
-            Future.delayed(const Duration(seconds: 1), () {
-              setState(() {
-                _isLoading = false;
-              });
-            });
+            // Future.delayed(const Duration(seconds: 1), () {
+            //   setState(() {
+            //     _isLoading = false;
+            //   });
+            // });
+
+            listPeriksaRaw[index]['status_checkin'] == 1
+                ? listPeriksaRaw[index]['rating'] == 0
+                    ? Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailPeriksaView(
+                              selectedPeriksa: Periksa(
+                            id: listPeriksaRaw[index]['id_daftar_periksa'],
+                            namaPasien: listPeriksaRaw[index]['nama_pasien'],
+                            dokterSpesialis: listPeriksaRaw[index]
+                                ['dokter_spesialis'],
+                            gambarDokter: listPeriksaRaw[index]
+                                ['gambar_dokter'],
+                            idUser: listPeriksaRaw[index]['id_user'],
+                            jenisPerawatan: listPeriksaRaw[index]
+                                ['jenis_perawatan'],
+                            price: listPeriksaRaw[index]['price'],
+                            rating: listPeriksaRaw[index]['rating'],
+                            ruangan: listPeriksaRaw[index]['ruangan'],
+                            statusCheckin: listPeriksaRaw[index]
+                                ['status_checkin'],
+                            tanggalPeriksa: listPeriksaRaw[index]
+                                ['tanggal_periksa'],
+                            ulasan: listPeriksaRaw[index]['ulasan'],
+                          )),
+                        ),
+                      )
+                    : Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailPeriksaView(
+                            selectedPeriksa: Periksa(
+                                id: listPeriksaRaw[index]['id_daftar_periksa'],
+                                namaPasien: listPeriksaRaw[index]
+                                    ['nama_pasien'],
+                                dokterSpesialis: listPeriksaRaw[index]
+                                    ['dokter_spesialis'],
+                                gambarDokter: listPeriksaRaw[index]
+                                    ['gambar_dokter'],
+                                idUser: listPeriksaRaw[index]['id_user'],
+                                jenisPerawatan: listPeriksaRaw[index]
+                                    ['jenis_perawatan'],
+                                price: listPeriksaRaw[index]['price'],
+                                rating: listPeriksaRaw[index]['rating'],
+                                ruangan: listPeriksaRaw[index]['ruangan'],
+                                statusCheckin: listPeriksaRaw[index]
+                                    ['status_checkin'],
+                                tanggalPeriksa: listPeriksaRaw[index]
+                                    ['tanggal_periksa'],
+                                ulasan: listPeriksaRaw[index]['ulasan']),
+                          ),
+                        ),
+                      )
+                : ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 2),
+                      content:
+                          Text('Anda harus chekin untuk memberikan rating'),
+                    ),
+                  );
           },
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               buildDokterInfo(periksa),
               buildPeriksaInfo(periksa, index: index),
@@ -89,6 +156,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     );
   }
 
+  // INFO DOKTER WIDGET =======================================================================================================================
   Widget buildDokterInfo(Map<String, dynamic> periksa) {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
     final orientation = MediaQuery.of(context).orientation;
@@ -96,57 +164,93 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     final imageWidth =
         deviceSize.width * ((orientation == Orientation.portrait) ? 0.2 : 0.07);
 
-    return SizedBox(
-      width: deviceSize.width * 0.25,
-      height: deviceSize.height * 0.2,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              periksa['gambar_dokter'],
-              width: imageWidth,
-              height: imageWidth,
-              cacheWidth: (300 * devicePixelRatio).round(),
-              filterQuality: FilterQuality.none,
-              fit: BoxFit.cover,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 2.4.h),
+      child: SizedBox(
+        width: 24.w,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                periksa['gambar_dokter'],
+                width: imageWidth,
+                height: imageWidth,
+                cacheWidth: (300 * devicePixelRatio).round(),
+                filterQuality: FilterQuality.none,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Text('Nama Dokter', style: TextStyle(fontSize: 14.sp)),
-          Text(
-            periksa['dokter_spesialis'],
-            style: TextStyle(color: Colors.grey, fontSize: 14.sp),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            Text('Nama Dokter', style: TextStyle(fontSize: 14.sp)),
+            Text(
+              periksa['dokter_spesialis'],
+              style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
 
+  // PERIKSA INFO WIDGET =======================================================================================================================
   Widget buildPeriksaInfo(Map<String, dynamic> periksa, {int? index}) {
     return Expanded(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(periksa['nama_pasien'],
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400)),
-          Text(periksa['jenis_perawatan'],
-              style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
-          Text('Tanggal Periksa: ${periksa['tanggal_periksa']}',
-              style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
-          Text('Ruangan: ${periksa['ruangan']}',
-              style: TextStyle(fontSize: 14.sp)),
-          SizedBox(height: 0.5.h),
-          buildEditDeleteButtons(
-            periksa,
-            index!,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 1.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(periksa['nama_pasien'],
+                        style: TextStyle(
+                            fontSize: 18.sp, fontWeight: FontWeight.w500)),
+                    Text(periksa['jenis_perawatan'],
+                        style: TextStyle(fontSize: 14.sp)),
+                    Text('${periksa['ruangan']}',
+                        style: TextStyle(fontSize: 14.sp)),
+                    Text('Tanggal Periksa : ${periksa['tanggal_periksa']}',
+                        style: TextStyle(
+                            fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 3.0.w, bottom: 4.h),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    splashFactory: NoSplash.splashFactory,
+                    backgroundColor: MaterialStateProperty.all(
+                        listPeriksaRaw[index!]['status_checkin'] == 1
+                            ? Colors.green
+                            : Colors.amber),
+                    minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
+                  ),
+                  child: Text(
+                    listPeriksaRaw[index]['status_checkin'] == 1
+                        ? 'Selesai'
+                        : 'Pending',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
           ),
+          buildShowRating(periksa, index),
+          buildEditDeleteButtons(periksa, index),
         ],
       ),
     );
   }
 
+  // EDIT BUTTON WIDGET =======================================================================================================================
   Widget buildEditButton(Map<String, dynamic> periksa, int index) {
     return ElevatedButton(
       key: Key('EditBtn'),
@@ -175,6 +279,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     );
   }
 
+  // DELETE BUTTON WIDGET =======================================================================================================================
   Widget buildDeleteButton(Map<String, dynamic> periksa, int index) {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final namaPasienHapus = listPeriksaRaw[index]['nama_pasien'];
@@ -252,6 +357,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     );
   }
 
+  // CHECK IN BUTTON WIDGET =======================================================================================================================
   Widget buildCheckInButton(Map<String, dynamic> periksa, int index) {
     if (listPeriksaRaw[index]['status_checkin'] == 1) {
       return ElevatedButton(
@@ -290,14 +396,34 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     }
   }
 
+  // EDIT DELETE BUTTON WIDGET =======================================================================================================================
   Widget buildEditDeleteButtons(Map<String, dynamic> periksa, int index) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         buildEditButton(periksa, index),
-        SizedBox(width: 1.5.w),
         buildDeleteButton(periksa, index),
-        SizedBox(width: 1.5.w),
         buildCheckInButton(periksa, index),
+      ],
+    );
+  }
+
+  // SHOW RATING WIDGET
+  Widget buildShowRating(Map<String, dynamic> periksa, int index) {
+    bool rating = listPeriksaRaw[index]['rating'] != 0;
+
+    return Row(
+      children: [
+        Icon(
+          Icons.star,
+          color: rating ? Colors.amber : Colors.grey,
+        ),
+        Text(
+          rating
+              ? '${listPeriksaRaw[index]["rating"]} out of 5'
+              : 'Belum diberi rating',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ],
     );
   }

@@ -4,12 +4,9 @@ import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'constant.dart';
 
 class UserClient {
-  // Local
-  // static const String url = '10.0.2.2:8000';
-  // Hostingan
-  static const String url = '20.70.51.64:8000';
   static const String endpoint = '/api/user';
 
   // mengambil semua data user (kayaknya ga perlu soalnya ngapain kan get all user di aplikasi wkwk)
