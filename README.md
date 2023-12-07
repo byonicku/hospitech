@@ -36,3 +36,16 @@ Aplikasi Android menggunakan framework flutter, berfokus untuk membuat aplikasi 
 > - PDF & Printing - Nico, Fredo
 > - intl (numberformat) - Hendryanto
 > - uuid, barcode - berly, andre
+> ## UGD API 1, 2
+> - Login - fredo
+> - Register - fredo
+> - tampil profil - fredo
+> - forget pass - andre, hendryanto, fredo
+> - crud - nico, fredo
+> ## UGD UNIT TESTING
+> - Login test - fredo, nico
+> - Register test - fredo
+> - Create Transaksi - fredo
+> - Read Transaksi - hendryanto, nico
+> - Update Transaksi - hendryanto, nico
+> - Delete Transaksi - berly
