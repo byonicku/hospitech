@@ -27,11 +27,14 @@ dependencies:
   uuid: ^3.0.6
   barcode_widget: ^2.0.4
   responsive_sizer: ^3.2.0
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  integration_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true

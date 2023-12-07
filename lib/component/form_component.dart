@@ -3,9 +3,9 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 Padding inputForm(Function(String?) validasi,
     {required TextEditingController controller,
-    required String hintTxt,
     required String labelTxt,
     required IconData iconData,
+    required bool read,
     TextInputType? textInputType,
     bool password = false}) {
   return Padding(
@@ -15,14 +15,15 @@ Padding inputForm(Function(String?) validasi,
         child: TextFormField(
           validator: (value) => validasi(value),
           autofocus: false,
+          readOnly: read,
           controller: controller,
           obscureText: password,
           keyboardType: textInputType,
           decoration: InputDecoration(
               labelText: labelTxt,
-              hintText: hintTxt,
-              border: const OutlineInputBorder(),
-              icon: Icon(iconData)),
+              border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              prefixIcon: Icon(iconData)),
         )),
   );
 }
