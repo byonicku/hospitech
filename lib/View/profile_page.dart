@@ -31,27 +31,37 @@ class _ProfilePageState extends State<ProfilePage> {
   void getUserData() async {
     _isLoading = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // currentUser = await getUserByID(prefs.getInt('id'));
-    currentUser = await UserClient.show(prefs.getString('id')!);
 
-    setState(() {
-      name = currentUser!.username;
-      email = currentUser!.email;
-      password = currentUser!.password;
-      noTelp = currentUser!.noTelp;
-      tglLahir = currentUser!.tglLahir;
-      jenisKelamin = currentUser!.jenisKelamin;
-      imgPath = currentUser!.profilePhoto;
-      _image = imgPath == ""
-          ? const Image(
-              image: AssetImage('assets/images/profil.png'),
-            )
-          : Image.network(
-              'http://$url$endpoint${imgPath!}',
-            );
+    try {
+      currentUser = await UserClient.show(prefs.getString('id')!);
 
-      _isLoading = false;
-    });
+      setState(() {
+        name = currentUser!.username;
+        email = currentUser!.email;
+        password = currentUser!.password;
+        noTelp = currentUser!.noTelp;
+        tglLahir = currentUser!.tglLahir;
+        jenisKelamin = currentUser!.jenisKelamin;
+        imgPath = currentUser!.profilePhoto;
+        _image = imgPath == ""
+            ? const Image(
+                image: AssetImage('assets/images/profil.png'),
+              )
+            : Image.network(
+                'http://$url$endpoint${imgPath!}',
+              );
+
+        _isLoading = false;
+      });
+    } catch (e) {
+      pushLogout(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gagal Mengambil Data'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   Future<String> convertToBase64(File imageFile) async {
@@ -71,7 +81,6 @@ class _ProfilePageState extends State<ProfilePage> {
       String imagePath = await convertToBase64(profileImage);
       int? id = currentUser!.id;
 
-      // editUser(editDataUser);
       UserClient.updatePhotoProfil(id, imagePath);
     });
   }
@@ -94,7 +103,6 @@ class _ProfilePageState extends State<ProfilePage> {
           tglLahir: currentUser!.tglLahir,
           profilePhoto: imagePath);
 
-      // editUser(editDataUser);
       UserClient.update(editDataUser);
     });
   }
@@ -127,7 +135,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           CupertinoActionSheetAction(
             onPressed: () async {
-              // tutup cupertino modalnya pake pop
               Navigator.of(context).pop();
               await getImageFromCamera();
             },

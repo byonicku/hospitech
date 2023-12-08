@@ -39,21 +39,6 @@ class _EditKomentarViewState extends State<EditKomentarView> {
       _isLoading = true;
     });
 
-    // final dataPeriksa = await DaftarPeriksaClient.fetchAll(id).timeout(
-    //   const Duration(seconds: 5),
-    //   onTimeout: () {
-    //     setState(() {
-    //       _isLoading = false;
-    //       status = 'Tidak ada koneksi internet';
-    //     });
-    //     return [];
-    //   },
-    // );
-
-    // setState(() {
-    //   listPeriksaRaw = dataPeriksa.map((periksa) => periksa.toJson()).toList();
-    //   _isLoading = false;
-    // });
     prefs = await SharedPreferences.getInstance();
     id = prefs!.getString('id') ?? '';
 
@@ -144,6 +129,7 @@ class _EditKomentarViewState extends State<EditKomentarView> {
           ElevatedButton(
             onPressed: () {},
             style: ButtonStyle(
+              splashFactory: NoSplash.splashFactory,
               backgroundColor: MaterialStateProperty.all(Colors.white),
             ),
             child: Text(widget.selectedPeriksa.jenisPerawatan!),
@@ -226,6 +212,18 @@ class _EditKomentarViewState extends State<EditKomentarView> {
           onPressed: () {
             // SIMPAN RATING DAN ULASAN
             try {
+              if (komentarController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: Duration(seconds: 2),
+                    content: Text(
+                      'Komentar tidak boleh kosong!',
+                    ),
+                  ),
+                );
+                return;
+              }
+
               Periksa updatedPeriksa = Periksa(
                   id: widget.selectedPeriksa.id,
                   dokterSpesialis: widget.selectedPeriksa.dokterSpesialis,
@@ -246,6 +244,15 @@ class _EditKomentarViewState extends State<EditKomentarView> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => HomeView(selectedIndex: 2),
+                ),
+              );
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 2),
+                  content: Text(
+                    'Berhasil mengedit komentar!',
+                  ),
                 ),
               );
             } catch (e) {

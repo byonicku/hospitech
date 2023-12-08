@@ -51,6 +51,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
   String? dokterSpesialisSelected, jenisPerawatanSelected, namaPasienSebelumnya;
   String? id;
   double selectedHargaPerawatan = 0;
+  bool haveInputted = false;
 
   void getUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -72,7 +73,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
       dokterSpesialisSelected = widget.dokterSpesialis!;
       jenisPerawatanSelected = widget.jenisPerawatan!;
       namaPasienSebelumnya = widget.namaPasien;
-      selectedHargaPerawatan = widget.price!.toDouble();
+      selectedHargaPerawatan = widget.price!.toDouble() + widget.price! * 0.1;
     }
 
     return Scaffold(
@@ -222,9 +223,11 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         onChanged: (value) {
                           setState(() {
                             dokterSpesialisSelected = value!;
-                            selectedHargaPerawatan =
-                                listHargaPerawatan[dokterSpesialisSelected!]!
-                                    .toDouble();
+                            selectedHargaPerawatan = listHargaPerawatan[
+                                        dokterSpesialisSelected!]!
+                                    .toDouble() +
+                                listHargaPerawatan[dokterSpesialisSelected!]! *
+                                    0.1;
                           });
                         },
                         buttonStyleData: ButtonStyleData(
@@ -382,6 +385,13 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                       ),
                     ],
                   ),
+                  Text(
+                    ' (Termasuk PPN 10%)',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                   const SizedBox(
                     height: 24,
                   ),
@@ -426,6 +436,31 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                         key: Key('SudahBtn'),
                                         onPressed: () async {
                                           try {
+                                            if (namaPasienController.text ==
+                                                    widget.namaPasien! &&
+                                                tanggalPeriksaController.text ==
+                                                    widget.tanggalPeriksa! &&
+                                                dokterSpesialisSelected ==
+                                                    widget.dokterSpesialis! &&
+                                                jenisPerawatanSelected ==
+                                                    widget.jenisPerawatan! &&
+                                                namaPasienSebelumnya ==
+                                                    widget.namaPasien &&
+                                                selectedHargaPerawatan ==
+                                                    widget.price!.toDouble()) {
+                                              Navigator.of(context).pop();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                  content: Text(
+                                                      'Anda belum mengisi / mengubah data apapun'),
+                                                ),
+                                              );
+                                              return;
+                                            }
+
                                             final Periksa updatedPeriksa =
                                                 Periksa(
                                               id: widget.id,
@@ -437,7 +472,8 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                                   formData['jenis_perawatan'],
                                               tanggalPeriksa:
                                                   tanggalPeriksaController.text,
-                                              price: formData['price'],
+                                              price: listHargaPerawatan[
+                                                  dokterSpesialisSelected]!,
                                               ruangan: formData['ruangan'],
                                               statusCheckin: 0,
                                               gambarDokter:
