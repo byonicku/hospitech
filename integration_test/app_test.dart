@@ -15,6 +15,17 @@ void main() {
   DaftarPeriksaRobot daftarPeriksaRobot;
 
   group('Integration Test | ', () {
+    testWidgets('Register Test', (WidgetTester tester) async {
+      app.main();
+
+      await tester.pumpAndSettle();
+
+      registerRobot = RegisterRobot(tester);
+
+      await registerRobot.tapRegister();
+      await registerRobot.registerCorrect(
+          username: 'User 5', password: 'password5', email: 'user5@gmail.com');
+    });
     testWidgets('Login Test', (WidgetTester tester) async {
       app.main();
 
@@ -22,7 +33,7 @@ void main() {
 
       loginRobot = LoginRobot(tester);
 
-      await loginRobot.login(username: 'User 4', password: 'password4');
+      await loginRobot.login(username: 'User 5', password: 'password5');
       await loginRobot.logout();
     });
 
@@ -45,22 +56,10 @@ void main() {
 
       loginRobot = LoginRobot(tester);
 
-      await loginRobot.login(username: 'User 4', password: 'xxx');
+      await loginRobot.login(username: 'User 5', password: 'xxx');
 
       expect(find.text('Username atau password yang Anda masukkan salah'),
           findsOneWidget);
-    });
-
-    testWidgets('Register Test', (WidgetTester tester) async {
-      app.main();
-
-      await tester.pumpAndSettle();
-
-      registerRobot = RegisterRobot(tester);
-
-      await registerRobot.tapRegister();
-      await registerRobot.registerCorrect(
-          username: 'User 5', password: 'password5', email: 'user5@gmail.com');
     });
   });
 
@@ -72,9 +71,9 @@ void main() {
 
       daftarPeriksaRobot = DaftarPeriksaRobot(tester);
 
-      await daftarPeriksaRobot.login(username: 'User 4', password: 'password4');
+      await daftarPeriksaRobot.login(username: 'User 5', password: 'password5');
       await daftarPeriksaRobot.addPeriksa(
-          namaPasien: 'Pasien Baru', tglPeriksa: '12/04/2023');
+          namaPasien: 'Pasien Baru', tglPeriksa: '12/30/2023');
     });
 
     testWidgets('Read List Periksa', (WidgetTester tester) async {
@@ -97,7 +96,7 @@ void main() {
       daftarPeriksaRobot = DaftarPeriksaRobot(tester);
 
       await daftarPeriksaRobot.updatePeriksa(
-          namaPasien: 'Pasien Lama', tglPeriksa: '12/05/2023');
+          namaPasien: 'Pasien Lama', tglPeriksa: '12/29/2023');
       expect(find.byType(Card), findsOneWidget);
       expect(find.text('Pasien Lama'), findsOneWidget);
     });

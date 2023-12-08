@@ -85,7 +85,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
 
             listPeriksaRaw[index]['status_checkin'] == 1
                 ? listPeriksaRaw[index]['rating'] == 0
-                    ? Navigator.pushReplacement(
+                    ? Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailPeriksaView(
@@ -110,7 +110,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                           )),
                         ),
                       )
-                    : Navigator.pushReplacement(
+                    : Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailPeriksaView(
@@ -140,7 +140,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                     SnackBar(
                       duration: Duration(seconds: 2),
                       content:
-                          Text('Anda harus chekin untuk memberikan rating'),
+                          Text('Anda harus check in untuk memberikan rating'),
                     ),
                   );
           },
@@ -254,22 +254,30 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
   Widget buildEditButton(Map<String, dynamic> periksa, int index) {
     return ElevatedButton(
       key: Key('EditBtn'),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => EditPeriksaView(
-              id: listPeriksaRaw[index]['id_daftar_periksa'],
-              namaPasien: listPeriksaRaw[index]['nama_pasien'],
-              price: listPeriksaRaw[index]['price'],
-              dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
-              jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
-              tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
-              gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
-            ),
-          ),
-        );
-      },
+      onPressed: listPeriksaRaw[index]['status_checkin'] == 0
+          ? () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => EditPeriksaView(
+                    id: listPeriksaRaw[index]['id_daftar_periksa'],
+                    namaPasien: listPeriksaRaw[index]['nama_pasien'],
+                    price: listPeriksaRaw[index]['price'],
+                    dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
+                    jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
+                    tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
+                    gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
+                  ),
+                ),
+              );
+            }
+          : () => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 2),
+                  content:
+                      Text('Anda tidak bisa mengedit data setelah check in'),
+                ),
+              ),
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.green),
         minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
@@ -296,32 +304,40 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                 'Apakah yakin ingin menghapus data pasien $namaPasienHapus?'),
             actions: [
               TextButton(
-                onPressed: () async {
-                  // Menghapus Data Yang di pilih
-                  try {
-                    final int idHapus =
-                        listPeriksaRaw[index]['id_daftar_periksa'];
+                onPressed: listPeriksaRaw[index]['status_checkin'] == 0
+                    ? () async {
+                        // Menghapus Data Yang di pilih
+                        try {
+                          final int idHapus =
+                              listPeriksaRaw[index]['id_daftar_periksa'];
 
-                    await DaftarPeriksaClient.destroy(idHapus.toString());
-                    refresh();
+                          await DaftarPeriksaClient.destroy(idHapus.toString());
+                          refresh();
 
-                    Navigator.of(context).pop();
-                    scaffoldMessenger.showSnackBar(
-                      const SnackBar(
-                        duration: Duration(seconds: 2),
-                        content: Text('Berhasil Menghapus Data'),
-                      ),
-                    );
-                  } catch (e) {
-                    Navigator.of(context).pop();
-                    scaffoldMessenger.showSnackBar(
-                      const SnackBar(
-                        duration: Duration(seconds: 2),
-                        content: Text('Gagal Menghapus Data'),
-                      ),
-                    );
-                  }
-                },
+                          Navigator.of(context).pop();
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(
+                              duration: Duration(seconds: 2),
+                              content: Text('Berhasil Menghapus Data'),
+                            ),
+                          );
+                        } catch (e) {
+                          Navigator.of(context).pop();
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(
+                              duration: Duration(seconds: 2),
+                              content: Text('Gagal Menghapus Data'),
+                            ),
+                          );
+                        }
+                      }
+                    : () => ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Duration(seconds: 2),
+                            content: Text(
+                                'Anda tidak bisa menghapus data setelah check in'),
+                          ),
+                        ),
                 child: Text('Ya',
                     style: TextStyle(
                         color: isDark ? Colors.white : Colors.black,
@@ -398,14 +414,16 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
 
   // EDIT DELETE BUTTON WIDGET =======================================================================================================================
   Widget buildEditDeleteButtons(Map<String, dynamic> periksa, int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        buildEditButton(periksa, index),
-        buildDeleteButton(periksa, index),
-        buildCheckInButton(periksa, index),
-      ],
-    );
+    return listPeriksaRaw[index]['status_checkin'] == 0
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildEditButton(periksa, index),
+              buildDeleteButton(periksa, index),
+              buildCheckInButton(periksa, index),
+            ],
+          )
+        : Row();
   }
 
   // SHOW RATING WIDGET
