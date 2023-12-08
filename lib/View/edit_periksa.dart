@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:math';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +22,17 @@ class EditPeriksaView extends StatefulWidget {
       required this.dokterSpesialis,
       required this.jenisPerawatan,
       required this.tanggalPeriksa,
-      required this.gambarDokter});
+      required this.gambarDokter,
+      required this.rating,
+      required this.ulasan});
 
   final String? namaPasien,
       dokterSpesialis,
       jenisPerawatan,
       tanggalPeriksa,
-      gambarDokter;
-  final int? id, price;
+      gambarDokter,
+      ulasan;
+  final int? id, price, rating;
 
   @override
   State<EditPeriksaView> createState() => _EditPeriksaViewState();
@@ -423,23 +428,23 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                           try {
                                             final Periksa updatedPeriksa =
                                                 Periksa(
-                                                    id: widget.id,
-                                                    namaPasien:
-                                                        namaPasienController
-                                                            .text,
-                                                    dokterSpesialis: formData[
-                                                        'dokter_spesialis'],
-                                                    jenisPerawatan: formData[
-                                                        'jenis_perawatan'],
-                                                    tanggalPeriksa:
-                                                        tanggalPeriksaController
-                                                            .text,
-                                                    price: formData['price'],
-                                                    ruangan:
-                                                        formData['ruangan'],
-                                                    statusCheckin: 0,
-                                                    gambarDokter: formData[
-                                                        'gambar_dokter']);
+                                              id: widget.id,
+                                              namaPasien:
+                                                  namaPasienController.text,
+                                              dokterSpesialis:
+                                                  formData['dokter_spesialis'],
+                                              jenisPerawatan:
+                                                  formData['jenis_perawatan'],
+                                              tanggalPeriksa:
+                                                  tanggalPeriksaController.text,
+                                              price: formData['price'],
+                                              ruangan: formData['ruangan'],
+                                              statusCheckin: 0,
+                                              gambarDokter:
+                                                  formData['gambar_dokter'],
+                                              rating: widget.rating,
+                                              ulasan: widget.ulasan,
+                                            );
 
                                             await DaftarPeriksaClient.update(
                                                 updatedPeriksa, id!);

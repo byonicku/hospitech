@@ -323,6 +323,8 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                     jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
                     tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
                     gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
+                    rating: listPeriksaRaw[index]['rating'],
+                    ulasan: listPeriksaRaw[index]['ulasan'],
                   ),
                 ),
               );
