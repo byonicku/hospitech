@@ -16,6 +16,7 @@ class DaftarPeriksaRobot {
   final dokterDropdown = find.byKey(Key('Dokter Dropdown'));
   final jenisPerawatan = find.byKey(Key('Jenis Perawatan'));
   final daftarPeriksaBtn = find.byKey(Key('Daftar Periksa'));
+  final editPeriksaBtn = find.byKey(Key('Edit Periksa'));
   final sudahBtn = find.byKey(Key('SudahBtn'));
   final deleteBtn = find.byKey(Key('DeleteBtn')).first;
   final editBtn = find.byKey(Key('EditBtn')).first;
@@ -89,7 +90,7 @@ class DaftarPeriksaRobot {
     await tester.ensureVisible(jenisPerawatan);
     await tester.tap(jenisPerawatan);
     await tester.pump(Duration(seconds: 1));
-    await tester.tap(find.byKey(Key('Rawat Jalan')));
+    await tester.tap(find.text('Rawat Jalan'));
 
     await tester.pumpAndSettle(Duration(seconds: 1));
 
@@ -179,7 +180,7 @@ class DaftarPeriksaRobot {
     await tester.ensureVisible(dokterDropdown);
     await tester.tap(dokterDropdown);
     await tester.pump(Duration(seconds: 2));
-    await tester.tap(find.text('Spesialis Jantung'));
+    await tester.tap(find.text('Spesialis Organ Dalam'));
 
     await tester.pumpAndSettle(Duration(seconds: 2));
 
@@ -187,15 +188,15 @@ class DaftarPeriksaRobot {
     await tester.ensureVisible(jenisPerawatan);
     await tester.tap(jenisPerawatan);
     await tester.pump(Duration(seconds: 2));
-    await tester.tap(find.byKey(Key('Rawat Inap')));
+    await tester.tap(find.text('Rawat Inap'));
 
     await tester.pumpAndSettle(Duration(seconds: 2));
 
     // click daftar periksa
-    await tester.ensureVisible(daftarPeriksaBtn);
-    await tester.tap(daftarPeriksaBtn);
+    await tester.ensureVisible(editPeriksaBtn);
+    await tester.tap(editPeriksaBtn);
 
-    await tester.pumpAndSettle(Duration(seconds: 2));
+    await tester.pumpAndSettle(Duration(seconds: 4));
 
     // click sudah untuk konfirmasi
     await tester.ensureVisible(sudahBtn);
@@ -209,7 +210,6 @@ class DaftarPeriksaRobot {
 
     await tester.tap(profileTab);
     await tester.pumpAndSettle(Duration(seconds: 2));
-
 
     await tester.scrollUntilVisible(find.text('Logout'), 0.1,
         duration: Duration(seconds: 1));

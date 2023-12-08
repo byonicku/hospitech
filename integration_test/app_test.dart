@@ -97,8 +97,8 @@ void main() {
 
       await daftarPeriksaRobot.updatePeriksa(
           namaPasien: 'Pasien Lama', tglPeriksa: '12/29/2023');
-      expect(find.byType(Card).first, findsOneWidget);
       expect(find.text('Pasien Lama').first, findsOneWidget);
+      expect(find.byType(Card).first, findsOneWidget);
     });
 
     testWidgets('Delete List Periksa', (WidgetTester tester) async {
