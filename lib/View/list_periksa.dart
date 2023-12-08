@@ -68,21 +68,6 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
         elevation: 1,
         child: InkWell(
           onTap: () {
-            // await createPdf(
-            //     listPeriksaRaw[index]['id_daftar_periksa'], id, context);
-
-            // setState(() {
-            //   const uuid = Uuid();
-            //   id = uuid.v1();
-            //   _isLoading = true;
-            // });
-
-            // Future.delayed(const Duration(seconds: 1), () {
-            //   setState(() {
-            //     _isLoading = false;
-            //   });
-            // });
-
             listPeriksaRaw[index]['status_checkin'] == 1
                 ? listPeriksaRaw[index]['rating'] == 0
                     ? Navigator.push(

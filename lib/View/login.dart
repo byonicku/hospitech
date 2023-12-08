@@ -31,15 +31,18 @@ class _LoginViewState extends State<LoginView> {
       body: SafeArea(
         child: Stack(
           children: [
-            SizedBox(
-              width: 100.w,
-              height: 100.h,
-              child: Image.asset(
-                'assets/images/pattern.png',
-                repeat: ImageRepeat.repeatY,
-                color: isDark
-                    ? Colors.white.withOpacity(0.03)
-                    : Colors.black.withOpacity(0.03),
+            SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: SizedBox(
+                width: 100.w,
+                height: 100.h,
+                child: Image.asset(
+                  'assets/images/pattern.png',
+                  repeat: ImageRepeat.repeatY,
+                  color: isDark
+                      ? Colors.white.withOpacity(0.03)
+                      : Colors.black.withOpacity(0.03),
+                ),
               ),
             ),
             Form(

@@ -64,19 +64,21 @@ class _HomeViewState extends State<HomeView> {
       selectedTip = dailyTips[Random().nextInt(dailyTips.length)];
       currentShow = false;
     });
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Daily Tip', style: TextStyle(fontSize: 14.sp)),
+          title: Text('Daily Tip',
+              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold)),
           content: Text(
             selectedTip,
-            style: TextStyle(fontSize: 14.sp),
+            style: TextStyle(fontSize: 16.sp),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Close', style: TextStyle(fontSize: 14.sp)),
+              child: Text('Close', style: TextStyle(fontSize: 16.sp)),
               onPressed: () {
                 Navigator.of(context).pop();
                 setState(() {

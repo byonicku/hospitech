@@ -191,6 +191,12 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                 } else if (value !=
                                     newPasswordController.text) {
                                   return "Password Konfirmasi Tidak Sama!";
+                                } else if (value.length < 5) {
+                                  return "Password Baru minimal 5 karakter";
+                                } else if (value ==
+                                        newPasswordController.text &&
+                                    value == passwordController.text) {
+                                  return "Password Baru tidak boleh sama dengan Password Lama";
                                 } else {
                                   return null;
                                 }

@@ -28,7 +28,8 @@ class UserClient {
   // show user profile
   static Future<User> show(String id) async {
     try {
-      var response = await get(Uri.http(url, '$endpoint/$id'));
+      var response = await get(Uri.http(url, '$endpoint/$id'))
+          .timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 

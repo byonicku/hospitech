@@ -376,6 +376,13 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                       ),
                     ],
                   ),
+                  Text(
+                    ' (Termasuk PPN 10%)',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                   const SizedBox(
                     height: 24,
                   ),
@@ -439,7 +446,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                             dokterSpesialis:
                                                 selectedDokterSpesialis,
                                             price: listHargaPerawatan[
-                                                selectedDokterSpesialis],
+                                                selectedDokterSpesialis]!,
                                             jenisPerawatan:
                                                 selectedJenisPerawatan,
                                             tanggalPeriksa:

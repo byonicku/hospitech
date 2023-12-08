@@ -103,7 +103,7 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                           }
                         },
                             controller: emailController,
-                            read: false,
+                            read: true,
                             labelTxt: "Email",
                             iconData: Icons.email),
                         SizedBox(
@@ -276,10 +276,9 @@ class _ProfilePageState extends State<UpdateProfilePage> {
                                           } else {
                                             Navigator.of(context).pop();
                                             scaffoldMessenger.showSnackBar(
-                                              const SnackBar(
+                                              SnackBar(
                                                 duration: Duration(seconds: 2),
-                                                content: Text(
-                                                    'Email sudah terdaftar!'),
+                                                content: Text(e.toString()),
                                               ),
                                             );
                                           }
