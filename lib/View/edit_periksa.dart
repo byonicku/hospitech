@@ -45,6 +45,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
   bool changeNamaPasien = false;
   String? dokterSpesialisSelected, jenisPerawatanSelected, namaPasienSebelumnya;
   String? id;
+  double selectedHargaPerawatan = 0;
 
   void getUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -66,6 +67,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
       dokterSpesialisSelected = widget.dokterSpesialis!;
       jenisPerawatanSelected = widget.jenisPerawatan!;
       namaPasienSebelumnya = widget.namaPasien;
+      selectedHargaPerawatan = widget.price!.toDouble();
     }
 
     return Scaffold(
@@ -158,7 +160,8 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                               context: context,
                               initialDate: initialDate,
                               firstDate: initialDate,
-                              lastDate: DateTime(2050));
+                              lastDate:
+                                  DateTime.now().add(const Duration(days: 14)));
                           if (pickedDate != null) {
                             String formattedDate =
                                 DateFormat('yMd').format(pickedDate);
@@ -214,6 +217,9 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         onChanged: (value) {
                           setState(() {
                             dokterSpesialisSelected = value!;
+                            selectedHargaPerawatan =
+                                listHargaPerawatan[dokterSpesialisSelected!]!
+                                    .toDouble();
                           });
                         },
                         buttonStyleData: ButtonStyleData(
@@ -349,7 +355,30 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     ),
                   ),
                   const SizedBox(
-                    height: 12,
+                    height: 24,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Biaya : ',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ')
+                            .format(selectedHargaPerawatan),
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 24,
                   ),
                   ElevatedButton(
                       key: Key('Edit Periksa'),
