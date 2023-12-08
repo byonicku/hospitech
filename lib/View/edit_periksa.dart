@@ -390,7 +390,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                     actions: [
                                       TextButton(
                                         key: Key('SudahBtn'),
-                                        onPressed: () {
+                                        onPressed: () async {
                                           try {
                                             final Periksa updatedPeriksa =
                                                 Periksa(
@@ -412,7 +412,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                                     gambarDokter: formData[
                                                         'gambar_dokter']);
 
-                                            DaftarPeriksaClient.update(
+                                            await DaftarPeriksaClient.update(
                                                 updatedPeriksa, id!);
 
                                             Navigator.of(context).popUntil(
