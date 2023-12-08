@@ -17,7 +17,7 @@ class PreviewScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_outlined),
         ),
         centerTitle: true,
-        title: const Text("Detail Periksa"),
+        title: const Text("Preview PDF"),
       ),
       body: PdfPreview(
         build: (format) => doc.save(),
