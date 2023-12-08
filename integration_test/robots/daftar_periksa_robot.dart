@@ -210,6 +210,7 @@ class DaftarPeriksaRobot {
     await tester.tap(profileTab);
     await tester.pumpAndSettle(Duration(seconds: 2));
 
+
     await tester.scrollUntilVisible(find.text('Logout'), 0.1,
         duration: Duration(seconds: 1));
 
