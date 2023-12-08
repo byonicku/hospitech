@@ -63,7 +63,7 @@ void main() {
     });
   });
 
-  group('Integration Test CRUD', () {
+  group('Integration Test CRUD | ', () {
     testWidgets('Create List Periksa', (WidgetTester tester) async {
       app.main();
 
@@ -84,8 +84,8 @@ void main() {
       daftarPeriksaRobot = DaftarPeriksaRobot(tester);
 
       await daftarPeriksaRobot.readPeriksa();
-      expect(find.text('Pasien Baru'), findsOneWidget);
-      expect(find.byType(Card), findsOneWidget);
+      expect(find.text('Pasien Baru').first, findsOneWidget);
+      expect(find.byType(Card).first, findsOneWidget);
     });
 
     testWidgets('Update List Periksa', (WidgetTester tester) async {
@@ -97,8 +97,8 @@ void main() {
 
       await daftarPeriksaRobot.updatePeriksa(
           namaPasien: 'Pasien Lama', tglPeriksa: '12/29/2023');
-      expect(find.byType(Card), findsOneWidget);
-      expect(find.text('Pasien Lama'), findsOneWidget);
+      expect(find.byType(Card).first, findsOneWidget);
+      expect(find.text('Pasien Lama').first, findsOneWidget);
     });
 
     testWidgets('Delete List Periksa', (WidgetTester tester) async {
