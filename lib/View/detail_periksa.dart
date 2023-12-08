@@ -85,13 +85,13 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
     return ElevatedButton(
       key: Key('Cetak PDF Btn'),
       onPressed: () async {
-        await createPdf(id, barcodeID, context);
-
         setState(() {
           const uuid = Uuid();
           barcodeID = uuid.v1();
           _isLoading = true;
         });
+
+        await createPdf(id, barcodeID, context);
 
         Future.delayed(const Duration(seconds: 1), () {
           setState(() {

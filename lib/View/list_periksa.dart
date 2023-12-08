@@ -148,7 +148,9 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               buildDokterInfo(periksa),
-              buildPeriksaInfo(periksa, index: index),
+              listPeriksaRaw[index]['status_checkin'] == 0
+                  ? buildPeriksaInfo(periksa, index: index)
+                  : buildPeriksaInfo2(periksa, index: index),
             ],
           ),
         ),
@@ -245,6 +247,60 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
           ),
           buildShowRating(periksa, index),
           buildEditDeleteButtons(periksa, index),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPeriksaInfo2(Map<String, dynamic> periksa, {int? index}) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 2.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(periksa['nama_pasien'],
+                        style: TextStyle(
+                            fontSize: 18.sp, fontWeight: FontWeight.w500)),
+                    Text(periksa['jenis_perawatan'],
+                        style: TextStyle(fontSize: 14.sp)),
+                    Text('${periksa['ruangan']}',
+                        style: TextStyle(fontSize: 14.sp)),
+                    Text('Tanggal Periksa : ${periksa['tanggal_periksa']}',
+                        style: TextStyle(
+                            fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 3.0.w, bottom: 3.h),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    splashFactory: NoSplash.splashFactory,
+                    backgroundColor: MaterialStateProperty.all(
+                        listPeriksaRaw[index!]['status_checkin'] == 1
+                            ? Colors.green
+                            : Colors.amber),
+                    minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
+                  ),
+                  child: Text(
+                    listPeriksaRaw[index]['status_checkin'] == 1
+                        ? 'Selesai'
+                        : 'Pending',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          buildShowRating(periksa, index),
         ],
       ),
     );
