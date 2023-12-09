@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:math';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +22,17 @@ class EditPeriksaView extends StatefulWidget {
       required this.dokterSpesialis,
       required this.jenisPerawatan,
       required this.tanggalPeriksa,
-      required this.gambarDokter});
+      required this.gambarDokter,
+      required this.rating,
+      required this.ulasan});
 
   final String? namaPasien,
       dokterSpesialis,
       jenisPerawatan,
       tanggalPeriksa,
-      gambarDokter;
-  final int? id, price;
+      gambarDokter,
+      ulasan;
+  final int? id, price, rating;
 
   @override
   State<EditPeriksaView> createState() => _EditPeriksaViewState();
@@ -45,6 +50,8 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
   bool changeNamaPasien = false;
   String? dokterSpesialisSelected, jenisPerawatanSelected, namaPasienSebelumnya;
   String? id;
+  double selectedHargaPerawatan = 0;
+  bool haveInputted = false;
 
   void getUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -66,6 +73,7 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
       dokterSpesialisSelected = widget.dokterSpesialis!;
       jenisPerawatanSelected = widget.jenisPerawatan!;
       namaPasienSebelumnya = widget.namaPasien;
+      selectedHargaPerawatan = widget.price!.toDouble() + widget.price! * 0.1;
     }
 
     return Scaffold(
@@ -158,7 +166,8 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                               context: context,
                               initialDate: initialDate,
                               firstDate: initialDate,
-                              lastDate: DateTime(2050));
+                              lastDate:
+                                  DateTime.now().add(const Duration(days: 14)));
                           if (pickedDate != null) {
                             String formattedDate =
                                 DateFormat('yMd').format(pickedDate);
@@ -214,6 +223,11 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                         onChanged: (value) {
                           setState(() {
                             dokterSpesialisSelected = value!;
+                            selectedHargaPerawatan = listHargaPerawatan[
+                                        dokterSpesialisSelected!]!
+                                    .toDouble() +
+                                listHargaPerawatan[dokterSpesialisSelected!]! *
+                                    0.1;
                           });
                         },
                         buttonStyleData: ButtonStyleData(
@@ -349,7 +363,37 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                     ),
                   ),
                   const SizedBox(
-                    height: 12,
+                    height: 24,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Biaya : ',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ')
+                            .format(selectedHargaPerawatan),
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    ' (Termasuk PPN 10%)',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 24,
                   ),
                   ElevatedButton(
                       key: Key('Edit Periksa'),
@@ -390,29 +434,55 @@ class _EditPeriksaViewState extends State<EditPeriksaView> {
                                     actions: [
                                       TextButton(
                                         key: Key('SudahBtn'),
-                                        onPressed: () {
+                                        onPressed: () async {
                                           try {
+                                            if (namaPasienController.text ==
+                                                    widget.namaPasien! &&
+                                                tanggalPeriksaController.text ==
+                                                    widget.tanggalPeriksa! &&
+                                                dokterSpesialisSelected ==
+                                                    widget.dokterSpesialis! &&
+                                                jenisPerawatanSelected ==
+                                                    widget.jenisPerawatan! &&
+                                                namaPasienSebelumnya ==
+                                                    widget.namaPasien &&
+                                                selectedHargaPerawatan ==
+                                                    widget.price!.toDouble()) {
+                                              Navigator.of(context).pop();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                  content: Text(
+                                                      'Anda belum mengisi / mengubah data apapun'),
+                                                ),
+                                              );
+                                              return;
+                                            }
+
                                             final Periksa updatedPeriksa =
                                                 Periksa(
-                                                    id: widget.id,
-                                                    namaPasien:
-                                                        namaPasienController
-                                                            .text,
-                                                    dokterSpesialis: formData[
-                                                        'dokter_spesialis'],
-                                                    jenisPerawatan: formData[
-                                                        'jenis_perawatan'],
-                                                    tanggalPeriksa:
-                                                        tanggalPeriksaController
-                                                            .text,
-                                                    price: formData['price'],
-                                                    ruangan:
-                                                        formData['ruangan'],
-                                                    statusCheckin: 0,
-                                                    gambarDokter: formData[
-                                                        'gambar_dokter']);
+                                              id: widget.id,
+                                              namaPasien:
+                                                  namaPasienController.text,
+                                              dokterSpesialis:
+                                                  formData['dokter_spesialis'],
+                                              jenisPerawatan:
+                                                  formData['jenis_perawatan'],
+                                              tanggalPeriksa:
+                                                  tanggalPeriksaController.text,
+                                              price: listHargaPerawatan[
+                                                  dokterSpesialisSelected]!,
+                                              ruangan: formData['ruangan'],
+                                              statusCheckin: 0,
+                                              gambarDokter:
+                                                  formData['gambar_dokter'],
+                                              rating: widget.rating,
+                                              ulasan: widget.ulasan,
+                                            );
 
-                                            DaftarPeriksaClient.update(
+                                            await DaftarPeriksaClient.update(
                                                 updatedPeriksa, id!);
 
                                             Navigator.of(context).popUntil(

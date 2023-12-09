@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:tugas_besar_hospital_pbp/View/edit_komentar.dart';
 import 'package:tugas_besar_hospital_pbp/View/home.dart';
 import 'package:tugas_besar_hospital_pbp/database/daftar_periksa_client.dart';
@@ -41,21 +42,6 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
       _isLoading = true;
     });
 
-    // final dataPeriksa = await DaftarPeriksaClient.fetchAll(id).timeout(
-    //   const Duration(seconds: 5),
-    //   onTimeout: () {
-    //     setState(() {
-    //       _isLoading = false;
-    //       status = 'Tidak ada koneksi internet';
-    //     });
-    //     return [];
-    //   },
-    // );
-
-    // setState(() {
-    //   listPeriksaRaw = dataPeriksa.map((periksa) => periksa.toJson()).toList();
-    //   _isLoading = false;
-    // });
     prefs = await SharedPreferences.getInstance();
     id = prefs!.getString('id') ?? '';
 
@@ -85,13 +71,13 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
     return ElevatedButton(
       key: Key('Cetak PDF Btn'),
       onPressed: () async {
-        await createPdf(id, barcodeID, context);
-
         setState(() {
           const uuid = Uuid();
           barcodeID = uuid.v1();
           _isLoading = true;
         });
+
+        await createPdf(id, barcodeID, context);
 
         Future.delayed(const Duration(seconds: 1), () {
           setState(() {
@@ -101,9 +87,10 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
       },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.blue),
+        minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
       ),
       child: Text(
-        'Cetak Bukti Periksa',
+        'Cetak',
         style: TextStyle(color: Colors.white, fontSize: 14.sp),
       ),
     );
@@ -120,11 +107,16 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Nama Pasien         : ' + widget.selectedPeriksa.namaPasien!,
+                'Nama Pasien      : ' + widget.selectedPeriksa.namaPasien!,
               ),
               Text(
-                'Tanggal Periksa    : ' +
-                    widget.selectedPeriksa.tanggalPeriksa!,
+                'Tanggal Periksa : ' + widget.selectedPeriksa.tanggalPeriksa!,
+              ),
+              Text(
+                'Biaya Periksa     : Rp. ' +
+                    NumberFormat.currency(locale: 'id_ID', symbol: '').format(
+                        widget.selectedPeriksa.price! +
+                            widget.selectedPeriksa.price! * 0.1),
               ),
             ],
           ),
@@ -179,11 +171,12 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Dokter A'),
+          Text('Nama Dokter'),
           Text(widget.selectedPeriksa.dokterSpesialis!),
           ElevatedButton(
             onPressed: () {},
             style: ButtonStyle(
+              splashFactory: NoSplash.splashFactory,
               backgroundColor: MaterialStateProperty.all(Colors.white),
             ),
             child: Text(widget.selectedPeriksa.jenisPerawatan!),
@@ -304,6 +297,30 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
           onPressed: () {
             // SIMPAN RATING DAN ULASAN
             try {
+              if (inputRating == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: Duration(seconds: 2),
+                    content: Text(
+                      'Rating harus diisi',
+                    ),
+                  ),
+                );
+                return;
+              }
+
+              if (komentarController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: Duration(seconds: 2),
+                    content: Text(
+                      'Komentar harus diisi',
+                    ),
+                  ),
+                );
+                return;
+              }
+
               Periksa updatedPeriksa = Periksa(
                   id: widget.selectedPeriksa.id,
                   dokterSpesialis: widget.selectedPeriksa.dokterSpesialis,
@@ -435,24 +452,33 @@ class _DetailPeriksaViewState extends State<DetailPeriksaView> {
                         content: Text('Yakin ingin menghapus komentar?'),
                         actions: [
                           TextButton(
-                            onPressed: () {
-                              DaftarPeriksaClient.hapusUlasan(
-                                widget.selectedPeriksa.id.toString(),
-                              );
+                            onPressed: () async {
+                              try {
+                                await DaftarPeriksaClient.hapusUlasan(
+                                  widget.selectedPeriksa.id.toString(),
+                                );
 
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      HomeView(selectedIndex: 2),
-                                ),
-                              );
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        HomeView(selectedIndex: 2),
+                                  ),
+                                );
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Berhasil Menghapus Komentar'),
-                                ),
-                              );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text('Berhasil Menghapus Komentar'),
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(e.toString()),
+                                  ),
+                                );
+                              }
                             },
                             child: Text(
                               'Ya',

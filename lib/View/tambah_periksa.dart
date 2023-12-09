@@ -49,9 +49,10 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
 
   String? selectedJenisPerawatan;
   String? selectedDokterSpesialis;
-  double? selectedHargaPerawatan;
+  double selectedHargaPerawatan = 0;
   bool isPickedPerawatan = false;
   bool isPickedDokter = false;
+  int? biaya;
 
   void getUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -152,7 +153,8 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                               context: context,
                               initialDate: initialDate,
                               firstDate: initialDate,
-                              lastDate: DateTime(2050));
+                              lastDate:
+                                  DateTime.now().add(const Duration(days: 14)));
                           if (pickedDate != null) {
                             String formattedDate =
                                 DateFormat('yMd').format(pickedDate);
@@ -210,6 +212,12 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                           setState(() {
                             isPickedDokter = true;
                             selectedDokterSpesialis = value;
+                            selectedHargaPerawatan =
+                                listHargaPerawatan[selectedDokterSpesialis]!
+                                        .toDouble() +
+                                    listHargaPerawatan[selectedDokterSpesialis]!
+                                            .toDouble() *
+                                        0.1;
                           });
                         },
                         buttonStyleData: ButtonStyleData(
@@ -348,6 +356,36 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                   const SizedBox(
                     height: 24,
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Biaya : ',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ')
+                            .format(selectedHargaPerawatan),
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    ' (Termasuk PPN 10%)',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
                   ElevatedButton(
                       key: Key('Daftar Periksa'),
                       onPressed: () async {
@@ -408,7 +446,7 @@ class _TambahPeriksaState extends State<TambahPeriksa> {
                                             dokterSpesialis:
                                                 selectedDokterSpesialis,
                                             price: listHargaPerawatan[
-                                                selectedDokterSpesialis],
+                                                selectedDokterSpesialis]!,
                                             jenisPerawatan:
                                                 selectedJenisPerawatan,
                                             tanggalPeriksa:

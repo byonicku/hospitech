@@ -68,24 +68,9 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
         elevation: 1,
         child: InkWell(
           onTap: () {
-            // await createPdf(
-            //     listPeriksaRaw[index]['id_daftar_periksa'], id, context);
-
-            // setState(() {
-            //   const uuid = Uuid();
-            //   id = uuid.v1();
-            //   _isLoading = true;
-            // });
-
-            // Future.delayed(const Duration(seconds: 1), () {
-            //   setState(() {
-            //     _isLoading = false;
-            //   });
-            // });
-
             listPeriksaRaw[index]['status_checkin'] == 1
                 ? listPeriksaRaw[index]['rating'] == 0
-                    ? Navigator.pushReplacement(
+                    ? Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailPeriksaView(
@@ -110,7 +95,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                           )),
                         ),
                       )
-                    : Navigator.pushReplacement(
+                    : Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailPeriksaView(
@@ -140,7 +125,7 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                     SnackBar(
                       duration: Duration(seconds: 2),
                       content:
-                          Text('Anda harus chekin untuk memberikan rating'),
+                          Text('Anda harus check in untuk memberikan rating'),
                     ),
                   );
           },
@@ -148,7 +133,9 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               buildDokterInfo(periksa),
-              buildPeriksaInfo(periksa, index: index),
+              listPeriksaRaw[index]['status_checkin'] == 0
+                  ? buildPeriksaInfo(periksa, index: index)
+                  : buildPeriksaInfo2(periksa, index: index),
             ],
           ),
         ),
@@ -250,26 +237,90 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
     );
   }
 
+  Widget buildPeriksaInfo2(Map<String, dynamic> periksa, {int? index}) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 2.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(periksa['nama_pasien'],
+                        style: TextStyle(
+                            fontSize: 18.sp, fontWeight: FontWeight.w500)),
+                    Text(periksa['jenis_perawatan'],
+                        style: TextStyle(fontSize: 14.sp)),
+                    Text('${periksa['ruangan']}',
+                        style: TextStyle(fontSize: 14.sp)),
+                    Text('Tanggal Periksa : ${periksa['tanggal_periksa']}',
+                        style: TextStyle(
+                            fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 3.0.w, bottom: 3.h),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    splashFactory: NoSplash.splashFactory,
+                    backgroundColor: MaterialStateProperty.all(
+                        listPeriksaRaw[index!]['status_checkin'] == 1
+                            ? Colors.green
+                            : Colors.amber),
+                    minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
+                  ),
+                  child: Text(
+                    listPeriksaRaw[index]['status_checkin'] == 1
+                        ? 'Selesai'
+                        : 'Pending',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          buildShowRating(periksa, index),
+        ],
+      ),
+    );
+  }
+
   // EDIT BUTTON WIDGET =======================================================================================================================
   Widget buildEditButton(Map<String, dynamic> periksa, int index) {
     return ElevatedButton(
       key: Key('EditBtn'),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => EditPeriksaView(
-              id: listPeriksaRaw[index]['id_daftar_periksa'],
-              namaPasien: listPeriksaRaw[index]['nama_pasien'],
-              price: listPeriksaRaw[index]['price'],
-              dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
-              jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
-              tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
-              gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
-            ),
-          ),
-        );
-      },
+      onPressed: listPeriksaRaw[index]['status_checkin'] == 0
+          ? () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => EditPeriksaView(
+                    id: listPeriksaRaw[index]['id_daftar_periksa'],
+                    namaPasien: listPeriksaRaw[index]['nama_pasien'],
+                    price: listPeriksaRaw[index]['price'],
+                    dokterSpesialis: listPeriksaRaw[index]['dokter_spesialis'],
+                    jenisPerawatan: listPeriksaRaw[index]['jenis_perawatan'],
+                    tanggalPeriksa: listPeriksaRaw[index]['tanggal_periksa'],
+                    gambarDokter: listPeriksaRaw[index]['gambar_dokter'],
+                    rating: listPeriksaRaw[index]['rating'],
+                    ulasan: listPeriksaRaw[index]['ulasan'],
+                  ),
+                ),
+              );
+            }
+          : () => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 2),
+                  content:
+                      Text('Anda tidak bisa mengedit data setelah check in'),
+                ),
+              ),
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.green),
         minimumSize: MaterialStateProperty.all(Size(5.w, 4.h)),
@@ -296,32 +347,40 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
                 'Apakah yakin ingin menghapus data pasien $namaPasienHapus?'),
             actions: [
               TextButton(
-                onPressed: () async {
-                  // Menghapus Data Yang di pilih
-                  try {
-                    final int idHapus =
-                        listPeriksaRaw[index]['id_daftar_periksa'];
+                onPressed: listPeriksaRaw[index]['status_checkin'] == 0
+                    ? () async {
+                        // Menghapus Data Yang di pilih
+                        try {
+                          final int idHapus =
+                              listPeriksaRaw[index]['id_daftar_periksa'];
 
-                    await DaftarPeriksaClient.destroy(idHapus.toString());
-                    refresh();
+                          await DaftarPeriksaClient.destroy(idHapus.toString());
+                          refresh();
 
-                    Navigator.of(context).pop();
-                    scaffoldMessenger.showSnackBar(
-                      const SnackBar(
-                        duration: Duration(seconds: 2),
-                        content: Text('Berhasil Menghapus Data'),
-                      ),
-                    );
-                  } catch (e) {
-                    Navigator.of(context).pop();
-                    scaffoldMessenger.showSnackBar(
-                      const SnackBar(
-                        duration: Duration(seconds: 2),
-                        content: Text('Gagal Menghapus Data'),
-                      ),
-                    );
-                  }
-                },
+                          Navigator.of(context).pop();
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(
+                              duration: Duration(seconds: 2),
+                              content: Text('Berhasil Menghapus Data'),
+                            ),
+                          );
+                        } catch (e) {
+                          Navigator.of(context).pop();
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(
+                              duration: Duration(seconds: 2),
+                              content: Text('Gagal Menghapus Data'),
+                            ),
+                          );
+                        }
+                      }
+                    : () => ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Duration(seconds: 2),
+                            content: Text(
+                                'Anda tidak bisa menghapus data setelah check in'),
+                          ),
+                        ),
                 child: Text('Ya',
                     style: TextStyle(
                         color: isDark ? Colors.white : Colors.black,
@@ -398,14 +457,16 @@ class _ListPeriksaViewState extends State<ListPeriksaView> {
 
   // EDIT DELETE BUTTON WIDGET =======================================================================================================================
   Widget buildEditDeleteButtons(Map<String, dynamic> periksa, int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        buildEditButton(periksa, index),
-        buildDeleteButton(periksa, index),
-        buildCheckInButton(periksa, index),
-      ],
-    );
+    return listPeriksaRaw[index]['status_checkin'] == 0
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildEditButton(periksa, index),
+              buildDeleteButton(periksa, index),
+              buildCheckInButton(periksa, index),
+            ],
+          )
+        : Row();
   }
 
   // SHOW RATING WIDGET
