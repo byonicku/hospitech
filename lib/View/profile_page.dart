@@ -92,18 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
         .then((imgCapture) async {
       File profileImage = File(imgCapture!.path);
       String imagePath = await convertToBase64(profileImage);
-
-      User editDataUser = User(
-          id: currentUser!.id,
-          username: currentUser!.username,
-          email: currentUser!.email,
-          jenisKelamin: currentUser!.jenisKelamin,
-          noTelp: currentUser!.noTelp,
-          password: currentUser!.password,
-          tglLahir: currentUser!.tglLahir,
-          profilePhoto: imagePath);
-
-      UserClient.update(editDataUser);
+      UserClient.updatePhotoProfil(currentUser!.id, imagePath);
     });
   }
 
