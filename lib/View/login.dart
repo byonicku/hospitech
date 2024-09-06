@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tugas_besar_hospital_pbp/View/home.dart';
+import 'package:tugas_besar_hospital_pbp/View/register.dart';
 import 'package:tugas_besar_hospital_pbp/View/reset_password.dart';
 import 'package:tugas_besar_hospital_pbp/database/user_client.dart';
 import 'package:tugas_besar_hospital_pbp/entity/user.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
-import 'package:tugas_besar_hospital_pbp/View/register.dart';
-import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:tugas_besar_hospital_pbp/database/sql_control.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
