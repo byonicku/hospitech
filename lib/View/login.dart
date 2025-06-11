@@ -210,6 +210,7 @@ class _LoginViewState extends State<LoginView> {
                                   ),
                                 );
                               } catch (e) {
+                                print(e);
                                 if (e.toString().contains('TimeoutException')) {
                                   scaffoldMessenger.showSnackBar(
                                     const SnackBar(

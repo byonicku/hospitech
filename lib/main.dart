@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar_hospital_pbp/View/home.dart';
-import 'package:tugas_besar_hospital_pbp/View/login.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tugas_besar_hospital_pbp/View/home.dart';
+import 'package:tugas_besar_hospital_pbp/View/login.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,10 +51,10 @@ class MainApp extends StatelessWidget {
               theme: ThemeData(
                 brightness: Brightness.light,
                 colorSchemeSeed: Colors.blue,
-                tabBarTheme: TabBarTheme(
+                tabBarTheme: TabBarThemeData(
                   indicatorSize: TabBarIndicatorSize.label,
                   indicatorColor: Colors.blue,
-                  overlayColor: MaterialStateProperty.all(Colors.blue[50]),
+                  overlayColor: WidgetStateProperty.all(Colors.blue[50]),
                   labelColor: Colors.blue,
                   unselectedLabelColor: Colors.grey,
                 ),
@@ -79,7 +79,7 @@ class MainApp extends StatelessWidget {
               darkTheme: ThemeData(
                 brightness: Brightness.dark,
                 colorSchemeSeed: Colors.indigo,
-                tabBarTheme: TabBarTheme(
+                tabBarTheme: TabBarThemeData(
                   indicatorSize: TabBarIndicatorSize.label,
                   indicatorColor: Colors.indigo,
                   overlayColor: MaterialStateProperty.all(Colors.indigo[900]),

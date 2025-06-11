@@ -1,12 +1,12 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:tugas_besar_hospital_pbp/View/home_grid.dart';
 import 'package:tugas_besar_hospital_pbp/View/list_periksa.dart';
 import 'package:tugas_besar_hospital_pbp/View/profile_group.dart';
 import 'package:tugas_besar_hospital_pbp/View/profile_page.dart';
-import 'dart:io';
-import 'dart:math';
-import 'package:shake/shake.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:tugas_besar_hospital_pbp/main.dart';
 
 class HomeView extends StatefulWidget {
@@ -52,7 +52,7 @@ class _HomeViewState extends State<HomeView> {
     setSelectedIndex(widget.selectedIndex!);
     super.initState();
     selectedTip = dailyTips[Random().nextInt(dailyTips.length)];
-    ShakeDetector.autoStart(onPhoneShake: () => showTipDialog());
+    // ShakeDetector.autoStart(onPhoneShake: () => showTipDialog());
   }
 
   void showTipDialog() {

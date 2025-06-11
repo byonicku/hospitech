@@ -1,4 +1,4 @@
 // Local
-// const String url = '10.0.2.2:8000';
+const String url = 'pbp-hospital-api.vercel.app';
 // Hostingan
-const String url = 'https://pbp-hospital-api.vercel.app/api';
+// const String url = '20.70.51.64:8000';
